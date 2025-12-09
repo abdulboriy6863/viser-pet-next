@@ -119,111 +119,139 @@ export const LIKE_TARGET_MEMBER = gql`
 `;
 
 /**************************
- *        PROPERTY        *
+ *        PRODUCT        *
  *************************/
 
-export const CREATE_PROPERTY = gql`
-	mutation CreateProperty($input: PropertyInput!) {
-		createProperty(input: $input) {
+export const CREATE_PRODUCT = gql`
+	mutation CreateProduct($input: ProductInput!) {
+		createProduct(input: $input) {
 			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
+			productCollection
+			productStatus
+			productName
+			productDetail
+			productPrice
+			productDiscount
+			productLeftCount
+			productSoldCount
+			productViews
+			productLikes
+			productComments
+			productRank
+			productImages
+			productDesc
 			memberId
+			createdAt
 			soldAt
 			deletedAt
-			constructedAt
-			createdAt
 			updatedAt
 		}
 	}
 `;
 
-export const UPDATE_PROPERTY = gql`
-	mutation UpdateProperty($input: PropertyUpdate!) {
-		updateProperty(input: $input) {
+export const UPDATE_PRODUCT = gql`
+	mutation ($input: ProductUpdate!) {
+		updateProduct(input: $input) {
 			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
+			productCollection
+			productStatus
+			productName
+			productDetail
+			productPrice
+			productDiscount
+			productLeftCount
+			productSoldCount
+			productViews
+			productLikes
+			productComments
+			productRank
+			productImages
+			productDesc
 			memberId
+			createdAt
 			soldAt
 			deletedAt
-			constructedAt
-			createdAt
 			updatedAt
 		}
 	}
 `;
 
-export const LIKE_TARGET_PROPERTY = gql`
-	mutation LikeTargetProperty($input: String!) {
-		likeTargetProperty(propertyId: $input) {
+export const LIKE_TARGET_PRODUCT = gql`
+	mutation LikeTargetProduct($input: String!) {
+		likeTargetProduct(productId: $input) {
 			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
+			productCollection
+			productStatus
+			productName
+			productDetail
+			productPrice
+			productDiscount
+			productLeftCount
+			productSoldCount
+			productViews
+			productLikes
+			productComments
+			productRank
+			productImages
+			productDesc
 			memberId
+			createdAt
 			soldAt
 			deletedAt
-			constructedAt
-			createdAt
 			updatedAt
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
+			}
+			memberData {
+				_id
+				memberType
+				memberStatus
+				memberAuthType
+				memberPhone
+				memberNick
+				memberFullName
+				memberImage
+				memberAddress
+				memberDesc
+				memberProducts
+				memberBlogPosts
+				memberFollowers
+				memberFollowings
+				memberPoints
+				memberLikes
+				memberViews
+				memberComments
+				memberRank
+				memberWarnings
+				memberBlocks
+				deletedAt
+				createdAt
+				updatedAt
+				accessToken
+			}
 		}
 	}
 `;
 
 /**************************
- *      BOARD-ARTICLE     *
+ *      BLOG-POST       *
  *************************/
 
-export const CREATE_BOARD_ARTICLE = gql`
-	mutation CreateBoardArticle($input: BoardArticleInput!) {
-		createBoardArticle(input: $input) {
+export const CREATE_BLOG_POST = gql`
+	mutation CreateBlogPost($input: BlogPostInput!) {
+		createBlogPost(input: $input) {
 			_id
-			articleCategory
-			articleStatus
-			articleTitle
-			articleContent
-			articleImage
-			articleViews
-			articleLikes
+			blogPostCategory
+			blogPostStatus
+			blogPostTitle
+			blogPostContent
+			blogPostImage
+			blogPostViews
+			blogPostLikes
+			blogPostComments
+			blogPostRank
 			memberId
 			createdAt
 			updatedAt
@@ -231,17 +259,19 @@ export const CREATE_BOARD_ARTICLE = gql`
 	}
 `;
 
-export const UPDATE_BOARD_ARTICLE = gql`
-	mutation UpdateBoardArticle($input: BoardArticleUpdate!) {
-		updateBoardArticle(input: $input) {
+export const UPDATE_BLOG_POST = gql`
+	mutation UpdateBlogPost($input: BlogPostUpdate!) {
+		updateBlogPost(input: $input) {
 			_id
-			articleCategory
-			articleStatus
-			articleTitle
-			articleContent
-			articleImage
-			articleViews
-			articleLikes
+			blogPostCategory
+			blogPostStatus
+			blogPostTitle
+			blogPostContent
+			blogPostImage
+			blogPostViews
+			blogPostLikes
+			blogPostComments
+			blogPostRank
 			memberId
 			createdAt
 			updatedAt
@@ -249,17 +279,19 @@ export const UPDATE_BOARD_ARTICLE = gql`
 	}
 `;
 
-export const LIKE_TARGET_BOARD_ARTICLE = gql`
-	mutation LikeTargetBoardArticle($input: String!) {
-		likeTargetBoardArticle(articleId: $input) {
+export const LIKE_TARGET_BLOG_POST = gql`
+	mutation LikeTargetBlogPost($input: String!) {
+		likeTargetBlogPost(blogPostId: $input) {
 			_id
-			articleCategory
-			articleStatus
-			articleTitle
-			articleContent
-			articleImage
-			articleViews
-			articleLikes
+			blogPostCategory
+			blogPostStatus
+			blogPostTitle
+			blogPostContent
+			blogPostImage
+			blogPostViews
+			blogPostLikes
+			blogPostComments
+			blogPostRank
 			memberId
 			createdAt
 			updatedAt
@@ -325,6 +357,47 @@ export const UNSUBSCRIBE = gql`
 			followerId
 			createdAt
 			updatedAt
+		}
+	}
+`;
+
+/**************************
+ *      ORDER     *
+ *************************/
+
+export const CREATE_ORDER = gql`
+	mutation CreateOrder($input: CreateOrderInput!) {
+		createOrder(input: $input) {
+			_id
+			orderTotal
+			orderDelivery
+			orderStatus
+			memberId
+			createdAt
+			updatedAt
+			orderItems {
+				_id
+				itemQuantity
+				itemPrice
+				orderId
+				productId
+				createdAt
+				updatedAt
+			}
+		}
+	}
+`;
+
+export const UPDATE_ORDER = gql`
+	mutation UpdateOrder($input: OrderUpdate!) {
+		updateOrder(input: $input) {
+			orderTotal
+			orderDelivery
+			orderStatus
+			memberId
+			createdAt
+			updatedAt
+			_id
 		}
 	}
 `;

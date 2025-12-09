@@ -79,33 +79,31 @@ export const GET_MEMBER = gql(`
 `);
 
 /**************************
- *        PROPERTY        *
+ *        PRODUCT        *
  *************************/
 
-export const GET_PROPERTY = gql`
-	query GetProperty($input: String!) {
-		getProperty(propertyId: $input) {
+export const GET_PRODUCT = gql`
+	query GetProduct($input: String!) {
+		getProduct(productId: $input) {
 			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
+			productCollection
+			productStatus
+			productName
+			productDetail
+			productPrice
+			productDiscount
+			productLeftCount
+			productSoldCount
+			productViews
+			productLikes
+			productComments
+			productRank
+			productImages
+			productDesc
 			memberId
+			createdAt
 			soldAt
 			deletedAt
-			constructedAt
-			createdAt
 			updatedAt
 			memberData {
 				_id
@@ -118,11 +116,17 @@ export const GET_PROPERTY = gql`
 				memberImage
 				memberAddress
 				memberDesc
-				memberWarnings
-				memberBlocks
+				memberProducts
+				memberBlogPosts
+				memberFollowers
+				memberFollowings
 				memberPoints
 				memberLikes
 				memberViews
+				memberComments
+				memberRank
+				memberWarnings
+				memberBlocks
 				deletedAt
 				createdAt
 				updatedAt
@@ -137,55 +141,30 @@ export const GET_PROPERTY = gql`
 	}
 `;
 
-export const GET_PROPERTIES = gql`
-	query GetProperties($input: PropertiesInquiry!) {
-		getProperties(input: $input) {
+export const GET_PRODUCTS = gql`
+	query GetProducts($input: ProductsInquiry!) {
+		getProducts(input: $input) {
 			list {
 				_id
-				propertyType
-				propertyStatus
-				propertyLocation
-				propertyAddress
-				propertyTitle
-				propertyPrice
-				propertySquare
-				propertyBeds
-				propertyRooms
-				propertyViews
-				propertyLikes
-				propertyRank
-				propertyImages
-				propertyDesc
-				propertyBarter
-				propertyRent
+				productCollection
+				productStatus
+				productName
+				productDetail
+				productPrice
+				productDiscount
+				productLeftCount
+				productSoldCount
+				productViews
+				productLikes
+				productComments
+				productRank
+				productImages
+				productDesc
 				memberId
+				createdAt
 				soldAt
 				deletedAt
-				constructedAt
-				createdAt
 				updatedAt
-				memberData {
-					_id
-					memberType
-					memberStatus
-					memberAuthType
-					memberPhone
-					memberNick
-					memberFullName
-					memberImage
-					memberAddress
-					memberDesc
-					memberWarnings
-					memberBlocks
-					memberProperties
-					memberRank
-					memberPoints
-					memberLikes
-					memberViews
-					deletedAt
-					createdAt
-					updatedAt
-				}
 				meLiked {
 					memberId
 					likeRefId
@@ -360,21 +339,22 @@ export const GET_VISITED = gql`
 `;
 
 /**************************
- *      BOARD-ARTICLE     *
+ *      BLOG-POST.       *
  *************************/
 
-export const GET_BOARD_ARTICLE = gql`
-	query GetBoardArticle($input: String!) {
-		getBoardArticle(articleId: $input) {
+export const GET_BLOG_POST = gql`
+	query GetBlogPost($input: String!) {
+		getBlogPost(blogPostId: $input) {
 			_id
-			articleCategory
-			articleStatus
-			articleTitle
-			articleContent
-			articleImage
-			articleViews
-			articleLikes
-			articleComments
+			blogPostCategory
+			blogPostStatus
+			blogPostTitle
+			blogPostContent
+			blogPostImage
+			blogPostViews
+			blogPostLikes
+			blogPostComments
+			blogPostRank
 			memberId
 			createdAt
 			updatedAt
@@ -389,16 +369,21 @@ export const GET_BOARD_ARTICLE = gql`
 				memberImage
 				memberAddress
 				memberDesc
-				memberWarnings
-				memberBlocks
-				memberProperties
-				memberRank
+				memberProducts
+				memberBlogPosts
+				memberFollowers
+				memberFollowings
 				memberPoints
 				memberLikes
 				memberViews
+				memberComments
+				memberRank
+				memberWarnings
+				memberBlocks
 				deletedAt
 				createdAt
 				updatedAt
+				accessToken
 			}
 			meLiked {
 				memberId
@@ -409,27 +394,23 @@ export const GET_BOARD_ARTICLE = gql`
 	}
 `;
 
-export const GET_BOARD_ARTICLES = gql`
-	query GetBoardArticles($input: BoardArticlesInquiry!) {
-		getBoardArticles(input: $input) {
+export const GET_BLOG_POSTS = gql`
+	query GetBlogPosts($input: BlogPostsInquiry!) {
+		getBlogPosts(input: $input) {
 			list {
 				_id
-				articleCategory
-				articleStatus
-				articleTitle
-				articleContent
-				articleImage
-				articleViews
-				articleLikes
-				articleComments
+				blogPostCategory
+				blogPostStatus
+				blogPostTitle
+				blogPostContent
+				blogPostImage
+				blogPostViews
+				blogPostLikes
+				blogPostComments
+				blogPostRank
 				memberId
 				createdAt
 				updatedAt
-				meLiked {
-					memberId
-					likeRefId
-					myFavorite
-				}
 				memberData {
 					_id
 					memberType
@@ -441,16 +422,26 @@ export const GET_BOARD_ARTICLES = gql`
 					memberImage
 					memberAddress
 					memberDesc
-					memberWarnings
-					memberBlocks
-					memberProperties
-					memberRank
+					memberProducts
+					memberBlogPosts
+					memberFollowers
+					memberFollowings
 					memberPoints
 					memberLikes
 					memberViews
+					memberComments
+					memberRank
+					memberWarnings
+					memberBlocks
 					deletedAt
 					createdAt
 					updatedAt
+					accessToken
+				}
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
 				}
 			}
 			metaCounter {
@@ -612,6 +603,55 @@ export const GET_MEMBER_FOLLOWINGS = gql`
 			}
 			metaCounter {
 				total
+			}
+		}
+	}
+`;
+
+/**************************
+ *      ORDER     *
+ *************************/
+
+export const GET_ORDERS = gql`
+	query GetMyOrder($inquiry: OrderInquiry!) {
+		getMyOrder(inquiry: $inquiry) {
+			_id
+			orderTotal
+			orderDelivery
+			orderStatus
+			memberId
+			createdAt
+			updatedAt
+			orderItems {
+				_id
+				itemQuantity
+				itemPrice
+				orderId
+				productId
+				createdAt
+				updatedAt
+			}
+			productData {
+				_id
+				productCollection
+				productStatus
+				productName
+				productDetail
+				productPrice
+				productDiscount
+				productLeftCount
+				productSoldCount
+				productViews
+				productLikes
+				productComments
+				productRank
+				productImages
+				productDesc
+				memberId
+				createdAt
+				soldAt
+				deletedAt
+				updatedAt
 			}
 		}
 	}
