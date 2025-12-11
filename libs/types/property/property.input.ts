@@ -73,3 +73,11 @@ interface PeriodsRange {
 	start: Date | number;
 	end: Date | number;
 }
+
+export interface ProductInquiry {
+	page: number;
+	limit: number;
+	sort?: string;
+	direction?: Direction;
+	search: PISearch;
+}

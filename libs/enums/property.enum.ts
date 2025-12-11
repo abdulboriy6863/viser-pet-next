@@ -21,3 +21,60 @@ export enum PropertyLocation {
 	DAEJON = 'DAEJON',
 	JEJU = 'JEJU',
 }
+
+//VISER PET ////////////////////////////////////////////
+export enum ProductCollection {
+	// ---- Animal Types ----
+	ANIMAL_DOG = 'ANIMAL_DOG',
+	ANIMAL_CAT = 'ANIMAL_CAT',
+	ANIMAL_FISH = 'ANIMAL_FISH',
+	ANIMAL_BIRD = 'ANIMAL_BIRD',
+	ANIMAL_OTHER = 'ANIMAL_OTHER',
+
+	// ---- Food Types ----
+	FOOD_DOG = 'FOOD_DOG',
+	FOOD_CAT = 'FOOD_CAT',
+	FOOD_FISH = 'FOOD_FISH',
+	FOOD_BIRD = 'FOOD_BIRD',
+
+	FOOD_DRY = 'FOOD_DRY',
+	FOOD_WET = 'FOOD_WET',
+	FOOD_TREAT = 'FOOD_TREAT',
+	FOOD_SUPPLEMENT = 'FOOD_SUPPLEMENT',
+
+	// ---- Accessories & Toys ----
+	ACCESSORY_GENERAL = 'ACCESSORY_GENERAL',
+	ACCESSORY_DOG = 'ACCESSORY_DOG',
+	ACCESSORY_CAT = 'ACCESSORY_CAT',
+	ACCESSORY_FISH = 'ACCESSORY_FISH',
+	ACCESSORY_BIRD = 'ACCESSORY_BIRD',
+
+	TOY_DOG = 'TOY_DOG',
+	TOY_CAT = 'TOY_CAT',
+	TOY_BIRD = 'TOY_BIRD',
+
+	// ---- Beds, Clothing, Hygiene ----
+	BED_DOG = 'BED_DOG',
+	BED_CAT = 'BED_CAT',
+
+	CLOTHING_DOG = 'CLOTHING_DOG',
+	CLOTHING_CAT = 'CLOTHING_CAT',
+
+	CLEANING_GENERAL = 'CLEANING_GENERAL',
+	CLEANING_DOG = 'CLEANING_DOG',
+	CLEANING_CAT = 'CLEANING_CAT',
+
+	// ---- Health products ----
+	MEDICINE_GENERAL = 'MEDICINE_GENERAL',
+	MEDICINE_DOG = 'MEDICINE_DOG',
+	MEDICINE_CAT = 'MEDICINE_CAT',
+
+	// ---- Other ----
+	OTHER = 'OTHER',
+}
+
+export enum ProductStatus {
+	ACTIVE = 'ACTIVE',
+	SOLD = 'SOLD',
+	DELETE = 'DELETE',
+}
