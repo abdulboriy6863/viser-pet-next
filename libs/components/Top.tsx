@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useState } from 'react';
 import { useRouter, withRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
@@ -12,7 +12,13 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import { CaretDown } from 'phosphor-react';
 import useDeviceDetect from '../hooks/useDeviceDetect';
 import Link from 'next/link';
-import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import FacebookOutlinedIcon from '@mui/icons-material/FacebookOutlined';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import PinterestIcon from '@mui/icons-material/Pinterest';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../apollo/store';
 import { Logout } from '@mui/icons-material';
@@ -162,11 +168,82 @@ const Top = () => {
 	} else {
 		return (
 			<Stack className={'navbar'}>
-				<Stack className={`navbar-main ${colorChange ? 'transparent' : ''} ${bgColor ? 'transparent' : ''}`}>
+				<Box component={'div'} className={'top-info-bar'}>
+					<Stack className={'container'}>
+						<span className={'welcome-text'}>{t('Welcome to our shop!')}</span>
+						<Box component={'div'} className={'top-info-actions'}>
+							<Box component={'div'} className={'social-links'}>
+								<a href={'#'} aria-label="Facebook">
+									<FacebookOutlinedIcon />
+								</a>
+								<a href={'#'} aria-label="Twitter">
+									<TwitterIcon />
+								</a>
+								<a href={'#'} aria-label="LinkedIn">
+									<LinkedInIcon />
+								</a>
+								<a href={'#'} aria-label="Pinterest">
+									<PinterestIcon />
+								</a>
+							</Box>
+							<div className={'lan-box'}>
+								<Button
+									disableRipple
+									className="btn-lang"
+									onClick={langClick}
+									endIcon={<CaretDown size={14} color="#ffffff" weight="fill" />}
+								>
+									<Box component={'div'} className={'flag'}>
+										{lang !== null ? (
+											<img src={`/img/flag/lang${lang}.png`} alt={'flag'} />
+										) : (
+											<img src={`/img/flag/langen.png`} alt={'flag'} />
+										)}
+									</Box>
+									<span className={'lang-label'}>{(lang || 'en').toUpperCase()}</span>
+								</Button>
+
+								<StyledMenu anchorEl={anchorEl2} open={drop} onClose={langClose} sx={{ position: 'absolute' }}>
+									<MenuItem disableRipple onClick={langChoice} id="en">
+										<img
+											className="img-flag"
+											src={'/img/flag/langen.png'}
+											onClick={langChoice}
+											id="en"
+											alt={'usaFlag'}
+										/>
+										{t('English')}
+									</MenuItem>
+									<MenuItem disableRipple onClick={langChoice} id="kr">
+										<img
+											className="img-flag"
+											src={'/img/flag/langkr.png'}
+											onClick={langChoice}
+											id="kr"
+											alt={'koreanFlag'}
+										/>
+										{t('Korean')}
+									</MenuItem>
+									<MenuItem disableRipple onClick={langChoice} id="ru">
+										<img
+											className="img-flag"
+											src={'/img/flag/langru.png'}
+											onClick={langChoice}
+											id="ru"
+											alt={'russiaFlag'}
+										/>
+										{t('Russian')}
+									</MenuItem>
+								</StyledMenu>
+							</div>
+						</Box>
+					</Stack>
+				</Box>
+				<Stack className={`navbar-main ${colorChange ? 'is-sticky' : ''} ${bgColor ? 'transparent' : ''}`}>
 					<Stack className={'container'}>
 						<Box component={'div'} className={'logo-box'}>
 							<Link href={'/'}>
-								<img src="/img/logo/logoWhite.svg" alt="" />
+								<img src="/img/logo/Frame.svg" alt="ViserPet logo" />
 							</Link>
 						</Box>
 						<Box component={'div'} className={'router-box'}>
@@ -191,94 +268,55 @@ const Top = () => {
 								<div> {t('CS')} </div>
 							</Link>
 						</Box>
-						<Box component={'div'} className={'user-box'}>
-							{user?._id ? (
-								<>
-									<div className={'login-user'} onClick={(event: any) => setLogoutAnchor(event.currentTarget)}>
-										<img
-											src={
-												user?.memberImage ? `${REACT_APP_API_URL}/${user?.memberImage}` : '/img/profile/defaultUser.svg'
-											}
-											alt=""
-										/>
-									</div>
+						<Box component={'div'} className={'nav-right'}>
+							<Box component={'div'} className={'user-box'}>
+								{user?._id ? (
+									<>
+										<div className={'login-user'} onClick={(event: any) => setLogoutAnchor(event.currentTarget)}>
+											<img
+												src={
+													user?.memberImage
+														? `${REACT_APP_API_URL}/${user?.memberImage}`
+														: '/img/profile/defaultUser.svg'
+												}
+												alt=""
+											/>
+										</div>
 
-									<Menu
-										id="basic-menu"
-										anchorEl={logoutAnchor}
-										open={logoutOpen}
-										onClose={() => {
-											setLogoutAnchor(null);
-										}}
-										sx={{ mt: '5px' }}
-									>
-										<MenuItem onClick={() => logOut()}>
-											<Logout fontSize="small" style={{ color: 'blue', marginRight: '10px' }} />
-											Logout
-										</MenuItem>
-									</Menu>
-								</>
-							) : (
-								<Link href={'/account/join'}>
-									<div className={'join-box'}>
-										<AccountCircleOutlinedIcon />
-										<span>
-											{t('Login')} / {t('Register')}
-										</span>
-									</div>
-								</Link>
-							)}
-
-							<div className={'lan-box'}>
-								{user?._id && <NotificationsOutlinedIcon className={'notification-icon'} />}
-								<Button
-									disableRipple
-									className="btn-lang"
-									onClick={langClick}
-									endIcon={<CaretDown size={14} color="#616161" weight="fill" />}
-								>
-									<Box component={'div'} className={'flag'}>
-										{lang !== null ? (
-											<img src={`/img/flag/lang${lang}.png`} alt={'usaFlag'} />
-										) : (
-											<img src={`/img/flag/langen.png`} alt={'usaFlag'} />
-										)}
-									</Box>
-								</Button>
-
-								<StyledMenu anchorEl={anchorEl2} open={drop} onClose={langClose} sx={{ position: 'absolute' }}>
-									<MenuItem disableRipple onClick={langChoice} id="en">
-										<img
-											className="img-flag"
-											src={'/img/flag/langen.png'}
-											onClick={langChoice}
-											id="en"
-											alt={'usaFlag'}
-										/>
-										{t('English')}
-									</MenuItem>
-									<MenuItem disableRipple onClick={langChoice} id="kr">
-										<img
-											className="img-flag"
-											src={'/img/flag/langkr.png'}
-											onClick={langChoice}
-											id="uz"
-											alt={'koreanFlag'}
-										/>
-										{t('Korean')}
-									</MenuItem>
-									<MenuItem disableRipple onClick={langChoice} id="ru">
-										<img
-											className="img-flag"
-											src={'/img/flag/langru.png'}
-											onClick={langChoice}
-											id="ru"
-											alt={'russiaFlag'}
-										/>
-										{t('Russian')}
-									</MenuItem>
-								</StyledMenu>
-							</div>
+										<Menu
+											id="basic-menu"
+											anchorEl={logoutAnchor}
+											open={logoutOpen}
+											onClose={() => {
+												setLogoutAnchor(null);
+											}}
+											sx={{ mt: '5px' }}
+										>
+											<MenuItem onClick={() => logOut()}>
+												<Logout fontSize="small" style={{ color: 'blue', marginRight: '10px' }} />
+												Logout
+											</MenuItem>
+										</Menu>
+									</>
+								) : (
+									<Link href={'/account/join'}>
+										<div className={'join-box'}>
+											<AccountCircleOutlinedIcon />
+											<span>
+												{t('Login')} / {t('Register')}
+											</span>
+										</div>
+									</Link>
+								)}
+							</Box>
+							<Box component={'div'} className={'nav-actions'}>
+								<SearchOutlinedIcon className={'nav-icon'} />
+								<div className={'cart-icon'}>
+									<ShoppingCartOutlinedIcon className={'nav-icon'} />
+									<span className={'badge'}>0</span>
+								</div>
+								<SettingsOutlinedIcon className={'nav-icon'} />
+							</Box>
 						</Box>
 					</Stack>
 				</Stack>
