@@ -5,7 +5,7 @@ import Top from '../Top';
 import Footer from '../Footer';
 import { Stack } from '@mui/material';
 import FiberContainer from '../common/FiberContainer';
-import HeaderFilter from '../homepage/HeaderFilter';
+// import HeaderFilter from '../homepage/HeaderFilter';
 import { userVar } from '../../../apollo/store';
 import { useReactiveVar } from '@apollo/client';
 import { getJwtToken, updateUserInfo } from '../../auth';
@@ -53,7 +53,7 @@ const withLayoutMain = (Component: any) => {
 			return (
 				<>
 					<Head>
-						<title>Nestar</title>
+						<title>Viser pet</title>
 						<meta name={'title'} content={`Nestar`} />
 					</Head>
 					<Stack id="pc-wrap">
@@ -63,9 +63,7 @@ const withLayoutMain = (Component: any) => {
 
 						<Stack className={'header-main'}>
 							<FiberContainer />
-							<Stack className={'container'}>
-								<HeaderFilter />
-							</Stack>
+							<Stack className={'container'}>{/* <HeaderFilter /> */}</Stack>
 						</Stack>
 
 						<Stack id={'main'}>

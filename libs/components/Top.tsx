@@ -246,6 +246,10 @@ const Top = () => {
 								<img src="/img/logo/Frame.svg" alt="ViserPet logo" />
 							</Link>
 						</Box>
+						<Box className={'brand-name'}>
+							<Box className={'brand-title'}>ViserPet</Box>
+							<Box className={'brand-subtitle'}>YOUR BEST CHOICE</Box>
+						</Box>
 						<Box component={'div'} className={'router-box'}>
 							<Link href={'/'}>
 								<div>{t('Home')}</div>
@@ -313,7 +317,7 @@ const Top = () => {
 								<SearchOutlinedIcon className={'nav-icon'} />
 								<div className={'cart-icon'}>
 									<ShoppingCartOutlinedIcon className={'nav-icon'} />
-									<span className={'badge'}>0</span>
+									<span className={'badge'}>0======</span>
 								</div>
 								<SettingsOutlinedIcon className={'nav-icon'} />
 							</Box>

@@ -161,6 +161,34 @@ body::-webkit-scrollbar {
 							cursor: pointer;
 						}
 					}
+					.brand-name {
+						display: flex;
+						flex-direction: column;
+						justify-content: center;
+						margin-left: 8px;
+						.brand-title {
+							width: 154px;
+							height: 28px;
+							color: var(--Text Color, rgba(85, 85, 85, 1));
+							font-family: $font;
+							font-size: 26px;
+							font-weight: 800;
+							line-height: 30px;
+							letter-spacing: 0%;
+							text-align: left;
+							text-transform: capitalize;
+						}
+						.brand-subtitle {
+							font-family: $font;
+							font-size: 12px;
+							font-weight: 500;
+							color: var(--Text Color, rgba(85, 85, 85, 1));
+							letter-spacing: 8%;
+							line-height: normal;
+							text-transform: uppercase;
+							line-height: 20px;
+						}
+					}
 					.router-box {
 						display: flex;
 						flex: 1;
