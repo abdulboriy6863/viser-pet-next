@@ -100,24 +100,27 @@
 			}
 			&__badge {
 				position: absolute;
-				top: 18px;
-				right: 17px;
-				min-width: 54px;
-				height: 26px;
-				padding: 0 12px;
+				top: -14px;
+				right: -28px;
+				min-width: 64px;
+				padding: 8px 14px;
+				border: 1px solid rgba(255, 255, 255, 0.45);
 				border-radius: 999px;
-				background: #1bc2b6;
+				background: linear-gradient(135deg, #20d7c2 0%, #13b7c7 100%);
 				color: #ffffff;
 				font-family: $font;
-				font-size: 12px;
-				font-weight: 700;
+				font-size: 13px;
+				font-weight: 800;
+				letter-spacing: -0.01em;
+				line-height: 1;
 				display: inline-flex;
 				align-items: center;
 				justify-content: center;
-				box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+				transform: none;
+				box-shadow: 0 10px 24px rgba(19, 184, 199, 0.24), 0 4px 10px rgba(0, 0, 0, 0.08);
 				z-index: 2;
 				&--new {
-					background: #20c5b5;
+					background: linear-gradient(135deg, #23ddc3 0%, #12b2c5 100%);
 				}
 			}
 			&__image {
@@ -128,12 +131,13 @@
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				overflow: hidden;
+				overflow: visible;
 				transition: transform 0.18s ease;
 				position: relative;
 				img {
 					width: 100%;
 					height: 100%;
+					border-radius: inherit;
 					object-fit: cover;
 					display: block;
 				}
