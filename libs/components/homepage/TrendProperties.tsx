@@ -1,26 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Stack, Box } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import WestIcon from '@mui/icons-material/West';
 import EastIcon from '@mui/icons-material/East';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Navigation, Pagination } from 'swiper';
-import { Product, Property } from '../../types/property/property';
-import { ProductInquiry, PropertiesInquiry } from '../../types/property/property.input';
+import { Autoplay, Navigation } from 'swiper';
+import { Product } from '../../types/property/property';
+import { ProductInquiry } from '../../types/property/property.input';
 import TrendPropertyCard from './TrendPropertyCard';
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_PRODUCTS } from '../../../apollo/user/query';
 import { T } from '../../types/common';
 import { LIKE_TARGET_PRODUCT } from '../../../apollo/user/mutation';
 import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../sweetAlert';
-import { error } from 'console';
 import { Message } from '../../enums/common.enum';
 
-interface TrendPropertiesProps {
-	initialInput: PropertiesInquiry;
-}
-
-//viser pet
 interface TrendProductsProps {
 	initialInput: ProductInquiry;
 }
@@ -34,18 +28,20 @@ const TrendProducts = (props: TrendProductsProps) => {
 	const [likeTargetProduct] = useMutation(LIKE_TARGET_PRODUCT);
 
 	const {
-		loading: getPropertiesLoading,
 		data: getPropertiesData,
-		error: getPropertiesError,
-		refetch: getPropertiesRefetch,
+		error: getProductsError,
+		refetch: getProductsRefetch,
 	} = useQuery(GET_PRODUCTS, {
 		fetchPolicy: 'cache-and-network',
 		variables: { input: initialInput },
 		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			setTrendProducts(data?.getProducts?.list);
-		},
 	});
+
+	useEffect(() => {
+		if (getPropertiesData?.getProducts?.list) {
+			setTrendProducts(getPropertiesData.getProducts.list);
+		}
+	}, [getPropertiesData]);
 
 	/** HANDLERS **/
 	const likeProductHandler = async (user: T, id: string) => {
@@ -65,92 +61,86 @@ const TrendProducts = (props: TrendProductsProps) => {
 		}
 	};
 
-	if (trendProducts) console.log('trendProducts:', trendProducts);
-	if (!trendProducts) return null;
+	const slidesPerView = device === 'mobile' ? 1.1 : 4;
+	const spaceBetween = device === 'mobile' ? 16 : 26;
+	const isError = !!getProductsError;
+	const isLoading = !getPropertiesData && trendProducts.length === 0 && !isError;
 
-	if (device === 'mobile') {
-		return (
-			<Stack className={'trend-products'}>
-				<Stack className={'container'}>
-					<Stack className={'info-box'}>
-						<span>Trend Products</span>
-					</Stack>
-					<Stack className={'card-box'}>
-						{trendProducts.length === 0 ? (
-							<Box component={'div'} className={'empty-list'}>
-								Trends Empty
-							</Box>
-						) : (
-							<Swiper
-								className={'trend-property-swiper'}
-								slidesPerView={'auto'}
-								centeredSlides={true}
-								spaceBetween={15}
-								modules={[Autoplay]}
-							>
-								{trendProducts.map((product: Product) => {
-									return (
-										<SwiperSlide key={product._id} className={'trend-property-slide'}>
-											<TrendPropertyCard product={product} likeProductHandler={likeProductHandler} />
-										</SwiperSlide>
-									);
-								})}
-							</Swiper>
-						)}
-					</Stack>
+	return (
+		<Stack className={'trend-products'}>
+			<Stack className={'container'}>
+				<Stack className={'trend-products__heading'}>
+					<img src="/img/icons/ellipse7.svg" alt="Trending icon" className={'trend-products__bone'} />
+					<Box component={'div'} className={'trend-products__divider'}>
+						<span className={'trend-products__line'} />
+						<h2>Trending Products</h2>
+						<span className={'trend-products__line'} />
+					</Box>
 				</Stack>
-			</Stack>
-		);
-	} else {
-		return (
-			<Stack className={'trend-properties'}>
-				<Stack className={'container'}>
-					<Stack className={'info-box'}>
-						<Box component={'div'} className={'left'}>
-							<span>Trend Properties</span>
-							<p>Trend is based on likes</p>
+				{isError ? (
+					<Box component={'div'} className={'empty-list'}>
+						Unable to load trending products
+					</Box>
+				) : isLoading ? (
+					<Box component={'div'} className={'empty-list'}>
+						Loading...
+					</Box>
+				) : trendProducts.length === 0 ? (
+					<Box component={'div'} className={'empty-list'}>
+						Trends Empty
+					</Box>
+				) : (
+					<Box component={'div'} className={'trend-products__slider'}>
+						<Box component={'div'} className={'trend-products__prev swiper-trend-prev'}>
+							<WestIcon fontSize={'small'} />
 						</Box>
-						<Box component={'div'} className={'right'}>
-							<div className={'pagination-box'}>
-								<WestIcon className={'swiper-trend-prev'} />
-								<div className={'swiper-trend-pagination'}></div>
-								<EastIcon className={'swiper-trend-next'} />
-							</div>
+						<Swiper
+							className={'trend-products__swiper'}
+							slidesPerView={slidesPerView}
+							spaceBetween={spaceBetween}
+							centeredSlides={device === 'mobile'}
+							modules={[Autoplay, Navigation]}
+							navigation={{
+								nextEl: '.swiper-trend-next',
+								prevEl: '.swiper-trend-prev',
+							}}
+							breakpoints={{
+								640: {
+									slidesPerView: 2.2,
+									spaceBetween: 18,
+								},
+								960: {
+									slidesPerView: 3.2,
+									spaceBetween: 22,
+									centeredSlides: false,
+								},
+								1200: {
+									slidesPerView: 4,
+									spaceBetween: 26,
+									centeredSlides: false,
+								},
+							}}
+							autoplay={{
+								delay: 4000,
+								disableOnInteraction: false,
+							}}
+						>
+							{trendProducts.map((product: Product) => {
+								return (
+									<SwiperSlide key={product._id} className={'trend-products__slide'}>
+										<TrendPropertyCard product={product} likeProductHandler={likeProductHandler} />
+									</SwiperSlide>
+								);
+							})}
+						</Swiper>
+						<Box component={'div'} className={'trend-products__next swiper-trend-next'}>
+							<EastIcon fontSize={'small'} />
 						</Box>
-					</Stack>
-					<Stack className={'card-box'}>
-						{trendProducts.length === 0 ? (
-							<Box component={'div'} className={'empty-list'}>
-								Trends Empty
-							</Box>
-						) : (
-							<Swiper
-								className={'trend-property-swiper'}
-								slidesPerView={'auto'}
-								spaceBetween={15}
-								modules={[Autoplay, Navigation, Pagination]}
-								navigation={{
-									nextEl: '.swiper-trend-next',
-									prevEl: '.swiper-trend-prev',
-								}}
-								pagination={{
-									el: '.swiper-trend-pagination',
-								}}
-							>
-								{trendProducts.map((product: Product) => {
-									return (
-										<SwiperSlide key={product._id} className={'trend-property-slide'}>
-											<TrendPropertyCard product={product} likeProductHandler={likeProductHandler} />
-										</SwiperSlide>
-									);
-								})}
-							</Swiper>
-						)}
-					</Stack>
-				</Stack>
+					</Box>
+				)}
 			</Stack>
-		);
-	}
+		</Stack>
+	);
 };
 
 TrendProducts.defaultProps = {
@@ -164,6 +154,3 @@ TrendProducts.defaultProps = {
 };
 
 export default TrendProducts;
-function getProductsRefetch(arg0: { input: ProductInquiry }) {
-	throw new Error('Function not implemented.');
-}

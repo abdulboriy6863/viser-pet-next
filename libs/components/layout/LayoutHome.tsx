@@ -4,8 +4,6 @@ import Head from 'next/head';
 import Top from '../Top';
 import Footer from '../Footer';
 import { Stack } from '@mui/material';
-import FiberContainer from '../common/FiberContainer';
-// import HeaderFilter from '../homepage/HeaderFilter';
 import { userVar } from '../../../apollo/store';
 import { useReactiveVar } from '@apollo/client';
 import { getJwtToken, updateUserInfo } from '../../auth';
@@ -53,17 +51,52 @@ const withLayoutMain = (Component: any) => {
 			return (
 				<>
 					<Head>
-						<title>Viser pet</title>
-						<meta name={'title'} content={`Nestar`} />
+						<title>Viser Pet | Pet care & shop</title>
+						<meta name={'title'} content={`Viser Pet`} />
 					</Head>
 					<Stack id="pc-wrap">
 						<Stack id={'top'}>
 							<Top />
 						</Stack>
 
-						<Stack className={'header-main'}>
-							<FiberContainer />
-							<Stack className={'container'}>{/* <HeaderFilter /> */}</Stack>
+						<Stack className={'hero-banner'}>
+							<Stack className={'hero-banner__inner'}>
+								<Stack className={'hero-banner__content'}>
+									<span className={'hero-banner__kicker'}>Save 20 -30% Off</span>
+									<span className={'hero-banner__title'}>
+										Everything your
+										<br />
+										pet need
+									</span>
+
+									<Stack className={'hero-banner__actions'}>
+										<a className={'hero-banner__cta'} href={'/property'}>
+											Shop now
+										</a>
+									</Stack>
+								</Stack>
+
+								<Stack className={'hero-banner__visual'}>
+									<img
+										className={'hero-banner__image'}
+										src="/img/banner/bannerImg3.avif"
+										alt="Puppy with bow tie"
+										loading="lazy"
+									/>
+								</Stack>
+							</Stack>
+
+							<span className={'hero-ellipse hero-ellipse--1'} aria-hidden />
+							<span className={'hero-ellipse hero-ellipse--2'} aria-hidden />
+							<span className={'hero-ellipse hero-ellipse--3'} aria-hidden />
+							<span className={'hero-ellipse hero-ellipse--4'} aria-hidden />
+							<span className={'hero-ellipse hero-ellipse--5'} aria-hidden />
+							<span className={'hero-ellipse hero-ellipse--6'} aria-hidden />
+							<span className={'hero-ellipse hero-ellipse--7'} aria-hidden />
+							<span className={'hero-ellipse hero-ellipse--1b'} aria-hidden />
+							<span className={'hero-ellipse hero-ellipse--3b'} aria-hidden />
+							<span className={'hero-ellipse hero-ellipse--7b'} aria-hidden />
+							<span className={'hero-banner__wave'} aria-hidden />
 						</Stack>
 
 						<Stack id={'main'}>

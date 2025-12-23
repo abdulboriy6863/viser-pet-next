@@ -1,10 +1,6 @@
-import React from 'react';
-import { Stack, Box, Divider, Typography } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import { Product, Property } from '../../types/property/property';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import React, { useMemo } from 'react';
+import { Box, Typography } from '@mui/material';
+import { Product } from '../../types/property/property';
 import { REACT_APP_API_URL } from '../../config';
 import { useRouter } from 'next/router';
 import { useReactiveVar } from '@apollo/client';
@@ -17,139 +13,76 @@ interface TrendProductCardProps {
 
 const TrendProductCard = (props: TrendProductCardProps) => {
 	const { product, likeProductHandler } = props;
-	const device = useDeviceDetect();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 
+	const productImage = useMemo(() => {
+		if (product?.productImages && product.productImages[0]) {
+			return `${REACT_APP_API_URL}/${product.productImages[0]}`;
+		}
+		return '';
+	}, [product]);
+
+	const basePrice = product?.productPrice ?? 0;
+	const discountValue = product?.productDiscount ?? 0;
+	const hasDiscount = discountValue > 0;
+	const isPercentDiscount = hasDiscount && discountValue <= 100;
+	const isDiscountPrice = hasDiscount && discountValue > 100 && basePrice > 0 && discountValue < basePrice;
+	const calculatedPrice = isPercentDiscount
+		? basePrice * (1 - discountValue / 100)
+		: isDiscountPrice
+		? discountValue
+		: basePrice;
+	const newPrice = Math.max(calculatedPrice, 0);
+	const derivedPercent = hasDiscount
+		? isPercentDiscount
+			? Math.max(1, Math.round(discountValue))
+			: basePrice > 0
+			? Math.max(1, Math.round((1 - newPrice / basePrice) * 100))
+			: 0
+		: 0;
+	const badgeLabel = hasDiscount ? `-${derivedPercent}%` : null;
+
+	const formatPrice = (value: number) =>
+		`$${value.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+
 	/** HANDLERS **/
 	const pushDetailHandler = async (productId: string) => {
-		console.log('ID', productId);
 		await router.push({ pathname: '/product/detail', query: { id: productId } });
 	};
 
-	if (device === 'mobile') {
-		return (
-			<Stack className="trend-card-box" key={product._id}>
-				<Box
-					component={'div'}
-					className={'card-img'}
-					style={{ backgroundImage: `url(${REACT_APP_API_URL}/${product?.productImages[0]})` }}
-					onClick={() => {
-						pushDetailHandler(product._id);
-					}}
-				>
-					<div>${product.productPrice}</div>
-				</Box>
-				<Box component={'div'} className={'info'}>
-					<strong
-						className={'title'}
-						onClick={() => {
-							pushDetailHandler(product._id);
-						}}
-					>
-						{/* {product.productTitle} */}
-					</strong>
-					<p className={'desc'}>{product.productDesc ?? 'no description'}</p>
-					<div className={'options'}>
-						<div>
-							<img src="/img/icons/bed.svg" alt="" />
-							{/* <span>{product.productBeds} bed</span> */}
-						</div>
-						<div>
-							<img src="/img/icons/room.svg" alt="" />
-							{/* <span>{product.productRooms} rooms</span> */}
-						</div>
-						<div>
-							<img src="/img/icons/expand.svg" alt="" />
-							{/* <span>{product.productSquare} m2</span> */}
-						</div>
-					</div>
-					<Divider sx={{ mt: '15px', mb: '17px' }} />
-					<div className={'bott'}>
-						<p>
-							{/* {product.productRent ? 'Rent' : ''} {product.productRent && product.productBarter && '/'}{' '}
-							{product.productBarter ? 'Barter' : ''} */}
-						</p>
-						<div className="view-like-box">
-							<IconButton color={'default'}>
-								<RemoveRedEyeIcon />
-							</IconButton>
-							<Typography className="view-cnt">{product?.productViews}</Typography>
-							<IconButton color={'default'} onClick={() => likeProductHandler(user, product?._id)}>
-								{product?.meLiked && product?.meLiked[0]?.myFavorite ? (
-									<FavoriteIcon style={{ color: 'red' }} />
-								) : (
-									<FavoriteIcon />
-								)}
-							</IconButton>
-							<Typography className="view-cnt">{product?.productLikes}</Typography>
-						</div>
-					</div>
-				</Box>
-			</Stack>
-		);
-	} else {
-		return (
-			<Stack className="trend-card-box" key={product._id}>
-				<Box
-					component={'div'}
-					className={'card-img'}
-					style={{ backgroundImage: `url(${REACT_APP_API_URL}/${product?.productImages[0]})` }}
-					onClick={() => {
-						pushDetailHandler(product._id);
-					}}
-				>
-					<div>${product.productPrice}</div>
-				</Box>
-				<Box component={'div'} className={'info'}>
-					<strong
-						className={'title'}
-						onClick={() => {
-							pushDetailHandler(product._id);
-						}}
-					>
-						{/* {product.productTitle} */}
-					</strong>
-					<p className={'desc'}>{product.productDesc ?? 'no description'}</p>
-					<div className={'options'}>
-						<div>
-							{/* <img src="/img/icons/bed.svg" alt="" />
-							<span>{product.productBeds} bed</span> */}
-						</div>
-						<div>
-							{/* <img src="/img/icons/room.svg" alt="" />
-							<span>{product.productRooms} rooms</span> */}
-						</div>
-						<div>
-							{/* <img src="/img/icons/expand.svg" alt="" />
-							<span>{product.productSquare} m2</span> */}
-						</div>
-					</div>
-					<Divider sx={{ mt: '15px', mb: '17px' }} />
-					<div className={'bott'}>
-						<p>
-							{/* {product.productRent ? 'Rent' : ''} {product.productRent && product.productBarter && '/'}{' '}
-							{product.productBarter ? 'Barter' : ''} */}
-						</p>
-						<div className="view-like-box">
-							<IconButton color={'default'}>
-								<RemoveRedEyeIcon />
-							</IconButton>
-							<Typography className="view-cnt">{product?.productViews}</Typography>
-							<IconButton color={'default'} onClick={() => likeProductHandler(user, product?._id)}>
-								{product?.meLiked && product?.meLiked[0]?.myFavorite ? (
-									<FavoriteIcon style={{ color: 'red' }} />
-								) : (
-									<FavoriteIcon />
-								)}
-							</IconButton>
-							<Typography className="view-cnt">{product?.productLikes}</Typography>
-						</div>
-					</div>
-				</Box>
-			</Stack>
-		);
-	}
+	return (
+		<Box className="trend-card" key={product._id}>
+			<Box
+				component={'div'}
+				className={'trend-card__image'}
+				onClick={() => {
+					pushDetailHandler(product._id);
+				}}
+			>
+				{badgeLabel && <Box className={'trend-card__badge'}>{badgeLabel}</Box>}
+				<img src={productImage || '/img/property/sub1.png'} alt={product.productName} />
+			</Box>
+
+			<Box component={'div'} className={'trend-card__price'}>
+				{hasDiscount && <span className={'trend-card__price--old'}>{formatPrice(basePrice)}</span>}
+				<span className={'trend-card__price--new'}>{formatPrice(newPrice)}</span>
+			</Box>
+
+			<Typography
+				className={'trend-card__title'}
+				onClick={() => {
+					pushDetailHandler(product._id);
+				}}
+			>
+				{product.productName || product.productDetail || 'Product'}
+			</Typography>
+
+			{(product.productDetail || product.productDesc) && (
+				<Typography className={'trend-card__desc'}>{product.productDetail || product.productDesc}</Typography>
+			)}
+		</Box>
+	);
 };
 
 export default TrendProductCard;

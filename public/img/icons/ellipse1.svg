@@ -1,0 +1,9 @@
+<svg viewBox="0 0 107.057 104.624" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="107.056641" height="104.623718" fill="none" customFrame="#000000">
+	<defs>
+		<linearGradient id="paint_linear_0" x1="42.7408257" x2="42.7408257" y1="-2.5678437e-15" y2="83.872139" gradientUnits="userSpaceOnUse">
+			<stop stop-color="rgb(255,213.134,170)" offset="0" stop-opacity="1" />
+			<stop stop-color="rgb(255,213.134,170)" offset="1" stop-opacity="0" />
+		</linearGradient>
+	</defs>
+	<ellipse id="Ellipse 17" rx="42.740826" ry="41.936069" cx="42.7408257" cy="41.9360695" fill="url(#paint_linear_0)" transform="matrix(-0.957602,-0.288093,0.30045,-0.953798,81.8574,104.624)" />
+</svg>

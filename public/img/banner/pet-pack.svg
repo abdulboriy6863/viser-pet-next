@@ -1,0 +1,62 @@
+<svg width="520" height="520" viewBox="0 0 520 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+	<defs>
+		<linearGradient id="paint0" x1="170" y1="70" x2="360" y2="430" gradientUnits="userSpaceOnUse">
+			<stop stop-color="#FFF6EE" />
+			<stop offset="1" stop-color="#FFD7A8" />
+		</linearGradient>
+		<linearGradient id="paint1" x1="160" y1="82" x2="360" y2="148" gradientUnits="userSpaceOnUse">
+			<stop stop-color="#FFEBD7" />
+			<stop offset="1" stop-color="#FCD1A3" />
+		</linearGradient>
+		<linearGradient id="paint2" x1="190" y1="188" x2="340" y2="364" gradientUnits="userSpaceOnUse">
+			<stop stop-color="#FFFFFF" />
+			<stop offset="1" stop-color="#FFE8CF" />
+		</linearGradient>
+		<linearGradient id="paint3" x1="150" y1="120" x2="370" y2="120" gradientUnits="userSpaceOnUse">
+			<stop stop-color="#FFF2E4" />
+			<stop offset="1" stop-color="#FFD7AC" />
+		</linearGradient>
+		<radialGradient
+			id="glow"
+			cx="0"
+			cy="0"
+			r="1"
+			gradientUnits="userSpaceOnUse"
+			gradientTransform="translate(260 392) rotate(90) scale(120 190)"
+		>
+			<stop stop-color="#FFD3A3" stop-opacity="0.45" />
+			<stop offset="1" stop-color="#FFD3A3" stop-opacity="0" />
+		</radialGradient>
+		<filter id="shadow" x="58" y="10" width="404" height="520" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+			<feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#D99758" flood-opacity="0.26" />
+		</filter>
+	</defs>
+	<ellipse cx="260" cy="400" rx="180" ry="60" fill="url(#glow)" />
+	<g filter="url(#shadow)">
+		<rect x="132" y="72" width="256" height="344" rx="36" fill="url(#paint0)" stroke="#F3C69D" stroke-width="4" />
+		<path
+			d="M140 118C140 98.1177 156.118 82 176 82H344C363.882 82 380 98.1177 380 118V150H140V118Z"
+			fill="url(#paint1)"
+			stroke="#F3C69D"
+			stroke-width="4"
+			stroke-linejoin="round"
+		/>
+		<path d="M162 150H358" stroke="#F3C69D" stroke-width="3" stroke-linecap="round" />
+		<rect x="150" y="102" width="32" height="12" rx="6" fill="#FFE6CC" />
+		<rect x="338" y="102" width="32" height="12" rx="6" fill="#FFE6CC" />
+		<rect x="150" y="176" width="220" height="200" rx="24" fill="url(#paint2)" stroke="#F2C398" stroke-width="3" />
+		<path d="M210 272H310" stroke="#F4A14E" stroke-width="32" stroke-linecap="round" />
+		<circle cx="210" cy="256" r="20" fill="#F4A14E" />
+		<circle cx="210" cy="288" r="20" fill="#F4A14E" />
+		<circle cx="310" cy="256" r="20" fill="#F4A14E" />
+		<circle cx="310" cy="288" r="20" fill="#F4A14E" />
+		<path d="M206 320C218 340 240 352 260 352C280 352 302 340 314 320" stroke="#F8BD79" stroke-width="8" stroke-linecap="round" />
+		<rect x="184" y="208" width="152" height="22" rx="11" fill="#FFEAD6" />
+	</g>
+	<circle cx="128" cy="160" r="10" fill="#FFC77D" fill-opacity="0.75" />
+	<circle cx="390" cy="184" r="8" fill="#FFB86C" fill-opacity="0.65" />
+	<circle cx="156" cy="360" r="9" fill="#FFB079" fill-opacity="0.55" />
+	<circle cx="376" cy="348" r="7" fill="#FFCC8E" fill-opacity="0.7" />
+	<path d="M118 286C124 280 132 278 140 280" stroke="#FFAF6B" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+	<path d="M394 242C402 240 410 242 416 248" stroke="#FFBA7C" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

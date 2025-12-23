@@ -10,12 +10,12 @@ import { useRouter } from 'next/router';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 
-interface TopPropertyCardProps {
+interface TrendPropertyCardProps {
 	property: Property;
 	likePropertyHandler: any;
 }
 
-const TopPropertyCard = (props: TopPropertyCardProps) => {
+const TrendPropertyCard = (props: TrendPropertyCardProps) => {
 	const { property, likePropertyHandler } = props;
 	const device = useDeviceDetect();
 	const router = useRouter();
@@ -29,7 +29,7 @@ const TopPropertyCard = (props: TopPropertyCardProps) => {
 
 	if (device === 'mobile') {
 		return (
-			<Stack className="top-card-box">
+			<Stack className="trend-card-box" key={property._id}>
 				<Box
 					component={'div'}
 					className={'card-img'}
@@ -38,7 +38,7 @@ const TopPropertyCard = (props: TopPropertyCardProps) => {
 						pushDetailHandler(property._id);
 					}}
 				>
-					<div>${property?.propertyPrice}</div>
+					<div>${property.propertyPrice}</div>
 				</Box>
 				<Box component={'div'} className={'info'}>
 					<strong
@@ -47,27 +47,26 @@ const TopPropertyCard = (props: TopPropertyCardProps) => {
 							pushDetailHandler(property._id);
 						}}
 					>
-						{property?.propertyTitle}
+						{property.propertyTitle}
 					</strong>
-					<p className={'desc'}>{property?.propertyAddress}</p>
+					<p className={'desc'}>{property.propertyDesc ?? 'no description'}</p>
 					<div className={'options'}>
 						<div>
 							<img src="/img/icons/bed.svg" alt="" />
-							<span>{property?.propertyBeds} bed</span>
+							<span>{property.propertyBeds} bed</span>
 						</div>
 						<div>
 							<img src="/img/icons/room.svg" alt="" />
-							<span>{property?.propertyRooms} rooms</span>
+							<span>{property.propertyRooms} rooms</span>
 						</div>
 						<div>
 							<img src="/img/icons/expand.svg" alt="" />
-							<span>{property?.propertySquare} m2</span>
+							<span>{property.propertySquare} m2</span>
 						</div>
 					</div>
 					<Divider sx={{ mt: '15px', mb: '17px' }} />
 					<div className={'bott'}>
 						<p>
-							{' '}
 							{property.propertyRent ? 'Rent' : ''} {property.propertyRent && property.propertyBarter && '/'}{' '}
 							{property.propertyBarter ? 'Barter' : ''}
 						</p>
@@ -91,7 +90,7 @@ const TopPropertyCard = (props: TopPropertyCardProps) => {
 		);
 	} else {
 		return (
-			<Stack className="top-card-box">
+			<Stack className="trend-card-box" key={property._id}>
 				<Box
 					component={'div'}
 					className={'card-img'}
@@ -100,7 +99,7 @@ const TopPropertyCard = (props: TopPropertyCardProps) => {
 						pushDetailHandler(property._id);
 					}}
 				>
-					<div>${property?.propertyPrice}</div>
+					<div>${property.propertyPrice}</div>
 				</Box>
 				<Box component={'div'} className={'info'}>
 					<strong
@@ -109,27 +108,26 @@ const TopPropertyCard = (props: TopPropertyCardProps) => {
 							pushDetailHandler(property._id);
 						}}
 					>
-						{property?.propertyTitle}
+						{property.propertyTitle}
 					</strong>
-					<p className={'desc'}>{property?.propertyAddress}</p>
+					<p className={'desc'}>{property.propertyDesc ?? 'no description'}</p>
 					<div className={'options'}>
 						<div>
 							<img src="/img/icons/bed.svg" alt="" />
-							<span>{property?.propertyBeds} bed</span>
+							<span>{property.propertyBeds} bed</span>
 						</div>
 						<div>
 							<img src="/img/icons/room.svg" alt="" />
-							<span>{property?.propertyRooms} rooms</span>
+							<span>{property.propertyRooms} rooms</span>
 						</div>
 						<div>
 							<img src="/img/icons/expand.svg" alt="" />
-							<span>{property?.propertySquare} m2</span>
+							<span>{property.propertySquare} m2</span>
 						</div>
 					</div>
 					<Divider sx={{ mt: '15px', mb: '17px' }} />
 					<div className={'bott'}>
 						<p>
-							{' '}
 							{property.propertyRent ? 'Rent' : ''} {property.propertyRent && property.propertyBarter && '/'}{' '}
 							{property.propertyBarter ? 'Barter' : ''}
 						</p>
@@ -154,4 +152,4 @@ const TopPropertyCard = (props: TopPropertyCardProps) => {
 	}
 };
 
-export default TopPropertyCard;
+export default TrendPropertyCard;
