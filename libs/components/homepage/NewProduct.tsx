@@ -65,7 +65,7 @@ const NewProduct = (props: NewProductProps) => {
 				)}
 
 				<Box className={'new-products__promos'}>
-					<div className="new-products__promo new-products__promo--left">
+					<div className="new-products__promo new-products__promo--left" style={{ height: '528px', width: '100%' }}>
 						<video
 							className="new-products__promo-video"
 							src="/img/newProduct/video-from-rawpixel-id-17991389-sd.mp4"
@@ -91,7 +91,7 @@ const NewProduct = (props: NewProductProps) => {
 								muted
 								playsInline
 							/>
-							<div className="new-products__promo-overlay">
+							<div className="new-products__promo-overlay" style={{ height: '240px' }}>
 								<div className="new-products__promo-label">Black Friday</div>
 								<div className="new-products__promo-sub">Get 10% OFF</div>
 								<button>Shop Now</button>
@@ -106,7 +106,7 @@ const NewProduct = (props: NewProductProps) => {
 								muted
 								playsInline
 							/>
-							<div className="new-products__promo-overlay">
+							<div className="new-products__promo-overlay" style={{ height: '240px' }}>
 								<div className="new-products__promo-label">Get 10% OFF</div>
 								<div className="new-products__promo-sub">To brighten a loved one&apos;s day.</div>
 								<button>Shop Now</button>
