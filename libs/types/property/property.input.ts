@@ -1,4 +1,10 @@
-import { PropertyLocation, PropertyStatus, PropertyType } from '../../enums/property.enum';
+import {
+	ProductCollection,
+	ProductStatus,
+	PropertyLocation,
+	PropertyStatus,
+	PropertyType,
+} from '../../enums/property.enum';
 import { Direction } from '../../enums/common.enum';
 
 export interface PropertyInput {
@@ -80,4 +86,19 @@ export interface ProductInquiry {
 	sort?: string;
 	direction?: Direction;
 	search: PISearch;
+}
+
+//////////////VISER PET NEXT NEW INPUT TYPES/////////////////////
+export interface ProductInput {
+	propertyType: ProductCollection;
+	productStatus: ProductStatus;
+	productName: string;
+	productDetail: string;
+	productPrice: number;
+	productDiscount?: number;
+	productLeftCount?: number;
+	productSoldCount?: number;
+	productImages: string[];
+	memberId?: string;
+	constructedAt?: Date;
 }

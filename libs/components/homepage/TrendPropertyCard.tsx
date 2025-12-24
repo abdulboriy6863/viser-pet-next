@@ -79,7 +79,9 @@ const TrendProductCard = (props: TrendProductCardProps) => {
 			</Typography>
 
 			{(product.productDetail || product.productDesc) && (
-				<Typography className={'trend-card__desc'}>{product.productDetail || product.productDesc}</Typography>
+				<Typography className={'trend-card__desc'} component="div">
+					<div className="trend-card__desc-inner">{product.productDetail || product.productDesc}</div>
+				</Typography>
 			)}
 		</Box>
 	);

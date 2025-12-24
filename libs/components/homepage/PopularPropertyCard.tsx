@@ -1,149 +1,93 @@
-import React from 'react';
-import { Stack, Box, Divider, Typography } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import useDeviceDetect from '../../hooks/useDeviceDetect';
-import { Property } from '../../types/property/property';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import { REACT_APP_API_URL, topPropertyRank } from '../../config';
-import { useRouter } from 'next/router';
-import { useReactiveVar } from '@apollo/client';
-import { userVar } from '../../../apollo/store';
+import React, { useMemo } from 'react';
+import { Stack, Box, Typography } from '@mui/material';
+import { Product } from '../../types/property/property';
+import { REACT_APP_API_URL } from '../../config';
 
 interface PopularPropertyCardProps {
-	property: Property;
+	product: Product;
+	likeProductHandler: (id: string) => Promise<void>;
 }
 
 const PopularPropertyCard = (props: PopularPropertyCardProps) => {
-	const { property } = props;
-	const device = useDeviceDetect();
-	const router = useRouter();
-	const user = useReactiveVar(userVar);
+	const { product, likeProductHandler } = props;
 
-	/** HANDLERS **/
-	const pushDetailHandler = async (propertyId: string) => {
-		console.log('ID', propertyId);
-		await router.push({ pathname: '/property/detail', query: { id: propertyId } });
-	};
+	const productImage = useMemo(() => {
+		if (product?.productImages && product.productImages[0]) {
+			return `${REACT_APP_API_URL}/${product.productImages[0]}`;
+		}
+		return '';
+	}, [product]);
 
-	if (device === 'mobile') {
-		return (
-			<Stack className="popular-card-box">
-				<Box
-					component={'div'}
-					className={'card-img'}
-					style={{ backgroundImage: `url(${REACT_APP_API_URL}/${property?.propertyImages[0]})` }}
-					onClick={() => {
-						pushDetailHandler(property._id);
+	const isLiked = useMemo(() => !!product?.meLiked?.some((like) => like.myFavorite), [product]);
+
+	const basePrice = product?.productPrice ?? 0;
+	const discountValue = product?.productDiscount ?? 0;
+	const hasDiscount = discountValue > 0;
+	const isPercentDiscount = hasDiscount && discountValue <= 100;
+	const isDiscountPrice = hasDiscount && discountValue > 100 && basePrice > 0 && discountValue < basePrice;
+	const calculatedPrice = isPercentDiscount
+		? basePrice * (1 - discountValue / 100)
+		: isDiscountPrice
+		? discountValue
+		: basePrice;
+	const newPrice = Math.max(calculatedPrice, 0);
+	const derivedPercent = hasDiscount
+		? isPercentDiscount
+			? Math.max(1, Math.round(discountValue))
+			: basePrice > 0
+			? Math.max(1, Math.round((1 - newPrice / basePrice) * 100))
+			: 0
+		: 0;
+	const badgeLabel = hasDiscount ? `-${derivedPercent}%` : null;
+
+	const formatPrice = (value: number) =>
+		`$${value.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+
+	return (
+		<Stack className="popular-card-box">
+			<Box component={'div'} className={'popular-card-box__image'}>
+				{badgeLabel && <span className={'popular-card-box__badge'}>{badgeLabel}</span>}
+				{productImage ? (
+					<img src={productImage} alt={product.productName} />
+				) : (
+					<span className={'popular-card-box__placeholder'} />
+				)}
+			</Box>
+
+			<Box component={'div'} className={'popular-card-box__price'}>
+				{hasDiscount && <span className={'popular-card-box__price--old'}>{formatPrice(basePrice)}</span>}
+				<span className={'popular-card-box__price--new'}>{formatPrice(newPrice)}</span>
+			</Box>
+
+			<Typography className={'popular-card-box__title'}>{product.productName || 'Product'}</Typography>
+			<Typography className={'popular-card-box__desc'} component="div">
+				<div className="popular-card-box__desc-inner">{product.productDetail || product.productDesc || ''}</div>
+			</Typography>
+
+			<Box className={'popular-card-box__meta'}>
+				<div className="popular-card-box__meta-item">
+					<img src="/img/icons/review.svg" alt="Views" />
+					<span>{product.productViews ?? 0}</span>
+				</div>
+				<div className="popular-card-box__meta-item">
+					<img src="/img/icons/chat.svg" alt="Comments" />
+					<span>{product.productComments ?? 0}</span>
+				</div>
+				<button
+					type="button"
+					className={`popular-card-box__meta-item popular-card-box__meta-item--like ${isLiked ? 'is-active' : ''}`}
+					onClick={(e) => {
+						e.stopPropagation();
+						likeProductHandler?.(product._id);
 					}}
+					aria-label="Toggle like"
 				>
-					{property && property?.propertyRank >= topPropertyRank ? (
-						<div className={'status'}>
-							<img src="/img/icons/electricity.svg" alt="" />
-							<span>top</span>
-						</div>
-					) : (
-						''
-					)}
-
-					<div className={'price'}>${property.propertyPrice}</div>
-				</Box>
-				<Box component={'div'} className={'info'}>
-					<strong
-						className={'title'}
-						onClick={() => {
-							pushDetailHandler(property._id);
-						}}
-					>
-						{property.propertyTitle}
-					</strong>
-					<p className={'desc'}>{property.propertyAddress}</p>
-					<div className={'options'}>
-						<div>
-							<img src="/img/icons/bed.svg" alt="" />
-							<span>{property?.propertyBeds} bed</span>
-						</div>
-						<div>
-							<img src="/img/icons/room.svg" alt="" />
-							<span>{property?.propertyRooms} rooms</span>
-						</div>
-						<div>
-							<img src="/img/icons/expand.svg" alt="" />
-							<span>{property?.propertySquare} m2</span>
-						</div>
-					</div>
-					<Divider sx={{ mt: '15px', mb: '17px' }} />
-					<div className={'bott'}>
-						<p>{property?.propertyRent ? 'rent' : 'sale'}</p>
-						<div className="view-like-box">
-							<IconButton color={'default'}>
-								<RemoveRedEyeIcon />
-							</IconButton>
-							<Typography className="view-cnt">{property?.propertyViews}</Typography>
-						</div>
-					</div>
-				</Box>
-			</Stack>
-		);
-	} else {
-		return (
-			<Stack className="popular-card-box">
-				<Box
-					component={'div'}
-					className={'card-img'}
-					style={{ backgroundImage: `url(${REACT_APP_API_URL}/${property?.propertyImages[0]})` }}
-					onClick={() => {
-						pushDetailHandler(property._id);
-					}}
-				>
-					{property && property?.propertyRank >= topPropertyRank ? (
-						<div className={'status'}>
-							<img src="/img/icons/electricity.svg" alt="" />
-							<span>top</span>
-						</div>
-					) : (
-						''
-					)}
-
-					<div className={'price'}>${property.propertyPrice}</div>
-				</Box>
-				<Box component={'div'} className={'info'}>
-					<strong
-						className={'title'}
-						onClick={() => {
-							pushDetailHandler(property._id);
-						}}
-					>
-						{property.propertyTitle}
-					</strong>
-					<p className={'desc'}>{property.propertyAddress}</p>
-					<div className={'options'}>
-						<div>
-							<img src="/img/icons/bed.svg" alt="" />
-							<span>{property?.propertyBeds} bed</span>
-						</div>
-						<div>
-							<img src="/img/icons/room.svg" alt="" />
-							<span>{property?.propertyRooms} rooms</span>
-						</div>
-						<div>
-							<img src="/img/icons/expand.svg" alt="" />
-							<span>{property?.propertySquare} m2</span>
-						</div>
-					</div>
-					<Divider sx={{ mt: '15px', mb: '17px' }} />
-					<div className={'bott'}>
-						<p>{property?.propertyRent ? 'rent' : 'sale'}</p>
-						<div className="view-like-box">
-							<IconButton color={'default'}>
-								<RemoveRedEyeIcon />
-							</IconButton>
-							<Typography className="view-cnt">{property?.propertyViews}</Typography>
-						</div>
-					</div>
-				</Box>
-			</Stack>
-		);
-	}
+					<img src="/img/icons/like.svg" alt="Likes" />
+					<span>{product.productLikes ?? 0}</span>
+				</button>
+			</Box>
+		</Stack>
+	);
 };
 
 export default PopularPropertyCard;

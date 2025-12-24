@@ -14,7 +14,7 @@ export const userVar = makeVar<CustomJwtPayload>({
 	memberImage: '',
 	memberAddress: '',
 	memberDesc: '',
-	memberProperties: 0,
+	memberProducts: 0,
 	memberRank: 0,
 	memberArticles: 0,
 	memberPoints: 0,
