@@ -78,3 +78,9 @@ export enum ProductStatus {
 	SOLD = 'SOLD',
 	DELETE = 'DELETE',
 }
+
+export enum ProductVolume {
+	SMALL = 'SMALL',
+	MEDIUM = 'MEDIUM',
+	LARGE = 'LARGE',
+}

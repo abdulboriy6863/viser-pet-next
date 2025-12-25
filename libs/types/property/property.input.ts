@@ -1,6 +1,7 @@
 import {
 	ProductCollection,
 	ProductStatus,
+	ProductVolume,
 	PropertyLocation,
 	PropertyStatus,
 	PropertyType,
@@ -24,18 +25,18 @@ export interface PropertyInput {
 	constructedAt?: Date;
 }
 
-interface PISearch {
-	memberId?: string;
-	locationList?: PropertyLocation[];
-	typeList?: PropertyType[];
-	roomsList?: Number[];
-	options?: string[];
-	bedsList?: Number[];
-	pricesRange?: Range;
-	periodsRange?: PeriodsRange;
-	squaresRange?: Range;
-	text?: string;
-}
+// interface PISearch {
+// 	memberId?: string;
+// 	locationList?: PropertyLocation[];
+// 	typeList?: PropertyType[];
+// 	roomsList?: Number[];
+// 	options?: string[];
+// 	bedsList?: Number[];
+// 	pricesRange?: Range;
+// 	periodsRange?: PeriodsRange;
+// 	squaresRange?: Range;
+// 	text?: string;
+// }
 
 export interface PropertiesInquiry {
 	page: number;
@@ -101,4 +102,22 @@ export interface ProductInput {
 	productImages: string[];
 	memberId?: string;
 	constructedAt?: Date;
+}
+
+export interface PISearch {
+	memberId?: string; // Product.memberId bilan mos
+	typeList?: ProductCollection[]; // Product.productCollection bilan mos
+	pricesRange?: Range; // Product.productPrice uchun
+	text?: string; // Product.productName / productDetail / productDesc bo‘yicha qidiruv
+	inStock?: boolean; // productLeftCount > 0
+	discounted?: boolean; // productDiscount mavjudligi
+	//bunga yana ishlov berish kerak bo'lishi mumkin
+}
+
+export interface ProductsInquiry {
+	page: number;
+	limit: number;
+	sort?: string;
+	direction?: Direction;
+	search: PISearch;
 }
