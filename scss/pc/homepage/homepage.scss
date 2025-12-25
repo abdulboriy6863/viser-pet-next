@@ -907,7 +907,7 @@
 		.advertisement {
 			position: relative;
 			width: 100%;
-			height: 790px;
+			height: 830px;
 			box-sizing: border-box;
 			display: flex;
 			flex-direction: column;
@@ -959,7 +959,7 @@
 				box-shadow: none;
 
 				img {
-					width: min(900px, 68vw);
+					width: min(54%, 68vw);
 					height: 100%;
 					object-fit: cover;
 					object-position: left center;
