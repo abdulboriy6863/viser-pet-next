@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Stack } from '@mui/material';
@@ -16,6 +16,7 @@ const CommunityBoards = () => {
 		direction: 'DESC',
 	});
 	const [newsPosts, setNewsPosts] = useState<BlogPost[]>([]);
+	const [totalPages, setTotalPages] = useState(1);
 
 	/** APOLLO REQUESTS **/
 	const {
@@ -25,10 +26,12 @@ const CommunityBoards = () => {
 		refetch: getNewPostsRefetch,
 	} = useQuery(GET_BLOG_POSTS, {
 		fetchPolicy: 'network-only',
-		variables: { input: { ...searchCommunity, limit: 6, search: { blogPostCategory: BlogPostCategory.NEWS } } },
+		variables: { input: { ...searchCommunity, limit: 3, search: { blogPostCategory: BlogPostCategory.NEWS } } },
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
 			setNewsPosts(data?.getBlogPosts?.list || []);
+			const total = data?.getBlogPosts?.metaCounter?.[0]?.total || data?.getBlogPosts?.list?.length || 0;
+			setTotalPages(Math.max(1, Math.ceil(total / 3)));
 		},
 	});
 
@@ -81,6 +84,21 @@ const CommunityBoards = () => {
 		return <div>COMMUNITY BOARDS (MOBILE)</div>;
 	}
 
+	const goToPage = (page: number) => {
+		const nextPage = Math.min(Math.max(page, 1), totalPages);
+		setSearchCommunity((prev) => ({ ...prev, page: nextPage }));
+		getNewPostsRefetch({
+			input: { ...searchCommunity, page: nextPage, limit: 3, search: { blogPostCategory: BlogPostCategory.NEWS } },
+		});
+	};
+
+	useEffect(() => {
+		// keep query in sync when page changes via state updates
+		getNewPostsRefetch({
+			input: { ...searchCommunity, limit: 3, search: { blogPostCategory: BlogPostCategory.NEWS } },
+		});
+	}, [searchCommunity.page]);
+
 	return (
 		<Stack className={'community-board'}>
 			<Stack className={'container'}>
@@ -127,6 +145,31 @@ const CommunityBoards = () => {
 								<div className="latest-news__text">Coming soon</div>
 							</div>
 						))}
+					</div>
+
+					<div className="latest-news__pagination">
+						<button
+							type="button"
+							className="latest-news__page-btn"
+							onClick={() => goToPage(searchCommunity.page - 1)}
+							disabled={searchCommunity.page <= 1}
+							aria-label="Previous page"
+						>
+							←
+						</button>
+						<div className="latest-news__page-info">
+							<span className="latest-news__page-current">{searchCommunity.page}</span>
+							<span className="latest-news__page-total">/ {totalPages}</span>
+						</div>
+						<button
+							type="button"
+							className="latest-news__page-btn"
+							onClick={() => goToPage(searchCommunity.page + 1)}
+							disabled={searchCommunity.page >= totalPages}
+							aria-label="Next page"
+						>
+							→
+						</button>
 					</div>
 				</div>
 			</Stack>
