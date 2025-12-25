@@ -78,7 +78,9 @@ const NewProduct = (props: NewProductProps) => {
 							<div className="new-products__promo-tag">Up to 90% OFF</div>
 							<div className="new-products__promo-title">Clearance Sale</div>
 							<p>Stock up before you miss out!</p>
-							<button>Shop Now</button>
+							<a href={'/property'}>
+								<button>Shop Now</button>
+							</a>
 						</div>
 					</div>
 					<div className="new-products__promo-grid">
@@ -94,7 +96,9 @@ const NewProduct = (props: NewProductProps) => {
 							<div className="new-products__promo-overlay" style={{ height: '240px' }}>
 								<div className="new-products__promo-label">Black Friday</div>
 								<div className="new-products__promo-sub">Get 10% OFF</div>
-								<button>Shop Now</button>
+								<a href={'/property'}>
+									<button>Shop Now</button>
+								</a>
 							</div>
 						</div>
 						<div className="new-products__promo-card new-products__promo-card--peach">
@@ -109,11 +113,14 @@ const NewProduct = (props: NewProductProps) => {
 							<div className="new-products__promo-overlay" style={{ height: '240px' }}>
 								<div className="new-products__promo-label">Get 10% OFF</div>
 								<div className="new-products__promo-sub">To brighten a loved one&apos;s day.</div>
-								<button>Shop Now</button>
+								<a href={'/property'}>
+									<button>Shop Now</button>
+								</a>
 							</div>
 						</div>
 					</div>
 				</Box>
+				<Box component={'div'} className={'new-products__divider-bottom'}></Box>
 			</Stack>
 		</Stack>
 	);

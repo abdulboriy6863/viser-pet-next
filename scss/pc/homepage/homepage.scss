@@ -904,12 +904,80 @@
 				}
 			}
 		}
-		.video-frame {
+		.advertisement {
+			position: relative;
 			width: 100%;
-			height: 678px;
-			background: black;
-			transform: perspective(0px);
-			box-shadow: -3px 0px 20px 14px #34343480;
+			height: 790px;
+			box-sizing: border-box;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			padding: 90px 0;
+			background: #fde9d8;
+			overflow: hidden;
+
+			&::before,
+			&::after {
+				content: '';
+				position: absolute;
+				left: 0;
+				width: 100%;
+				height: 212px;
+				background-color: #ffffff;
+				mask-repeat: no-repeat;
+				mask-size: 100% 100%;
+				mask-position: top center;
+				-webkit-mask-repeat: no-repeat;
+				-webkit-mask-size: 100% 100%;
+				-webkit-mask-position: top center;
+				pointer-events: none;
+			}
+
+			&::before {
+				top: -132px;
+				mask-image: url('/img/newProduct/Vector.png');
+				-webkit-mask-image: url('/img/newProduct/Vector.png');
+			}
+
+			&::after {
+				bottom: -132px;
+				mask-image: url('/img/newProduct/Vector1.png');
+				-webkit-mask-image: url('/img/newProduct/Vector1.png');
+				transform: rotate(-180deg);
+			}
+
+			.advertisement__banner {
+				width: 100%;
+				height: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: flex-start;
+				background: #fde9d8;
+				overflow: hidden;
+				border: none;
+				box-shadow: none;
+
+				img {
+					width: min(900px, 68vw);
+					height: 100%;
+					object-fit: cover;
+					object-position: left center;
+					display: block;
+					mask-image: linear-gradient(90deg, #000 0%, #000 70%, transparent 100%),
+						linear-gradient(180deg, #000 0%, #000 90%, transparent 100%),
+						linear-gradient(0deg, #000 0%, #000 90%, transparent 100%);
+					-webkit-mask-image: linear-gradient(90deg, #000 0%, #000 70%, transparent 100%),
+						linear-gradient(180deg, #000 0%, #000 90%, transparent 100%),
+						linear-gradient(0deg, #000 0%, #000 90%, transparent 100%);
+					mask-repeat: no-repeat;
+					-webkit-mask-repeat: no-repeat;
+					mask-size: 100% 100%;
+					-webkit-mask-size: 100% 100%;
+					mask-composite: intersect;
+					-webkit-mask-composite: destination-in, destination-in, source-over;
+				}
+			}
 		}
 
 		.new-products {
