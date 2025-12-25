@@ -1,50 +1,34 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
-import { Stack, Typography } from '@mui/material';
-import CommunityCard from './CommunityCard';
-import { BoardArticle } from '../../types/board-article/board-article';
+import { Stack } from '@mui/material';
+import { BlogPost } from '../../types/board-article/board-article';
 import { useQuery } from '@apollo/client';
-import { GET_BOARD_ARTICLES } from '../../../apollo/user/query';
-import { BoardArticleCategory } from '../../enums/board-article.enum';
+import { GET_BLOG_POSTS } from '../../../apollo/user/query';
+import { BlogPostCategory } from '../../enums/board-article.enum';
 import { T } from '../../types/common';
 
 const CommunityBoards = () => {
 	const device = useDeviceDetect();
 	const [searchCommunity, setSearchCommunity] = useState({
 		page: 1,
-		sort: 'articleViews',
+		sort: 'blogPostViews',
 		direction: 'DESC',
 	});
-	const [newsArticles, setNewsArticles] = useState<BoardArticle[]>([]);
-	const [freeArticles, setFreeArticles] = useState<BoardArticle[]>([]);
+	const [newsPosts, setNewsPosts] = useState<BlogPost[]>([]);
 
 	/** APOLLO REQUESTS **/
 	const {
-		loading: getNewArticlesLoading,
-		data: getNewArticlesData,
-		error: getNewArticlesError,
-		refetch: getNewAriclesRefetch,
-	} = useQuery(GET_BOARD_ARTICLES, {
+		loading: getNewPostsLoading,
+		data: getNewPostsData,
+		error: getNewPostsError,
+		refetch: getNewPostsRefetch,
+	} = useQuery(GET_BLOG_POSTS, {
 		fetchPolicy: 'network-only',
-		variables: { ...searchCommunity, limit: 6, search: { articleCategory: BoardArticleCategory.NEWS } },
+		variables: { input: { ...searchCommunity, limit: 6, search: { blogPostCategory: BlogPostCategory.NEWS } } },
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
-			setFreeArticles(data?.getBoardArticles?.list);
-		},
-	});
-
-	const {
-		loading: getFreeArticlesLoading,
-		data: getFreeArticlesData,
-		error: getFreeArticlesError,
-		refetch: getFreeArticlesRefetch,
-	} = useQuery(GET_BOARD_ARTICLES, {
-		fetchPolicy: 'network-only',
-		variables: { ...searchCommunity, limit: 3, search: { articleCategory: BoardArticleCategory.FREE } },
-		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			setFreeArticles(data?.getBoardArticles?.list);
+			setNewsPosts(data?.getBlogPosts?.list || []);
 		},
 	});
 
@@ -76,47 +60,78 @@ const CommunityBoards = () => {
 	// 	},
 	// });
 
+	const latestNews = newsPosts.slice(0, 3);
+	const skeletons = Array.from({ length: Math.max(3 - latestNews.length, 0) });
+	const badgeColors = ['#DCEBC5', '#D7EEF5', '#F5E1BE'];
+	const fallbackImage = '/img/event.svg';
+
+	const formatDay = (dateString?: string | Date) => {
+		if (!dateString) return '--';
+		const date = new Date(dateString);
+		return Number.isNaN(date.getTime()) ? '--' : date.getDate();
+	};
+
+	const formatMonth = (dateString?: string | Date) => {
+		if (!dateString) return '--';
+		const date = new Date(dateString);
+		return Number.isNaN(date.getTime()) ? '--' : date.toLocaleString('en-US', { month: 'short' });
+	};
+
 	if (device === 'mobile') {
 		return <div>COMMUNITY BOARDS (MOBILE)</div>;
-	} else {
-		return (
-			<Stack className={'community-board'}>
-				<Stack className={'container'}>
-					<Stack>
-						<Typography variant={'h1'}>COMMUNITY BOARD HIGHLIGHTS</Typography>
-					</Stack>
-					<Stack className="community-main">
-						<Stack className={'community-left'}>
-							<Stack className={'content-top'}>
-								<Link href={'/community?articleCategory=NEWS'}>
-									<span>News</span>
-								</Link>
-								<img src="/img/icons/arrowBig.svg" alt="" />
-							</Stack>
-							<Stack className={'card-wrap'}>
-								{newsArticles.map((article, index) => {
-									return <CommunityCard vertical={true} article={article} index={index} key={article?._id} />;
-								})}
-							</Stack>
-						</Stack>
-						<Stack className={'community-right'}>
-							<Stack className={'content-top'}>
-								<Link href={'/community?articleCategory=FREE'}>
-									<span>Free</span>
-								</Link>
-								<img src="/img/icons/arrowBig.svg" alt="" />
-							</Stack>
-							<Stack className={'card-wrap vertical'}>
-								{freeArticles.map((article, index) => {
-									return <CommunityCard vertical={false} article={article} index={index} key={article?._id} />;
-								})}
-							</Stack>
-						</Stack>
-					</Stack>
-				</Stack>
-			</Stack>
-		);
 	}
+
+	return (
+		<Stack className={'community-board'}>
+			<Stack className={'container'}>
+				<div className="latest-news">
+					<div className="latest-news__bone">
+						<img src="/img/featuresProduct/Icon.png" alt="New arrivals" />
+					</div>
+					<div className="latest-news__heading">
+						<span className="latest-news__line" />
+
+						<div className="latest-news__title">Latest News Post</div>
+						<span className="latest-news__line" />
+					</div>
+
+					<div className="latest-news__grid">
+						{latestNews.map((blogPost, idx) => {
+							const image = blogPost?.blogPostImage
+								? `${process.env.REACT_APP_API_URL}/${blogPost.blogPostImage}`
+								: fallbackImage;
+							const badgeColor = badgeColors[idx % badgeColors.length];
+							return (
+								<Link
+									href={`/community/detail?articleCategory=${blogPost?.blogPostCategory}&id=${blogPost?._id}`}
+									key={blogPost?._id}
+									className="latest-news__card"
+								>
+									<div className="latest-news__image" style={{ backgroundImage: `url(${image})` }} />
+									<div className="latest-news__badge" style={{ backgroundColor: badgeColor }}>
+										<span className="latest-news__day">{formatDay(blogPost?.createdAt)}</span>
+										<span className="latest-news__month">{formatMonth(blogPost?.createdAt)}</span>
+									</div>
+									<div className="latest-news__text">{blogPost?.blogPostTitle}</div>
+								</Link>
+							);
+						})}
+
+						{skeletons.map((_, idx) => (
+							<div className="latest-news__card is-skeleton" key={`skeleton-${idx}`}>
+								<div className="latest-news__image" />
+								<div className="latest-news__badge">
+									<span className="latest-news__day">--</span>
+									<span className="latest-news__month">---</span>
+								</div>
+								<div className="latest-news__text">Coming soon</div>
+							</div>
+						))}
+					</div>
+				</div>
+			</Stack>
+		</Stack>
+	);
 };
 
 export default CommunityBoards;
