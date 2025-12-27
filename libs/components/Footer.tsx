@@ -19,6 +19,7 @@ const Footer = () => {
 
 			<Box className="footer-container">
 				{/* PROMO CARD */}
+
 				<Box className="vp-footer__promoWrap">
 					<Box className="vp-footer__promo">
 						<Box className="vp-footer__promoLeft">
@@ -33,7 +34,6 @@ const Footer = () => {
 						</Box>
 
 						<Box className="vp-footer__promoRight">
-							{/* rasmdagi it/mushuk - nomini qo'yib ketdim */}
 							<img src="/img/footer/promoPets.png" alt="Pets" />
 						</Box>
 
