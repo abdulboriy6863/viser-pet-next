@@ -20,29 +20,6 @@ const Footer = () => {
 			<Box className="footer-container">
 				{/* PROMO CARD */}
 
-				<Box className="vp-footer__promoWrap">
-					<Box className="vp-footer__promo">
-						<Box className="vp-footer__promoLeft">
-							<h3 className="vp-footer__promoTitle">
-								Get <span>30%</span> off
-							</h3>
-							<p className="vp-footer__promoText">To brighten a loved one’s day.</p>
-
-							<button className="vp-footer__promoBtn" type="button">
-								SHOP NOW
-							</button>
-						</Box>
-
-						<Box className="vp-footer__promoRight">
-							<img src="/img/footer/promoPets.png" alt="Pets" />
-						</Box>
-
-						{/* dekor elementlar (xohlasang o'chirib tashla) */}
-						<span className="vp-footer__badge vp-footer__badge--paw" aria-hidden />
-						<span className="vp-footer__badge vp-footer__badge--bone" aria-hidden />
-					</Box>
-				</Box>
-
 				{/* MAIN FOOTER */}
 				<Box className="vp-footer__main">
 					{/* BRAND */}
