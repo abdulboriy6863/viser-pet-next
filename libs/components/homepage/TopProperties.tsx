@@ -135,7 +135,7 @@ TopProperties.defaultProps = {
 	initialInput: {
 		page: 1,
 		limit: 8,
-		sort: 'productRank',
+		sort: 'productSoldCount',
 		direction: 'DESC',
 		search: {},
 	},

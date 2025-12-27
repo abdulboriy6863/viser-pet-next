@@ -19,8 +19,10 @@ interface TopAgentsProps {
 const TopAgents = (props: TopAgentsProps) => {
 	const { initialInput } = props;
 	const device = useDeviceDetect();
+	const isMobile = device === 'mobile';
 	const router = useRouter();
 	const [topAgents, setTopAgents] = useState<Member[]>([]);
+	const highlightedAgentsCount = topAgents?.length || 0;
 
 	/** APOLLO REQUESTS **/
 	const {
@@ -37,29 +39,57 @@ const TopAgents = (props: TopAgentsProps) => {
 		},
 	});
 	/** HANDLERS **/
+	const handleSeeAll = () => {
+		router.push('/agent');
+	};
 
-	if (device === 'mobile') {
+	const renderedSlides = topAgents.map((agent: Member) => {
+		return (
+			<SwiperSlide className={'top-agents-slide'} key={agent?._id}>
+				<TopAgentCard agent={agent} key={agent?.memberNick} />
+			</SwiperSlide>
+		);
+	});
+
+	if (isMobile) {
 		return (
 			<Stack className={'top-agents'}>
 				<Stack className={'container'}>
-					<Stack className={'info-box'}>
-						<span>Top Agents</span>
+					<Stack className={'info-box top-agents__info'}>
+						<span className={'top-agents__eyebrow'}>Featured agents</span>
+						<Box component={'div'} className={'top-agents__heading'}>
+							<span>Top Agents</span>
+							<p>Quick, reliable guidance from people who know every corner.</p>
+						</Box>
+						<Box component={'div'} className={'top-agents__stats top-agents__stats--compact'}>
+							<div className={'stat'}>
+								<strong>{highlightedAgentsCount}+</strong>
+								<span>verified specialists</span>
+							</div>
+							<div className={'stat'}>
+								<strong>1:1</strong>
+								<span>concierge support</span>
+							</div>
+						</Box>
+						<Box component={'div'} className={'top-agents__actions'}>
+							<button className={'top-agents__cta'} onClick={handleSeeAll}>
+								See all agents
+							</button>
+						</Box>
 					</Stack>
 					<Stack className={'wrapper'}>
 						<Swiper
 							className={'top-agents-swiper'}
 							slidesPerView={'auto'}
 							centeredSlides={true}
-							spaceBetween={29}
+							spaceBetween={18}
 							modules={[Autoplay]}
+							autoplay={{
+								delay: 3200,
+								disableOnInteraction: false,
+							}}
 						>
-							{topAgents.map((agent: Member) => {
-								return (
-									<SwiperSlide className={'top-agents-slide'} key={agent?._id}>
-										<TopAgentCard agent={agent} key={agent?.memberNick} />
-									</SwiperSlide>
-								);
-							})}
+							{renderedSlides}
 						</Swiper>
 					</Stack>
 				</Stack>
@@ -69,15 +99,39 @@ const TopAgents = (props: TopAgentsProps) => {
 		return (
 			<Stack className={'top-agents'}>
 				<Stack className={'container'}>
-					<Stack className={'info-box'}>
-						<Box component={'div'} className={'left'}>
-							<span>Top Agents</span>
-							<p>Our Top Agents always ready to serve you</p>
+					<Box component={'div'} className={'top-agents__halo top-agents__halo--left'} />
+					<Box component={'div'} className={'top-agents__halo top-agents__halo--right'} />
+					<Stack className={'info-box top-agents__info'}>
+						<span className={'top-agents__eyebrow'}>People first</span>
+						<Box component={'div'} className={'top-agents__head'}>
+							<Box component={'div'} className={'left'}>
+								<span>Top Agents</span>
+								<p>Handpicked experts who turn tours into decisions you can trust.</p>
+								<Box component={'div'} className={'top-agents__tags'}>
+									<span className={'pill'}>Local insight</span>
+									<span className={'pill'}>Fast replies</span>
+									<span className={'pill'}>Guided tours</span>
+								</Box>
+							</Box>
+							<Box component={'div'} className={'right'}>
+								<button className={'top-agents__cta'} onClick={handleSeeAll}>
+									See all agents
+								</button>
+								<span className={'top-agents__note'}>Speak with a specialist in minutes</span>
+							</Box>
 						</Box>
-						<Box component={'div'} className={'right'}>
-							<div className={'more-box'}>
-								<span>See All Agents</span>
-								<img src="/img/icons/rightup.svg" alt="" />
+						<Box component={'div'} className={'top-agents__stats'}>
+							<div className={'stat'}>
+								<strong>{highlightedAgentsCount}+</strong>
+								<span>curated agents this week</span>
+							</div>
+							<div className={'stat'}>
+								<strong>Neighbourhood pros</strong>
+								<span>Matching you with the right area</span>
+							</div>
+							<div className={'stat'}>
+								<strong>Tour-ready</strong>
+								<span>Private showings and guided visits</span>
 							</div>
 						</Box>
 					</Stack>
@@ -89,20 +143,18 @@ const TopAgents = (props: TopAgentsProps) => {
 							<Swiper
 								className={'top-agents-swiper'}
 								slidesPerView={'auto'}
-								spaceBetween={29}
+								spaceBetween={24}
 								modules={[Autoplay, Navigation, Pagination]}
 								navigation={{
 									nextEl: '.swiper-agents-next',
 									prevEl: '.swiper-agents-prev',
 								}}
+								autoplay={{
+									delay: 3600,
+									disableOnInteraction: false,
+								}}
 							>
-								{topAgents.map((agent: Member) => {
-									return (
-										<SwiperSlide className={'top-agents-slide'} key={agent?._id}>
-											<TopAgentCard agent={agent} key={agent?.memberNick} />
-										</SwiperSlide>
-									);
-								})}
+								{renderedSlides}
 							</Swiper>
 						</Box>
 						<Box component={'div'} className={'switch-btn swiper-agents-next'}>
