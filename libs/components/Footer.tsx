@@ -1,139 +1,137 @@
+import React from 'react';
+import { Stack, Box } from '@mui/material';
 import FacebookOutlinedIcon from '@mui/icons-material/FacebookOutlined';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import TwitterIcon from '@mui/icons-material/Twitter';
-import useDeviceDetect from '../hooks/useDeviceDetect';
-import { Stack, Box } from '@mui/material';
+import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import moment from 'moment';
+import useDeviceDetect from '../hooks/useDeviceDetect';
 
 const Footer = () => {
 	const device = useDeviceDetect();
+	const isMobile = device === 'mobile';
 
-	if (device == 'mobile') {
-		return (
-			<Stack className={'footer-container'}>
-				<Stack className={'main'}>
-					<Stack className={'left'}>
-						<Box component={'div'} className={'footer-box'}>
-							<img src="/img/logo/logoWhite.svg" alt="" className={'logo'} />
+	return (
+		<Stack id="footer" component="footer">
+			{/* TOP WAVE (rasm senda bor - pathni o'zing qo'yasan) */}
+			<Box className="vp-footer__wave" aria-hidden />
+
+			<Box className="footer-container">
+				{/* PROMO CARD */}
+				<Box className="vp-footer__promoWrap">
+					<Box className="vp-footer__promo">
+						<Box className="vp-footer__promoLeft">
+							<h3 className="vp-footer__promoTitle">
+								Get <span>30%</span> off
+							</h3>
+							<p className="vp-footer__promoText">To brighten a loved one’s day.</p>
+
+							<button className="vp-footer__promoBtn" type="button">
+								SHOP NOW
+							</button>
 						</Box>
-						<Box component={'div'} className={'footer-box'}>
-							<span>total free customer care</span>
-							<p>+82 10 4867 2909</p>
+
+						<Box className="vp-footer__promoRight">
+							{/* rasmdagi it/mushuk - nomini qo'yib ketdim */}
+							<img src="/img/footer/promoPets.png" alt="Pets" />
 						</Box>
-						<Box component={'div'} className={'footer-box'}>
-							<span>nee live</span>
-							<p>+82 10 4867 2909</p>
-							<span>Support?</span>
+
+						{/* dekor elementlar (xohlasang o'chirib tashla) */}
+						<span className="vp-footer__badge vp-footer__badge--paw" aria-hidden />
+						<span className="vp-footer__badge vp-footer__badge--bone" aria-hidden />
+					</Box>
+				</Box>
+
+				{/* MAIN FOOTER */}
+				<Box className="vp-footer__main">
+					{/* BRAND */}
+					<Box className="vp-footer__brand">
+						<Box className="vp-footer__logoRow">
+							<img className="vp-footer__logo" src="/img/logo/logoWhite.svg" alt="ViserPet" />
+							<Box className="vp-footer__brandText">
+								<strong>ViserPet</strong>
+								<span>YOUR BEST CHOOSE</span>
+							</Box>
 						</Box>
-						<Box component={'div'} className={'footer-box'}>
-							<p>follow us on social media</p>
-							<div className={'media-box'}>
-								<FacebookOutlinedIcon />
-								<TelegramIcon />
-								<InstagramIcon />
-								<TwitterIcon />
-							</div>
+
+						<p className="vp-footer__desc">Maecenas tempus tellus eget condimentum rhoncus sem quam semper</p>
+
+						<Box className="vp-footer__call">
+							<span className="vp-footer__callLabel">CALL US</span>
+							<a className="vp-footer__callValue" href="tel:00088889999">
+								000 - 8888 - 9999
+							</a>
 						</Box>
-					</Stack>
-					<Stack className={'right'}>
-						<Box component={'div'} className={'bottom'}>
-							<div>
-								<strong>Popular Search</strong>
-								<span>Property for Rent</span>
-								<span>Property Low to hide</span>
-							</div>
-							<div>
-								<strong>Quick Links</strong>
-								<span>Terms of Use</span>
-								<span>Privacy Policy</span>
-								<span>Pricing Plans</span>
-								<span>Our Services</span>
-								<span>Contact Support</span>
-								<span>FAQs</span>
-							</div>
-							<div>
-								<strong>Discover</strong>
-								<span>Seoul</span>
-								<span>Gyeongido</span>
-								<span>Busan</span>
-								<span>Jejudo</span>
-							</div>
+
+						<Box className="vp-footer__social">
+							<FacebookOutlinedIcon />
+							<TelegramIcon />
+							<InstagramIcon />
+							<TwitterIcon />
 						</Box>
-					</Stack>
-				</Stack>
-				<Stack className={'second'}>
-					<span>© Nestar - All rights reserved. Nestar {moment().year()}</span>
-				</Stack>
-			</Stack>
-		);
-	} else {
-		return (
-			<Stack className={'footer-container'}>
-				<Stack className={'main'}>
-					<Stack className={'left'}>
-						<Box component={'div'} className={'footer-box'}>
-							<img src="/img/logo/logoWhite.svg" alt="" className={'logo'} />
+					</Box>
+
+					{/* LINKS 1 */}
+					<Box className="vp-footer__col">
+						<h4 className="vp-footer__colTitle">Useful Links</h4>
+						<a className="vp-footer__link" href="#">
+							Help &amp; Contact
+						</a>
+						<a className="vp-footer__link" href="#">
+							About Us
+						</a>
+						<a className="vp-footer__link" href="#">
+							Privacy Policy
+						</a>
+						<a className="vp-footer__link" href="#">
+							Order History
+						</a>
+					</Box>
+
+					{/* LINKS 2 (rasmda 2ta Useful Links bor edi) */}
+					<Box className="vp-footer__col">
+						<h4 className="vp-footer__colTitle">Useful Links</h4>
+						<a className="vp-footer__link" href="#">
+							Help &amp; Contact
+						</a>
+						<a className="vp-footer__link" href="#">
+							About Us
+						</a>
+						<a className="vp-footer__link" href="#">
+							Privacy Policy
+						</a>
+						<a className="vp-footer__link" href="#">
+							Order History
+						</a>
+					</Box>
+
+					{/* NEWSLETTER */}
+					<Box className="vp-footer__newsletter">
+						<h4 className="vp-footer__colTitle">
+							Subscribe To Our Newsletter And Get
+							<br />
+							10% Off Your First Purchase..
+						</h4>
+
+						<Box className="vp-footer__inputWrap">
+							<input className="vp-footer__input" placeholder="Email Address" />
+							<button className="vp-footer__sendBtn" type="button" aria-label="Subscribe">
+								<SendRoundedIcon />
+							</button>
 						</Box>
-						<Box component={'div'} className={'footer-box'}>
-							<span>total free customer care</span>
-							<p>+82 10 4867 2909</p>
-						</Box>
-						<Box component={'div'} className={'footer-box'}>
-							<span>nee live</span>
-							<p>+82 10 4867 2909</p>
-							<span>Support?</span>
-						</Box>
-						<Box component={'div'} className={'footer-box'}>
-							<p>follow us on social media</p>
-							<div className={'media-box'}>
-								<FacebookOutlinedIcon />
-								<TelegramIcon />
-								<InstagramIcon />
-								<TwitterIcon />
-							</div>
-						</Box>
-					</Stack>
-					<Stack className={'right'}>
-						<Box component={'div'} className={'top'}>
-							<strong>keep yourself up to date</strong>
-							<div>
-								<input type="text" placeholder={'Your Email'} />
-								<span>Subscribe</span>
-							</div>
-						</Box>
-						<Box component={'div'} className={'bottom'}>
-							<div>
-								<strong>Popular Search</strong>
-								<span>Property for Rent</span>
-								<span>Property Low to hide</span>
-							</div>
-							<div>
-								<strong>Quick Links</strong>
-								<span>Terms of Use</span>
-								<span>Privacy Policy</span>
-								<span>Pricing Plans</span>
-								<span>Our Services</span>
-								<span>Contact Support</span>
-								<span>FAQs</span>
-							</div>
-							<div>
-								<strong>Discover</strong>
-								<span>Seoul</span>
-								<span>Gyeongido</span>
-								<span>Busan</span>
-								<span>Jejudo</span>
-							</div>
-						</Box>
-					</Stack>
-				</Stack>
-				<Stack className={'second'}>
-					<span>© Nestar - All rights reserved. Nestar {moment().year()}</span>
-					<span>Privacy · Terms · Sitemap</span>
-				</Stack>
-			</Stack>
-		);
-	}
+					</Box>
+				</Box>
+
+				{/* BOTTOM LINE */}
+				<Box className="vp-footer__bottom">
+					<span>© ViserPet - All rights reserved. {moment().year()}</span>
+
+					{!isMobile && <span className="vp-footer__bottomLinks">Privacy · Terms · Sitemap</span>}
+				</Box>
+			</Box>
+		</Stack>
+	);
 };
 
 export default Footer;
