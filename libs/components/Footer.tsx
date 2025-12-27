@@ -25,7 +25,7 @@ const Footer = () => {
 					{/* BRAND */}
 					<Box className="vp-footer__brand">
 						<Box className="vp-footer__logoRow">
-							<img className="vp-footer__logo" src="/img/logo/logoWhite.svg" alt="ViserPet" />
+							<img className="vp-footer__logo" src="/img/logo/Frame.svg" alt="ViserPet" />
 							<Box className="vp-footer__brandText">
 								<strong>ViserPet</strong>
 								<span>YOUR BEST CHOOSE</span>
