@@ -309,14 +309,11 @@
 				display: flex;
 				flex-direction: column;
 				span {
-					color: #181a20;
-					font-family: $font;
+					color: #0f172a;
+					font-family: 'Nunito', sans-serif;
 					font-size: 34px;
-					font-style: normal;
-					font-weight: 500;
-					line-height: 150%;
-					letter-spacing: -0.646px;
-					text-transform: capitalize;
+					font-weight: 800;
+					line-height: 1.2;
 					&.white {
 						color: #ffffff;
 					}
@@ -1494,8 +1491,8 @@
 			height: auto;
 			display: flex;
 			flex-direction: row;
-			background: radial-gradient(120% 140% at 12% 18%, rgba(19, 183, 199, 0.08), transparent 50%),
-				radial-gradient(90% 120% at 88% 22%, rgba(32, 215, 194, 0.08), transparent 52%), #f6f8fb;
+			// background: radial-gradient(120% 140% at 12% 18%, rgba(19, 183, 199, 0.08), transparent 50%),
+			// 	radial-gradient(90% 120% at 88% 22%, rgba(32, 215, 194, 0.08), transparent 52%), #f6f8fb;
 			overflow: hidden;
 			.container {
 				position: relative;
@@ -1514,14 +1511,14 @@
 					height: 380px;
 					left: -120px;
 					top: -80px;
-					background: rgba(19, 183, 199, 0.18);
+					// background: rgba(19, 183, 199, 0.18);
 				}
 				&--right {
 					width: 320px;
 					height: 320px;
 					right: -70px;
 					top: 20px;
-					background: rgba(18, 178, 197, 0.12);
+					// background: rgba(18, 178, 197, 0.12);
 				}
 			}
 			.info-box {

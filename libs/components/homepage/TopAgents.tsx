@@ -102,16 +102,14 @@ const TopAgents = (props: TopAgentsProps) => {
 					<Box component={'div'} className={'top-agents__halo top-agents__halo--left'} />
 					<Box component={'div'} className={'top-agents__halo top-agents__halo--right'} />
 					<Stack className={'info-box top-agents__info'}>
-						<span className={'top-agents__eyebrow'}>People first</span>
 						<Box component={'div'} className={'top-agents__head'}>
 							<Box component={'div'} className={'left'}>
 								<span>Top Agents</span>
-								<p>Handpicked experts who turn tours into decisions you can trust.</p>
-								<Box component={'div'} className={'top-agents__tags'}>
+								{/* <Box component={'div'} className={'top-agents__tags'}>
 									<span className={'pill'}>Local insight</span>
 									<span className={'pill'}>Fast replies</span>
 									<span className={'pill'}>Guided tours</span>
-								</Box>
+								</Box> */}
 							</Box>
 							<Box component={'div'} className={'right'}>
 								<button className={'top-agents__cta'} onClick={handleSeeAll}>
@@ -120,7 +118,7 @@ const TopAgents = (props: TopAgentsProps) => {
 								<span className={'top-agents__note'}>Speak with a specialist in minutes</span>
 							</Box>
 						</Box>
-						<Box component={'div'} className={'top-agents__stats'}>
+						{/* <Box component={'div'} className={'top-agents__stats'}>
 							<div className={'stat'}>
 								<strong>{highlightedAgentsCount}+</strong>
 								<span>curated agents this week</span>
@@ -133,7 +131,7 @@ const TopAgents = (props: TopAgentsProps) => {
 								<strong>Tour-ready</strong>
 								<span>Private showings and guided visits</span>
 							</div>
-						</Box>
+						</Box> */}
 					</Stack>
 					<Stack className={'wrapper'}>
 						<Box component={'div'} className={'switch-btn swiper-agents-prev'}>

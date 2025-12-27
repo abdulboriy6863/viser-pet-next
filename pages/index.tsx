@@ -44,7 +44,7 @@ const Home: NextPage = () => {
 				<CommunityBoards />
 				<TopProperties />
 				<TopAgents />
-				<Events />
+				{/* <Events /> */}
 			</Stack>
 		);
 	}
