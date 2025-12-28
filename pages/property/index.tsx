@@ -16,6 +16,7 @@ import { GET_PRODUCTS } from '../../apollo/user/query';
 import { T } from '../../libs/types/common';
 import { LIKE_TARGET_PRODUCT } from '../../apollo/user/mutation';
 import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
+import FilterTop from '../../libs/components/property/FilterTop';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -129,6 +130,8 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 	} else {
 		return (
 			<div id="property-list-page" style={{ position: 'relative' }}>
+				{/* @ts-ignore */}
+				<FilterTop searchFilter={searchFilter} setSearchFilter={setSearchFilter} initialInput={initialInput} />
 				<div className="container">
 					<Box component={'div'} className={'right'}>
 						<span>Sort by</span>
