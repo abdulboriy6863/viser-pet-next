@@ -3,10 +3,12 @@ import { Stack, Typography } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { ProductCollection } from '../../enums/property.enum';
 import { ProductsInquiry } from '../../types/property/property.input';
+import { useRouter } from 'next/router';
 
 interface FilterTopProps {
 	searchFilter: ProductsInquiry;
-	onCollectionChange: (collections: ProductCollection[]) => void;
+	setSearchFilter: (input: ProductsInquiry) => void;
+	initialInput: ProductsInquiry;
 }
 
 const COLLECTIONS: { key: ProductCollection; label: string; icon: string; bg: string; color: string }[] = [
@@ -17,19 +19,31 @@ const COLLECTIONS: { key: ProductCollection; label: string; icon: string; bg: st
 	{ key: ProductCollection.ANIMAL_BIRD, label: 'Bird Shop', icon: '🐦', bg: '#fde9ee', color: '#e15b77' },
 ];
 
-const FilterTop = ({ searchFilter, onCollectionChange }: FilterTopProps) => {
+const FilterTop = ({ searchFilter, setSearchFilter }: FilterTopProps) => {
 	const device = useDeviceDetect();
+	const router = useRouter();
 	const activeCollections = useMemo(() => searchFilter?.search?.typeList || [], [searchFilter]);
 
-	const toggleCollection = (key: ProductCollection) => {
+	const toggleCollection = async (key: ProductCollection) => {
 		const exists = activeCollections.includes(key);
-		const next = exists ? [] : [key];
-		onCollectionChange(next);
+		const nextTypeList = exists ? [] : [key];
+		const nextFilter: ProductsInquiry = {
+			...searchFilter,
+			page: 1,
+			search: {
+				...searchFilter.search,
+				typeList: nextTypeList.length ? nextTypeList : undefined,
+			},
+		};
+		setSearchFilter(nextFilter);
+		await router.push(
+			`/property?input=${JSON.stringify(nextFilter)}`,
+			`/property?input=${JSON.stringify(nextFilter)}`,
+			{ scroll: false },
+		);
 	};
 
-	if (device === 'mobile') {
-		return null;
-	}
+	if (device === 'mobile') return null;
 
 	return (
 		<Stack className="filter-top" direction="row" justifyContent="center" alignItems="center" spacing={3}>
@@ -46,7 +60,7 @@ const FilterTop = ({ searchFilter, onCollectionChange }: FilterTopProps) => {
 						<span className="filter-top__icon" style={{ color: item.color }}>
 							{item.icon}
 						</span>
-						<Typography component="span" className="filter-top__label" color={isActive ? '#2f2f2f' : '#3d3d3d'}>
+						<Typography component="span" className="filter-top__label">
 							{item.label}
 						</Typography>
 					</button>
