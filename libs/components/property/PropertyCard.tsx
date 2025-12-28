@@ -70,15 +70,15 @@ const PropertyCard = (props: PropertyCardType) => {
 						</Stack>
 					</Stack>
 					<Stack className="options">
-						<Stack className="option">
+						{/* <Stack className="option">
 							<img src="/img/icons/bed.svg" alt="" /> <Typography>{product.productName} bed</Typography>
-						</Stack>
-						<Stack className="option">
+						</Stack> */}
+						{/* <Stack className="option">
 							<img src="/img/icons/room.svg" alt="" /> <Typography>{product.productVolume} room</Typography>
-						</Stack>
-						<Stack className="option">
+						</Stack> */}
+						{/* <Stack className="option">
 							<img src="/img/icons/expand.svg" alt="" /> <Typography>{product.productSoldCount} m2</Typography>
-						</Stack>
+						</Stack> */}
 					</Stack>
 					<Stack className="divider"></Stack>
 					<Stack className="type-buttons">

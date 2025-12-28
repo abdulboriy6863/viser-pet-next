@@ -70,7 +70,7 @@ export enum ProductCollection {
 	MEDICINE_CAT = 'MEDICINE_CAT',
 
 	// ---- Other ----
-	OTHER = 'OTHER',
+	// OTHER = 'OTHER',
 }
 
 export enum ProductStatus {

@@ -76,10 +76,10 @@ interface Range {
 	end: number;
 }
 
-interface PeriodsRange {
-	start: Date | number;
-	end: Date | number;
-}
+// interface PeriodsRange {
+// 	start: Date | number;
+// 	end: Date | number;
+// }
 
 export interface ProductInquiry {
 	page: number;

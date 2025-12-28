@@ -1,32 +1,12 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import {
-	Stack,
-	Typography,
-	Checkbox,
-	Button,
-	OutlinedInput,
-	FormControl,
-	InputLabel,
-	Select,
-	MenuItem,
-	Tooltip,
-	IconButton,
-} from '@mui/material';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Stack, Typography, Checkbox, OutlinedInput, Tooltip, IconButton, Divider } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
-import { ProductCollection, PropertyLocation, PropertyType } from '../../enums/property.enum';
-import { ProductInquiry, PropertiesInquiry } from '../../types/property/property.input';
 import { useRouter } from 'next/router';
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
-import { propertySquare } from '../../config';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
-const MenuProps = {
-	PaperProps: {
-		style: {
-			maxHeight: '200px',
-		},
-	},
-};
+import { ProductCollection, ProductVolume } from '../../enums/property.enum'; // ProductVolume shu yerda bo‘lsa
+import { ProductInquiry } from '../../types/property/property.input';
 
 interface FilterType {
 	searchFilter: ProductInquiry;
@@ -34,832 +14,391 @@ interface FilterType {
 	initialInput: ProductInquiry;
 }
 
+type CollectionGroupKey = 'FOOD' | 'ACCESSORIES_TOYS' | 'BEDS_CLOTHING_HYGIENE' | 'HEALTH';
+
+const FILTER_IMAGE_SRC = '/img/filter/pet-zone.png'; // o‘zing keyin almashtirasan
+
 const Filter = (props: FilterType) => {
 	const { searchFilter, setSearchFilter, initialInput } = props;
 	const device = useDeviceDetect();
 	const router = useRouter();
-	const [productCollection, setProductCollection] = useState<ProductCollection[]>(Object.values(ProductCollection));
-	const [propertyType, setPropertyType] = useState<PropertyType[]>(Object.values(PropertyType));
-	const [searchText, setSearchText] = useState<string>('');
-	const [showMore, setShowMore] = useState<boolean>(false);
 
-	/** LIFECYCLES **/
+	const [searchText, setSearchText] = useState<string>(searchFilter?.search?.text ?? '');
+	const [activeGroup, setActiveGroup] = useState<CollectionGroupKey | null>(null);
+
+	// price inputs local (router.push paytida NaN bo‘lmasin)
+	const [minPrice, setMinPrice] = useState<string>(
+		searchFilter?.search?.pricesRange?.start !== undefined ? String(searchFilter.search.pricesRange.start) : '',
+	);
+	const [maxPrice, setMaxPrice] = useState<string>(
+		searchFilter?.search?.pricesRange?.end !== undefined ? String(searchFilter.search.pricesRange.end) : '',
+	);
+
+	const allVolumes = useMemo(() => Object.values(ProductVolume ?? {}), []);
+	// typeList / volumeList hozirgi holat
+	const selectedTypes = searchFilter?.search?.typeList ?? [];
+	const selectedVolumes = searchFilter?.search?.volumeList ?? [];
+	const discounted = Boolean(searchFilter?.search?.discounted);
+
+	// --- LABELS (clientga chiroyli ko‘rinish uchun) ---
+	const collectionLabel = useCallback((c: ProductCollection) => {
+		const map: Partial<Record<ProductCollection, string>> = {
+			// ---- Food Types ----
+			FOOD_DOG: 'Dog food',
+			FOOD_CAT: 'Cat food',
+			FOOD_FISH: 'Fish food',
+			FOOD_BIRD: 'Bird food',
+
+			FOOD_DRY: 'Dry food',
+			FOOD_WET: 'Wet food',
+			FOOD_TREAT: 'Treats',
+			FOOD_SUPPLEMENT: 'Supplements',
+
+			// ---- Accessories & Toys ----
+			ACCESSORY_GENERAL: 'Accessories',
+			ACCESSORY_DOG: 'Dog accessories',
+			ACCESSORY_CAT: 'Cat accessories',
+			ACCESSORY_FISH: 'Fish accessories',
+			ACCESSORY_BIRD: 'Bird accessories',
+
+			TOY_DOG: 'Dog toys',
+			TOY_CAT: 'Cat toys',
+			TOY_BIRD: 'Bird toys',
+
+			// ---- Beds, Clothing, Hygiene ----
+			BED_DOG: 'Dog beds',
+			BED_CAT: 'Cat beds',
+
+			CLOTHING_DOG: 'Dog clothing',
+			CLOTHING_CAT: 'Cat clothing',
+
+			CLEANING_GENERAL: 'Cleaning',
+			CLEANING_DOG: 'Dog hygiene',
+			CLEANING_CAT: 'Cat hygiene',
+
+			// ---- Health products ----
+			MEDICINE_GENERAL: 'Health products',
+			MEDICINE_DOG: 'Dog medicine',
+			MEDICINE_CAT: 'Cat medicine',
+		};
+
+		return map[c] ?? String(c).replaceAll('_', ' ').toLowerCase();
+	}, []);
+
+	const volumeLabel = useCallback((v: any) => {
+		// Agar ProductVolume enum nomlari chiroyli bo‘lmasa, shu yerda map qilasan
+		// masalan: VOLUME_SMALL => 'Small', ...
+		return String(v).replaceAll('_', ' ').toLowerCase();
+	}, []);
+
+	// --- GROUPS (hover bo‘lganda ichidagi list ko‘rinadi) ---
+	const COLLECTION_GROUPS = useMemo(() => {
+		return [
+			{
+				key: 'FOOD' as const,
+				title: 'Food Types',
+				items: [
+					ProductCollection.FOOD_DOG,
+					ProductCollection.FOOD_CAT,
+					ProductCollection.FOOD_FISH,
+					ProductCollection.FOOD_BIRD,
+					ProductCollection.FOOD_DRY,
+					ProductCollection.FOOD_WET,
+					ProductCollection.FOOD_TREAT,
+					ProductCollection.FOOD_SUPPLEMENT,
+				].filter(Boolean) as ProductCollection[],
+			},
+			{
+				key: 'ACCESSORIES_TOYS' as const,
+				title: 'Accessories & Toys',
+				items: [
+					ProductCollection.ACCESSORY_GENERAL,
+					ProductCollection.ACCESSORY_DOG,
+					ProductCollection.ACCESSORY_CAT,
+					ProductCollection.ACCESSORY_FISH,
+					ProductCollection.ACCESSORY_BIRD,
+					ProductCollection.TOY_DOG,
+					ProductCollection.TOY_CAT,
+					ProductCollection.TOY_BIRD,
+				].filter(Boolean) as ProductCollection[],
+			},
+			{
+				key: 'BEDS_CLOTHING_HYGIENE' as const,
+				title: 'Beds, Clothing, Hygiene',
+				items: [
+					ProductCollection.BED_DOG,
+					ProductCollection.BED_CAT,
+					ProductCollection.CLOTHING_DOG,
+					ProductCollection.CLOTHING_CAT,
+					ProductCollection.CLEANING_GENERAL,
+					ProductCollection.CLEANING_DOG,
+					ProductCollection.CLEANING_CAT,
+				].filter(Boolean) as ProductCollection[],
+			},
+			{
+				key: 'HEALTH' as const,
+				title: 'Health products',
+				items: [
+					ProductCollection.MEDICINE_GENERAL,
+					ProductCollection.MEDICINE_DOG,
+					ProductCollection.MEDICINE_CAT,
+				].filter(Boolean) as ProductCollection[],
+			},
+		];
+	}, []);
+
+	// --- router/update helper ---
+	const pushFilter = useCallback(
+		async (nextSearch: any) => {
+			const next = {
+				...searchFilter,
+				search: {
+					...searchFilter.search,
+					...nextSearch,
+				},
+			};
+
+			// clean empty arrays
+			if (!next.search?.typeList?.length) delete next.search.typeList;
+			if (!next.search?.volumeList?.length) delete next.search.volumeList;
+
+			// clean empty price range
+			if (
+				!next.search?.pricesRange ||
+				(next.search.pricesRange.start === undefined && next.search.pricesRange.end === undefined)
+			) {
+				delete next.search.pricesRange;
+			}
+
+			setSearchFilter(next);
+
+			await router.push(`/property?input=${JSON.stringify(next)}`, `/property?input=${JSON.stringify(next)}`, {
+				scroll: false,
+			});
+		},
+		[router, searchFilter, setSearchFilter],
+	);
+
+	// sync searchText / price inputs when filter changes outside
 	useEffect(() => {
-		if (searchFilter?.search?.typeList?.length == 0) {
-			delete searchFilter.search.typeList;
-			setShowMore(false);
-			router
-				.push(
-					`/property?input=${JSON.stringify({
-						...searchFilter,
-						search: {
-							...searchFilter.search,
-						},
-					})}`,
-					`/property?input=${JSON.stringify({
-						...searchFilter,
-						search: {
-							...searchFilter.search,
-						},
-					})}`,
-					{ scroll: false },
-				)
-				.then();
-		}
+		setSearchText(searchFilter?.search?.text ?? '');
+		setMinPrice(
+			searchFilter?.search?.pricesRange?.start !== undefined ? String(searchFilter.search.pricesRange.start) : '',
+		);
+		setMaxPrice(
+			searchFilter?.search?.pricesRange?.end !== undefined ? String(searchFilter.search.pricesRange.end) : '',
+		);
+	}, [searchFilter?.search?.text, searchFilter?.search?.pricesRange?.start, searchFilter?.search?.pricesRange?.end]);
 
-		if (searchFilter?.search?.typeList?.length == 0) {
-			delete searchFilter.search.typeList;
-			router
-				.push(
-					`/property?input=${JSON.stringify({
-						...searchFilter,
-						search: {
-							...searchFilter.search,
-						},
-					})}`,
-					`/property?input=${JSON.stringify({
-						...searchFilter,
-						search: {
-							...searchFilter.search,
-						},
-					})}`,
-					{ scroll: false },
-				)
-				.then();
-		}
-
-		if (searchFilter?.search?.roomsList?.length == 0) {
-			delete searchFilter.search.roomsList;
-			router
-				.push(
-					`/property?input=${JSON.stringify({
-						...searchFilter,
-						search: {
-							...searchFilter.search,
-						},
-					})}`,
-					`/property?input=${JSON.stringify({
-						...searchFilter,
-						search: {
-							...searchFilter.search,
-						},
-					})}`,
-					{ scroll: false },
-				)
-				.then();
-		}
-
-		if (searchFilter?.search?.options?.length == 0) {
-			delete searchFilter.search.options;
-			router
-				.push(
-					`/property?input=${JSON.stringify({
-						...searchFilter,
-						search: {
-							...searchFilter.search,
-						},
-					})}`,
-					`/property?input=${JSON.stringify({
-						...searchFilter,
-						search: {
-							...searchFilter.search,
-						},
-					})}`,
-					{ scroll: false },
-				)
-				.then();
-		}
-
-		if (searchFilter?.search?.roomsList?.length == 0) {
-			delete searchFilter.search.roomsList;
-			router
-				.push(
-					`/property?input=${JSON.stringify({
-						...searchFilter,
-						search: {
-							...searchFilter.search,
-						},
-					})}`,
-					`/property?input=${JSON.stringify({
-						...searchFilter,
-						search: {
-							...searchFilter.search,
-						},
-					})}`,
-					{ scroll: false },
-				)
-				.then();
-		}
-
-		if (searchFilter?.search?.volumeList) setShowMore(true);
-	}, [searchFilter]);
-
-	/** HANDLERS **/
-	const propertyLocationSelectHandler = useCallback(
-		async (e: any) => {
-			try {
-				const isChecked = e.target.checked;
-				const value = e.target.value;
-				if (isChecked) {
-					await router.push(
-						`/property?input=${JSON.stringify({
-							...searchFilter,
-							search: { ...searchFilter.search, typeList: [...(searchFilter?.search?.typeList || []), value] },
-						})}`,
-						`/property?input=${JSON.stringify({
-							...searchFilter,
-							search: { ...searchFilter.search, typeList: [...(searchFilter?.search?.typeList || []), value] },
-						})}`,
-						{ scroll: false },
-					);
-				} else if (searchFilter?.search?.typeList?.includes(value)) {
-					await router.push(
-						`/property?input=${JSON.stringify({
-							...searchFilter,
-							search: {
-								...searchFilter.search,
-								typeList: searchFilter?.search?.typeList?.filter((item: string) => item !== value),
-							},
-						})}`,
-						`/property?input=${JSON.stringify({
-							...searchFilter,
-							search: {
-								...searchFilter.search,
-								typeList: searchFilter?.search?.typeList?.filter((item: string) => item !== value),
-							},
-						})}`,
-						{ scroll: false },
-					);
-				}
-
-				if (searchFilter?.search?.typeList?.length == 0) {
-					alert('error');
-				}
-
-				console.log('propertyLocationSelectHandler:', e.target.value);
-			} catch (err: any) {
-				console.log('ERROR, propertyLocationSelectHandler:', err);
-			}
+	// --- handlers ---
+	const toggleType = useCallback(
+		async (value: ProductCollection) => {
+			const exists = selectedTypes.includes(value);
+			const next = exists ? selectedTypes.filter((x) => x !== value) : [...selectedTypes, value];
+			await pushFilter({ typeList: next });
 		},
-		[searchFilter],
+		[selectedTypes, pushFilter],
 	);
 
-	const propertyTypeSelectHandler = useCallback(
-		async (e: any) => {
-			try {
-				const isChecked = e.target.checked;
-				const value = e.target.value;
-				if (isChecked) {
-					await router.push(
-						`/property?input=${JSON.stringify({
-							...searchFilter,
-							search: { ...searchFilter.search, typeList: [...(searchFilter?.search?.typeList || []), value] },
-						})}`,
-						`/property?input=${JSON.stringify({
-							...searchFilter,
-							search: { ...searchFilter.search, typeList: [...(searchFilter?.search?.typeList || []), value] },
-						})}`,
-						{ scroll: false },
-					);
-				} else if (searchFilter?.search?.typeList?.includes(value)) {
-					await router.push(
-						`/property?input=${JSON.stringify({
-							...searchFilter,
-							search: {
-								...searchFilter.search,
-								typeList: searchFilter?.search?.typeList?.filter((item: string) => item !== value),
-							},
-						})}`,
-						`/property?input=${JSON.stringify({
-							...searchFilter,
-							search: {
-								...searchFilter.search,
-								typeList: searchFilter?.search?.typeList?.filter((item: string) => item !== value),
-							},
-						})}`,
-						{ scroll: false },
-					);
-				}
-
-				if (searchFilter?.search?.typeList?.length == 0) {
-					alert('error');
-				}
-
-				console.log('propertyTypeSelectHandler:', e.target.value);
-			} catch (err: any) {
-				console.log('ERROR, propertyTypeSelectHandler:', err);
-			}
+	const toggleVolume = useCallback(
+		async (value: any) => {
+			const exists = selectedVolumes.includes(value);
+			const next = exists ? selectedVolumes.filter((x: any) => x !== value) : [...selectedVolumes, value];
+			await pushFilter({ volumeList: next });
 		},
-		[searchFilter],
+		[selectedVolumes, pushFilter],
 	);
 
-	const propertyRoomSelectHandler = useCallback(
-		async (number: Number) => {
-			try {
-				if (number != 0) {
-					if (searchFilter?.search?.roomsList?.includes(number)) {
-						await router.push(
-							`/property?input=${JSON.stringify({
-								...searchFilter,
-								search: {
-									...searchFilter.search,
-									roomsList: searchFilter?.search?.roomsList?.filter((item: Number) => item !== number),
-								},
-							})}`,
-							`/property?input=${JSON.stringify({
-								...searchFilter,
-								search: {
-									...searchFilter.search,
-									roomsList: searchFilter?.search?.roomsList?.filter((item: Number) => item !== number),
-								},
-							})}`,
-							{ scroll: false },
-						);
-					} else {
-						await router.push(
-							`/property?input=${JSON.stringify({
-								...searchFilter,
-								search: { ...searchFilter.search, roomsList: [...(searchFilter?.search?.roomsList || []), number] },
-							})}`,
-							`/property?input=${JSON.stringify({
-								...searchFilter,
-								search: { ...searchFilter.search, roomsList: [...(searchFilter?.search?.roomsList || []), number] },
-							})}`,
-							{ scroll: false },
-						);
-					}
-				} else {
-					delete searchFilter?.search.roomsList;
-					setSearchFilter({ ...searchFilter });
-					await router.push(
-						`/property?input=${JSON.stringify({
-							...searchFilter,
-							search: {
-								...searchFilter.search,
-							},
-						})}`,
-						`/property?input=${JSON.stringify({
-							...searchFilter,
-							search: {
-								...searchFilter.search,
-							},
-						})}`,
-						{ scroll: false },
-					);
-				}
+	const toggleDiscount = useCallback(async () => {
+		await pushFilter({ discounted: !discounted });
+	}, [discounted, pushFilter]);
 
-				console.log('propertyRoomSelectHandler:', number);
-			} catch (err: any) {
-				console.log('ERROR, propertyRoomSelectHandler:', err);
-			}
-		},
-		[searchFilter],
-	);
+	const applySearchText = useCallback(async () => {
+		await pushFilter({ text: searchText?.trim() || '' });
+	}, [pushFilter, searchText]);
 
-	const propertyOptionSelectHandler = useCallback(
-		async (e: any) => {
-			try {
-				const isChecked = e.target.checked;
-				const value = e.target.value;
-				if (isChecked) {
-					await router.push(
-						`/property?input=${JSON.stringify({
-							...searchFilter,
-							search: { ...searchFilter.search, options: [...(searchFilter?.search?.options || []), value] },
-						})}`,
-						`/property?input=${JSON.stringify({
-							...searchFilter,
-							search: { ...searchFilter.search, options: [...(searchFilter?.search?.options || []), value] },
-						})}`,
-						{ scroll: false },
-					);
-				} else if (searchFilter?.search?.options?.includes(value)) {
-					await router.push(
-						`/property?input=${JSON.stringify({
-							...searchFilter,
-							search: {
-								...searchFilter.search,
-								options: searchFilter?.search?.options?.filter((item: string) => item !== value),
-							},
-						})}`,
-						`/property?input=${JSON.stringify({
-							...searchFilter,
-							search: {
-								...searchFilter.search,
-								options: searchFilter?.search?.options?.filter((item: string) => item !== value),
-							},
-						})}`,
-						{ scroll: false },
-					);
-				}
+	const applyPrice = useCallback(async () => {
+		const start = minPrice.trim() === '' ? undefined : Number(minPrice);
+		const end = maxPrice.trim() === '' ? undefined : Number(maxPrice);
 
-				console.log('propertyOptionSelectHandler:', e.target.value);
-			} catch (err: any) {
-				console.log('ERROR, propertyOptionSelectHandler:', err);
-			}
-		},
-		[searchFilter],
-	);
+		// invalid -> ignore
+		const safeStart = Number.isFinite(start as any) ? (start as number) : undefined;
+		const safeEnd = Number.isFinite(end as any) ? (end as number) : undefined;
 
-	const propertyBedSelectHandler = useCallback(
-		async (number: Number) => {
-			try {
-				if (number != 0) {
-					if (searchFilter?.search?.roomsList?.includes(number)) {
-						await router.push(
-							`/property?input=${JSON.stringify({
-								...searchFilter,
-								search: {
-									...searchFilter.search,
-									roomsList: searchFilter?.search?.roomsList?.filter((item: Number) => item !== number),
-								},
-							})}`,
-							`/property?input=${JSON.stringify({
-								...searchFilter,
-								search: {
-									...searchFilter.search,
-									roomsList: searchFilter?.search?.roomsList?.filter((item: Number) => item !== number),
-								},
-							})}`,
-							{ scroll: false },
-						);
-					} else {
-						await router.push(
-							`/property?input=${JSON.stringify({
-								...searchFilter,
-								search: { ...searchFilter.search, roomsList: [...(searchFilter?.search?.roomsList || []), number] },
-							})}`,
-							`/property?input=${JSON.stringify({
-								...searchFilter,
-								search: { ...searchFilter.search, roomsList: [...(searchFilter?.search?.roomsList || []), number] },
-							})}`,
-							{ scroll: false },
-						);
-					}
-				} else {
-					delete searchFilter?.search.roomsList;
-					setSearchFilter({ ...searchFilter });
-					await router.push(
-						`/property?input=${JSON.stringify({
-							...searchFilter,
-							search: {
-								...searchFilter.search,
-							},
-						})}`,
-						`/property?input=${JSON.stringify({
-							...searchFilter,
-							search: {
-								...searchFilter.search,
-							},
-						})}`,
-						{ scroll: false },
-					);
-				}
-
-				console.log('propertyBedSelectHandler:', number);
-			} catch (err: any) {
-				console.log('ERROR, propertyBedSelectHandler:', err);
-			}
-		},
-		[searchFilter],
-	);
-
-	// const propertySquareHandler = useCallback(
-	// 	async (e: any, type: string) => {
-	// 		const value = e.target.value;
-
-	// 		if (type == 'start') {
-	// 			await router.push(
-	// 				`/property?input=${JSON.stringify({
-	// 					...searchFilter,
-	// 					search: {
-	// 						...searchFilter.search,
-	// 						squaresRange: { ...searchFilter.search.squaresRange, start: value },
-	// 					},
-	// 				})}`,
-	// 				`/property?input=${JSON.stringify({
-	// 					...searchFilter,
-	// 					search: {
-	// 						...searchFilter.search,
-	// 						squaresRange: { ...searchFilter.search.squaresRange, start: value },
-	// 					},
-	// 				})}`,
-	// 				{ scroll: false },
-	// 			);
-	// 		} else {
-	// 			await router.push(
-	// 				`/property?input=${JSON.stringify({
-	// 					...searchFilter,
-	// 					search: {
-	// 						...searchFilter.search,
-	// 						squaresRange: { ...searchFilter.search.squaresRange, end: value },
-	// 					},
-	// 				})}`,
-	// 				`/property?input=${JSON.stringify({
-	// 					...searchFilter,
-	// 					search: {
-	// 						...searchFilter.search,
-	// 						squaresRange: { ...searchFilter.search.squaresRange, end: value },
-	// 					},
-	// 				})}`,
-	// 				{ scroll: false },
-	// 			);
-	// 		}
-	// 	},
-	// 	[searchFilter],
-	// );
-
-	const propertyPriceHandler = useCallback(
-		async (value: number, type: string) => {
-			if (type == 'start') {
-				await router.push(
-					`/property?input=${JSON.stringify({
-						...searchFilter,
-						search: {
-							...searchFilter.search,
-							pricesRange: { ...searchFilter.search.pricesRange, start: value * 1 },
-						},
-					})}`,
-					`/property?input=${JSON.stringify({
-						...searchFilter,
-						search: {
-							...searchFilter.search,
-							pricesRange: { ...searchFilter.search.pricesRange, start: value * 1 },
-						},
-					})}`,
-					{ scroll: false },
-				);
-			} else {
-				await router.push(
-					`/property?input=${JSON.stringify({
-						...searchFilter,
-						search: {
-							...searchFilter.search,
-							pricesRange: { ...searchFilter.search.pricesRange, end: value * 1 },
-						},
-					})}`,
-					`/property?input=${JSON.stringify({
-						...searchFilter,
-						search: {
-							...searchFilter.search,
-							pricesRange: { ...searchFilter.search.pricesRange, end: value * 1 },
-						},
-					})}`,
-					{ scroll: false },
-				);
-			}
-		},
-		[searchFilter],
-	);
-
-	const refreshHandler = async () => {
-		try {
-			setSearchText('');
-			await router.push(
-				`/property?input=${JSON.stringify(initialInput)}`,
-				`/property?input=${JSON.stringify(initialInput)}`,
-				{ scroll: false },
-			);
-		} catch (err: any) {
-			console.log('ERROR, refreshHandler:', err);
+		if (safeStart === undefined && safeEnd === undefined) {
+			await pushFilter({ pricesRange: undefined });
+			return;
 		}
-	};
 
-	if (device === 'mobile') {
-		return <div>PROPERTIES FILTER</div>;
-	} else {
-		return (
-			<Stack className={'filter-main'}>
-				<Stack className={'find-your-home'} mb={'40px'}>
-					<Typography className={'title-main'}>Find Your Home</Typography>
-					<Stack className={'input-box'}>
-						<OutlinedInput
-							value={searchText}
-							type={'text'}
-							className={'search-input'}
-							placeholder={'What are you looking for?'}
-							onChange={(e: any) => setSearchText(e.target.value)}
-							onKeyDown={(event: any) => {
-								if (event.key == 'Enter') {
-									setSearchFilter({
-										...searchFilter,
-										search: { ...searchFilter.search, text: searchText },
-									});
-								}
-							}}
-							endAdornment={
-								<>
-									<CancelRoundedIcon
-										onClick={() => {
-											setSearchText('');
-											setSearchFilter({
-												...searchFilter,
-												search: { ...searchFilter.search, text: '' },
-											});
-										}}
-									/>
-								</>
-							}
-						/>
-						<img src={'/img/icons/search_icon.png'} alt={''} />
-						<Tooltip title="Reset">
-							<IconButton onClick={refreshHandler}>
-								<RefreshIcon />
-							</IconButton>
-						</Tooltip>
-					</Stack>
-				</Stack>
-				<Stack className={'find-your-home'} mb={'30px'}>
-					<p className={'title'} style={{ textShadow: '0px 3px 4px #b9b9b9' }}>
-						Location
-					</p>
-					<Stack
-						className={`property-location`}
-						style={{ height: showMore ? '253px' : '115px' }}
-						onMouseEnter={() => setShowMore(true)}
-						onMouseLeave={() => {
-							if (!searchFilter?.search?.typeList) {
-								setShowMore(false);
-							}
+		await pushFilter({ pricesRange: { start: safeStart, end: safeEnd } });
+	}, [minPrice, maxPrice, pushFilter]);
+
+	const refreshHandler = useCallback(async () => {
+		setSearchText('');
+		setMinPrice('');
+		setMaxPrice('');
+		setActiveGroup(null);
+
+		await router.push(
+			`/property?input=${JSON.stringify(initialInput)}`,
+			`/property?input=${JSON.stringify(initialInput)}`,
+			{ scroll: false },
+		);
+		setSearchFilter(initialInput);
+	}, [initialInput, router, setSearchFilter]);
+
+	if (device === 'mobile') return <div>FILTER</div>;
+
+	return (
+		<Stack className="filter-main">
+			{/* SEARCH */}
+			<Stack className="filter-section">
+				<Typography className="filter-titleMain">Find products</Typography>
+
+				<Stack className="filter-searchRow">
+					<OutlinedInput
+						value={searchText}
+						type="text"
+						className="filter-searchInput"
+						placeholder="What are you looking for?"
+						onChange={(e: any) => setSearchText(e.target.value)}
+						onKeyDown={(e: any) => {
+							if (e.key === 'Enter') applySearchText();
 						}}
-					>
-						{productCollection.map((typeList: string) => {
-							return (
-								<Stack className={'input-box'} key={typeList}>
-									<Checkbox
-										id={typeList}
-										className="property-checkbox"
-										color="default"
-										size="small"
-										value={typeList}
-										checked={(searchFilter?.search?.typeList || []).includes(typeList as ProductCollection)}
-										onChange={propertyLocationSelectHandler}
-									/>
-									<label htmlFor={typeList} style={{ cursor: 'pointer' }}>
-										<Typography className="property-type">{typeList}</Typography>
-									</label>
-								</Stack>
-							);
-						})}
-					</Stack>
-				</Stack>
-				{/* <Stack className={'find-your-home'} mb={'30px'}>
-					<Typography className={'title'}>Property Type</Typography>
-					{propertyType.map((type: string) => (
-						<Stack className={'input-box'} key={type}>
-							<Checkbox
-								id={type}
-								className="property-checkbox"
-								color="default"
-								size="small"
-								value={type}
-								onChange={propertyTypeSelectHandler}
-								checked={(searchFilter?.search?.typeList || []).includes(type as PropertyType)}
+						endAdornment={
+							<CancelRoundedIcon
+								className="filter-clearIcon"
+								onClick={() => {
+									setSearchText('');
+									pushFilter({ text: '' });
+								}}
 							/>
-							<label style={{ cursor: 'pointer' }}>
-								<Typography className="property_type">{type}</Typography>
-							</label>
-						</Stack>
-					))}
-				</Stack> */}
-				<Stack className={'find-your-home'} mb={'30px'}>
-					<Typography className={'title'}>Rooms</Typography>
-					<Stack className="button-group">
-						<Button
-							sx={{
-								borderRadius: '12px 0 0 12px',
-								border: !searchFilter?.search?.roomsList ? '2px solid #181A20' : '1px solid #b9b9b9',
-							}}
-							onClick={() => propertyRoomSelectHandler(0)}
-						>
-							Any
-						</Button>
-						<Button
-							sx={{
-								borderRadius: 0,
-								border: searchFilter?.search?.roomsList?.includes(1) ? '2px solid #181A20' : '1px solid #b9b9b9',
-								borderLeft: searchFilter?.search?.roomsList?.includes(1) ? undefined : 'none',
-							}}
-							onClick={() => propertyRoomSelectHandler(1)}
-						>
-							1
-						</Button>
-						<Button
-							sx={{
-								borderRadius: 0,
-								border: searchFilter?.search?.roomsList?.includes(2) ? '2px solid #181A20' : '1px solid #b9b9b9',
-								borderLeft: searchFilter?.search?.roomsList?.includes(2) ? undefined : 'none',
-							}}
-							onClick={() => propertyRoomSelectHandler(2)}
-						>
-							2
-						</Button>
-						<Button
-							sx={{
-								borderRadius: 0,
-								border: searchFilter?.search?.roomsList?.includes(3) ? '2px solid #181A20' : '1px solid #b9b9b9',
-								borderLeft: searchFilter?.search?.roomsList?.includes(3) ? undefined : 'none',
-							}}
-							onClick={() => propertyRoomSelectHandler(3)}
-						>
-							3
-						</Button>
-						<Button
-							sx={{
-								borderRadius: 0,
-								border: searchFilter?.search?.roomsList?.includes(4) ? '2px solid #181A20' : '1px solid #b9b9b9',
-								borderLeft: searchFilter?.search?.roomsList?.includes(4) ? undefined : 'none',
-								borderRight: searchFilter?.search?.roomsList?.includes(4) ? undefined : 'none',
-							}}
-							onClick={() => propertyRoomSelectHandler(4)}
-						>
-							4
-						</Button>
-						<Button
-							sx={{
-								borderRadius: '0 12px 12px 0',
-								border: searchFilter?.search?.roomsList?.includes(5) ? '2px solid #181A20' : '1px solid #b9b9b9',
-							}}
-							onClick={() => propertyRoomSelectHandler(5)}
-						>
-							5+
-						</Button>
-					</Stack>
-				</Stack>
-				<Stack className={'find-your-home'} mb={'30px'}>
-					<Typography className={'title'}>Bedrooms</Typography>
-					<Stack className="button-group">
-						<Button
-							sx={{
-								borderRadius: '12px 0 0 12px',
-								border: !searchFilter?.search?.roomsList ? '2px solid #181A20' : '1px solid #b9b9b9',
-							}}
-							onClick={() => propertyBedSelectHandler(0)}
-						>
-							Any
-						</Button>
-						<Button
-							sx={{
-								borderRadius: 0,
-								border: searchFilter?.search?.roomsList?.includes(1) ? '2px solid #181A20' : '1px solid #b9b9b9',
-								borderLeft: searchFilter?.search?.roomsList?.includes(1) ? undefined : 'none',
-							}}
-							onClick={() => propertyBedSelectHandler(1)}
-						>
-							1
-						</Button>
-						<Button
-							sx={{
-								borderRadius: 0,
-								border: searchFilter?.search?.roomsList?.includes(2) ? '2px solid #181A20' : '1px solid #b9b9b9',
-								borderLeft: searchFilter?.search?.roomsList?.includes(2) ? undefined : 'none',
-							}}
-							onClick={() => propertyBedSelectHandler(2)}
-						>
-							2
-						</Button>
-						<Button
-							sx={{
-								borderRadius: 0,
-								border: searchFilter?.search?.roomsList?.includes(3) ? '2px solid #181A20' : '1px solid #b9b9b9',
-								borderLeft: searchFilter?.search?.roomsList?.includes(3) ? undefined : 'none',
-							}}
-							onClick={() => propertyBedSelectHandler(3)}
-						>
-							3
-						</Button>
-						<Button
-							sx={{
-								borderRadius: 0,
-								border: searchFilter?.search?.roomsList?.includes(4) ? '2px solid #181A20' : '1px solid #b9b9b9',
-								borderLeft: searchFilter?.search?.roomsList?.includes(4) ? undefined : 'none',
-								// borderRight: false ? undefined : 'none',
-							}}
-							onClick={() => propertyBedSelectHandler(4)}
-						>
-							4
-						</Button>
-						<Button
-							sx={{
-								borderRadius: '0 12px 12px 0',
-								border: searchFilter?.search?.roomsList?.includes(5) ? '2px solid #181A20' : '1px solid #b9b9b9',
-								borderLeft: searchFilter?.search?.roomsList?.includes(5) ? undefined : 'none',
-							}}
-							onClick={() => propertyBedSelectHandler(5)}
-						>
-							5+
-						</Button>
-					</Stack>
-				</Stack>
-				<Stack className={'find-your-home'} mb={'30px'}>
-					<Typography className={'title'}>Options</Typography>
-					<Stack className={'input-box'}>
-						<Checkbox
-							id={'Barter'}
-							className="property-checkbox"
-							color="default"
-							size="small"
-							value={'propertyBarter'}
-							checked={(searchFilter?.search?.options || []).includes('propertyBarter')}
-							onChange={propertyOptionSelectHandler}
-						/>
-						<label htmlFor={'Barter'} style={{ cursor: 'pointer' }}>
-							<Typography className="propert-type">Barter</Typography>
-						</label>
-					</Stack>
-					<Stack className={'input-box'}>
-						<Checkbox
-							id={'Rent'}
-							className="property-checkbox"
-							color="default"
-							size="small"
-							value={'propertyRent'}
-							checked={(searchFilter?.search?.options || []).includes('propertyRent')}
-							onChange={propertyOptionSelectHandler}
-						/>
-						<label htmlFor={'Rent'} style={{ cursor: 'pointer' }}>
-							<Typography className="propert-type">Rent</Typography>
-						</label>
-					</Stack>
-				</Stack>
-				{/* <Stack className={'find-your-home'} mb={'30px'}>
-					<Typography className={'title'}>Square meter</Typography>
-					<Stack className="square-year-input">
-						<FormControl>
-							<InputLabel id="demo-simple-select-label">Min</InputLabel>
-							<Select
-								labelId="demo-simple-select-label"
-								id="demo-simple-select"
-								value={searchFilter?.search?.squaresRange?.start ?? 0}
-								label="Min"
-								onChange={(e: any) => propertySquareHandler(e, 'start')}
-								MenuProps={MenuProps}
-							>
-								{propertySquare.map((square: number) => (
-									<MenuItem
-										value={square}
-										disabled={(searchFilter?.search?.squaresRange?.end || 0) < square}
-										key={square}
-									>
-										{square}
-									</MenuItem>
-								))}
-							</Select>
-						</FormControl>
-						<div className="central-divider"></div>
-						<FormControl>
-							<InputLabel id="demo-simple-select-label">Max</InputLabel>
-							<Select
-								labelId="demo-simple-select-label"
-								id="demo-simple-select"
-								value={searchFilter?.search?.squaresRange?.end ?? 500}
-								label="Max"
-								onChange={(e: any) => propertySquareHandler(e, 'end')}
-								MenuProps={MenuProps}
-							>
-								{propertySquare.map((square: number) => (
-									<MenuItem
-										value={square}
-										disabled={(searchFilter?.search?.squaresRange?.start || 0) > square}
-										key={square}
-									>
-										{square}
-									</MenuItem>
-								))}
-							</Select>
-						</FormControl>
-					</Stack>
-				</Stack> */}
-				<Stack className={'find-your-home'}>
-					<Typography className={'title'}>Price Range</Typography>
-					<Stack className="square-year-input">
-						<input
-							type="number"
-							placeholder="$ min"
-							min={0}
-							value={searchFilter?.search?.pricesRange?.start ?? 0}
-							onChange={(e: any) => {
-								if (e.target.value >= 0) {
-									propertyPriceHandler(e.target.value, 'start');
-								}
-							}}
-						/>
-						<div className="central-divider"></div>
-						<input
-							type="number"
-							placeholder="$ max"
-							value={searchFilter?.search?.pricesRange?.end ?? 0}
-							onChange={(e: any) => {
-								if (e.target.value >= 0) {
-									propertyPriceHandler(e.target.value, 'end');
-								}
-							}}
-						/>
-					</Stack>
+						}
+					/>
+
+					<Tooltip title="Reset">
+						<IconButton className="filter-resetBtn" onClick={refreshHandler}>
+							<RefreshIcon />
+						</IconButton>
+					</Tooltip>
 				</Stack>
 			</Stack>
-		);
-	}
+
+			{/* DISCOUNT (Product tags o‘rniga) */}
+			<Stack className="filter-section">
+				<Typography className="filter-title">Discount</Typography>
+
+				<label className="filter-checkRow">
+					<Checkbox
+						className="filter-checkbox"
+						checked={discounted}
+						onChange={toggleDiscount}
+						color="default"
+						size="small"
+					/>
+					<span className="filter-checkLabel">Only discounted products</span>
+				</label>
+			</Stack>
+
+			{/* PRODUCT COLLECTIONS (Product categories o‘rniga) */}
+			<Stack className="filter-section" onMouseLeave={() => setActiveGroup(null)}>
+				<Typography className="filter-title">Product collections</Typography>
+
+				<Stack className="filter-groups">
+					{COLLECTION_GROUPS.map((g) => (
+						<div
+							key={g.key}
+							className={`filter-group ${activeGroup === g.key ? 'is-active' : ''}`}
+							onMouseEnter={() => setActiveGroup(g.key)}
+						>
+							<div className="filter-groupHead">
+								<span className="filter-groupTitle">{g.title}</span>
+								<span className="filter-groupArrow">›</span>
+							</div>
+
+							{/* Hover submenu */}
+							<div className={`filter-subMenu ${activeGroup === g.key ? 'is-open' : ''}`}>
+								<div className="filter-subMenuInner">
+									{g.items.map((item) => (
+										<label key={String(item)} className="filter-checkRow">
+											<Checkbox
+												className="filter-checkbox"
+												color="default"
+												size="small"
+												checked={selectedTypes.includes(item)}
+												onChange={() => toggleType(item)}
+											/>
+											<span className="filter-checkLabel">{collectionLabel(item)}</span>
+										</label>
+									))}
+								</div>
+							</div>
+
+							<Divider className="filter-divider" />
+						</div>
+					))}
+				</Stack>
+			</Stack>
+
+			{/* PRODUCT VOLUME */}
+			<Stack className="filter-section">
+				<Typography className="filter-title">Product volume</Typography>
+
+				<Stack className="filter-list">
+					{allVolumes.map((v: any) => (
+						<label key={String(v)} className="filter-checkRow">
+							<Checkbox
+								className="filter-checkbox"
+								color="default"
+								size="small"
+								checked={selectedVolumes.includes(v)}
+								onChange={() => toggleVolume(v)}
+							/>
+							<span className="filter-checkLabel">{volumeLabel(v)}</span>
+						</label>
+					))}
+				</Stack>
+			</Stack>
+
+			{/* PRICE RANGE */}
+			<Stack className="filter-section">
+				<Typography className="filter-title">Price range</Typography>
+
+				<div className="filter-priceRow">
+					<input
+						className="filter-priceInput"
+						type="number"
+						placeholder="$ min"
+						min={0}
+						value={minPrice}
+						onChange={(e) => setMinPrice(e.target.value)}
+						onBlur={applyPrice}
+						onKeyDown={(e: any) => {
+							if (e.key === 'Enter') applyPrice();
+						}}
+					/>
+					<div className="filter-priceDivider" />
+					<input
+						className="filter-priceInput"
+						type="number"
+						placeholder="$ max"
+						min={0}
+						value={maxPrice}
+						onChange={(e) => setMaxPrice(e.target.value)}
+						onBlur={applyPrice}
+						onKeyDown={(e: any) => {
+							if (e.key === 'Enter') applyPrice();
+						}}
+					/>
+				</div>
+			</Stack>
+
+			{/* BOTTOM IMAGE CARD */}
+			<div className="filter-promoCard">
+				<img className="filter-promoImg" src={FILTER_IMAGE_SRC} alt="Promo" />
+			</div>
+		</Stack>
+	);
 };
 
 export default Filter;
