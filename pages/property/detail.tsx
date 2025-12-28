@@ -201,6 +201,21 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 		);
 	}
 
+	const basePrice = Number(product?.productPrice) || 0;
+	const discountValue = Number(product?.productDiscount) || 0;
+	const hasDiscount = discountValue > 0;
+	const isPercentDiscount = hasDiscount && discountValue <= 100;
+	const discountPrice =
+		hasDiscount && basePrice
+			? isPercentDiscount
+				? basePrice * (1 - discountValue / 100)
+				: Math.max(0, discountValue)
+			: basePrice;
+	const priceLabel =
+		hasDiscount && discountPrice > 0 && discountPrice !== basePrice
+			? `$${formatterStr(Math.min(basePrice, discountPrice))} - $${formatterStr(Math.max(basePrice, discountPrice))}`
+			: `$${formatterStr(basePrice)}`;
+
 	if (device === 'mobile') {
 		return <div>PROPERTY DETAIL PAGE</div>;
 	} else {
@@ -209,196 +224,109 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 				<div className={'container'}>
 					<Stack className={'property-detail-config'}>
 						<Stack className={'property-info-config'}>
-							<Stack className={'info'}>
-								<Stack className={'left-box'}>
-									<Typography className={'title-main'}>{product?.productDetail}</Typography>
-									<Stack className={'top-box'}>
-										<Typography className={'city'}>{product?.productDiscount}</Typography>
-										<Stack className={'divider'}></Stack>
-										<Stack className={'buy-rent-box'}>
-											{product?.productPrice && (
-												<>
-													<Stack className={'circle'}>
-														<svg xmlns="http://www.w3.org/2000/svg" width="6" height="6" viewBox="0 0 6 6" fill="none">
-															<circle cx="3" cy="3" r="3" fill="#EB6753" />
-														</svg>
-													</Stack>
-													<Typography className={'buy-rent'}>Barter</Typography>
-												</>
-											)}
+							<Stack className={'pd-layout'}>
+								{/* LEFT: images (rasmdagidek) */}
+								<Stack className={'pd-images'}>
+									<Stack className={'pd-thumbs'}>
+										{product?.productImages?.map((subImg: string) => {
+											const imagePath: string = `${REACT_APP_API_URL}/${subImg}`;
+											return (
+												<Stack className={'pd-thumb'} onClick={() => changeImageHandler(subImg)} key={subImg}>
+													<img src={imagePath} alt="thumb" />
+												</Stack>
+											);
+										})}
+									</Stack>
 
-											{product?.productName && (
-												<>
-													<Stack className={'circle'}>
-														<svg xmlns="http://www.w3.org/2000/svg" width="6" height="6" viewBox="0 0 6 6" fill="none">
-															<circle cx="3" cy="3" r="3" fill="#EB6753" />
-														</svg>
-													</Stack>
-													<Typography className={'buy-rent'}>rent</Typography>
-												</>
-											)}
-										</Stack>
-										<Stack className={'divider'}></Stack>
-										<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-											<g clipPath="url(#clip0_6505_6282)">
-												<path
-													d="M7 14C5.61553 14 4.26216 13.5895 3.11101 12.8203C1.95987 12.0511 1.06266 10.9579 0.532846 9.67879C0.00303297 8.3997 -0.13559 6.99224 0.134506 5.63437C0.404603 4.2765 1.07129 3.02922 2.05026 2.05026C3.02922 1.07129 4.2765 0.404603 5.63437 0.134506C6.99224 -0.13559 8.3997 0.00303297 9.67879 0.532846C10.9579 1.06266 12.0511 1.95987 12.8203 3.11101C13.5895 4.26216 14 5.61553 14 7C14 8.85652 13.2625 10.637 11.9498 11.9498C10.637 13.2625 8.85652 14 7 14ZM7 0.931878C5.79984 0.931878 4.62663 1.28777 3.62873 1.95454C2.63084 2.62132 1.85307 3.56903 1.39379 4.67783C0.934505 5.78664 0.814336 7.00673 1.04848 8.18384C1.28262 9.36094 1.86055 10.4422 2.70919 11.2908C3.55783 12.1395 4.63907 12.7174 5.81617 12.9515C6.99327 13.1857 8.21337 13.0655 9.32217 12.6062C10.431 12.1469 11.3787 11.3692 12.0455 10.3713C12.7122 9.37337 13.0681 8.20016 13.0681 7C13.067 5.39099 12.4273 3.84821 11.2895 2.71047C10.1518 1.57273 8.60901 0.933037 7 0.931878Z"
-													fill="#181A20"
-												/>
-												<path
-													d="M9.0372 9.7275C8.97153 9.72795 8.90643 9.71543 8.84562 9.69065C8.7848 9.66587 8.72948 9.62933 8.68282 9.58313L6.68345 7.58375C6.63724 7.53709 6.6007 7.48177 6.57592 7.42096C6.55115 7.36015 6.53863 7.29504 6.53907 7.22938V2.7275C6.53907 2.59464 6.59185 2.46723 6.6858 2.37328C6.77974 2.27934 6.90715 2.22656 7.04001 2.22656C7.17287 2.22656 7.30028 2.27934 7.39423 2.37328C7.48817 2.46723 7.54095 2.59464 7.54095 2.7275V7.01937L9.39595 8.87438C9.47462 8.9425 9.53001 9.03354 9.55436 9.13472C9.57871 9.2359 9.5708 9.34217 9.53173 9.43863C9.49266 9.53509 9.4244 9.61691 9.3365 9.67264C9.24861 9.72836 9.14548 9.75519 9.04157 9.74938L9.0372 9.7275Z"
-													fill="#181A20"
-												/>
-											</g>
-											<defs>
-												<clipPath id="clip0_6505_6282">
-													<rect width="14" height="14" fill="white" />
-												</clipPath>
-											</defs>
-										</svg>
-										<Typography className={'date'}>{moment().diff(product?.createdAt, 'days')} days ago</Typography>
-									</Stack>
-									<Stack className={'bottom-box'}>
-										<Stack className="option">
-											<img src="/img/icons/bed.svg" alt="" /> <Typography>{product?.productDiscount} bed</Typography>
-										</Stack>
-										<Stack className="option">
-											<img src="/img/icons/room.svg" alt="" /> <Typography>{product?.productSoldCount} room</Typography>
-										</Stack>
-										<Stack className="option">
-											<img src="/img/icons/expand.svg" alt="" /> <Typography>{product?.productPrice} m2</Typography>
-										</Stack>
+									<Stack className={'pd-main'}>
+										<img
+											src={slideImage ? `${REACT_APP_API_URL}/${slideImage}` : '/img/property/bigImage.png'}
+											alt="main"
+										/>
 									</Stack>
 								</Stack>
-								<Stack className={'right-box'}>
-									<Stack className="buttons">
-										<Stack className="button-box">
-											<RemoveRedEyeIcon fontSize="medium" />
-											<Typography>{product?.productViews}</Typography>
+
+								{/* RIGHT: info panel */}
+								<Stack className={'pd-info'}>
+									{/* productName */}
+									<Typography className={'pd-title'}>{product?.productName}</Typography>
+
+									{/* price row */}
+									<Stack className={'pd-priceRow'}>
+										<Typography className={'pd-price'}>${priceLabel}</Typography>
+										{/* productDiscount = old price yoki discount value bo‘lishi mumkin.
+            Agar sening backend oldPrice bo‘lsa — shu joy ideal. */}
+										{product?.productDiscount && (
+											<Typography className={'pd-discount'}>${formatterStr(product?.productDiscount)}</Typography>
+										)}
+									</Stack>
+
+									{/* productDetail */}
+									<Typography className={'pd-desc'}>{product?.productDetail}</Typography>
+
+									{/* Details list (katma-ket) */}
+									<Stack className={'pd-details'}>
+										<Stack className={'pd-row'}>
+											<Typography className={'k'}>Collection</Typography>
+											<Typography className={'v'}>{product?.productCollection}</Typography>
 										</Stack>
-										<Stack className="button-box">
-											{product?.meLiked && product?.meLiked[0]?.myFavorite ? (
-												<FavoriteIcon color="primary" fontSize={'medium'} />
-											) : (
-												<FavoriteBorderIcon
-													fontSize={'medium'}
-													// @ts-ignore
-													onClick={() => likePropertyHandler(user, property?._id)}
-												/>
-											)}
-											<Typography>{product?.productLikes}</Typography>
+
+										<Stack className={'pd-row'}>
+											<Typography className={'k'}>Volume</Typography>
+											<Typography className={'v'}>{product?.productVolume}</Typography>
+										</Stack>
+
+										<Stack className={'pd-row'}>
+											<Typography className={'k'}>Left Count</Typography>
+											<Typography className={'v'}>{product?.productLeftCount}</Typography>
+										</Stack>
+
+										<Stack className={'pd-row'}>
+											<Typography className={'k'}>Sold Count</Typography>
+											<Typography className={'v'}>{product?.productSoldCount}</Typography>
+										</Stack>
+
+										<Stack className={'pd-row'}>
+											<Typography className={'k'}>Views</Typography>
+											<Typography className={'v'}>{product?.productViews}</Typography>
+										</Stack>
+
+										<Stack className={'pd-row'}>
+											<Typography className={'k'}>Likes</Typography>
+											<Typography className={'v'}>{product?.productLikes}</Typography>
 										</Stack>
 									</Stack>
-									<Typography>${formatterStr(product?.productPrice)}</Typography>
-								</Stack>
-							</Stack>
-							<Stack className={'images'}>
-								<Stack className={'main-image'}>
-									<img
-										src={slideImage ? `${REACT_APP_API_URL}/${slideImage}` : '/img/property/bigImage.png'}
-										alt={'main-image'}
-									/>
-								</Stack>
-								<Stack className={'sub-images'}>
-									{product?.productImages.map((subImg: string) => {
-										const imagePath: string = `${REACT_APP_API_URL}/${subImg}`;
-										return (
-											<Stack className={'sub-img-box'} onClick={() => changeImageHandler(subImg)} key={subImg}>
-												<img src={imagePath} alt={'sub-image'} />
+
+									{/* SENING eski buttons joyi — joyini o‘zgartirmadik, faqat shu panel ichida turadi */}
+									<Stack className={'right-box'}>
+										<Stack className="buttons">
+											<Stack className="button-box">
+												<RemoveRedEyeIcon fontSize="medium" />
+												<Typography>{product?.productViews}</Typography>
 											</Stack>
-										);
-									})}
+
+											<Stack className="button-box">
+												{product?.meLiked && product?.meLiked[0]?.myFavorite ? (
+													<FavoriteIcon color="primary" fontSize={'medium'} />
+												) : (
+													<FavoriteBorderIcon
+														fontSize={'medium'}
+														// @ts-ignore
+														onClick={() => likePropertyHandler(user, product?._id)}
+													/>
+												)}
+												<Typography>{product?.productLikes}</Typography>
+											</Stack>
+										</Stack>
+
+										<Typography>${formatterStr(product?.productPrice)}</Typography>
+									</Stack>
 								</Stack>
 							</Stack>
 						</Stack>
+
 						<Stack className={'property-desc-config'}>
 							<Stack className={'left-config'}>
-								<Stack className={'options-config'}>
-									<Stack className={'option'}>
-										<Stack className={'svg-box'}>
-											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="20" viewBox="0 0 24 20" fill="none">
-												<path
-													d="M21.4883 11.1135L21.4071 11.0524V5.26354C21.4071 4.47769 21.0568 3.72395 20.4331 3.16775C19.8094 2.61155 18.9632 2.29835 18.0803 2.29688H6.09625C5.21335 2.29835 4.36717 2.61155 3.74345 3.16775C3.11973 3.72395 2.76942 4.47769 2.76942 5.26354V11.058L2.68828 11.1135C2.31313 11.4484 2.10218 11.9018 2.10156 12.3747V17.1135C2.10156 17.2712 2.17193 17.4224 2.29717 17.5339C2.42242 17.6454 2.5923 17.708 2.76942 17.708H6.09625C6.20637 17.7077 6.31471 17.6833 6.41163 17.6367C6.50855 17.5902 6.59104 17.5231 6.65176 17.4413L7.78775 15.9302H16.3951L17.531 17.4413C17.5918 17.5231 17.6743 17.5902 17.7712 17.6367C17.8681 17.6833 17.9764 17.7077 18.0866 17.708H21.4134C21.5894 17.7065 21.7577 17.6432 21.8816 17.5319C22.0055 17.4206 22.075 17.2702 22.075 17.1135V12.3747C22.0744 11.9018 21.8634 11.4484 21.4883 11.1135ZM6.09625 3.48576H18.0803C18.61 3.48576 19.1181 3.67306 19.4927 4.00646C19.8672 4.33986 20.0777 4.79205 20.0777 5.26354V8.83576C19.778 8.45662 19.3781 8.14887 18.9134 7.93961C18.4486 7.73035 17.9332 7.62601 17.4125 7.63576H6.76411C6.32701 7.63469 5.894 7.71072 5.4901 7.85948C5.08621 8.00824 4.71944 8.22676 4.41099 8.50243C4.29799 8.60664 4.19369 8.71804 4.09891 8.83576V5.26354C4.09891 4.79205 4.30934 4.33986 4.68392 4.00646C5.05849 3.67306 5.56652 3.48576 6.09625 3.48576ZM19.4098 10.5969H4.76677C4.76677 10.1254 4.9772 9.67319 5.35178 9.3398C5.72635 9.0064 6.23438 8.8191 6.76411 8.8191H17.4125C17.9422 8.8191 18.4502 9.0064 18.8248 9.3398C19.1994 9.67319 19.4098 10.1254 19.4098 10.5969ZM20.7393 16.5247H18.4299L17.3001 15.0024C17.2387 14.9217 17.1559 14.8556 17.059 14.8101C16.9621 14.7646 16.8541 14.741 16.7446 14.7413H7.42573C7.31618 14.741 7.20821 14.7646 7.11133 14.8101C7.01446 14.8556 6.93165 14.9217 6.87022 15.0024L5.74047 16.5191H3.43104V12.3747C3.43104 12.2966 3.44832 12.2193 3.48188 12.1472C3.51545 12.075 3.56464 12.0095 3.62666 11.9543C3.68867 11.8991 3.7623 11.8553 3.84333 11.8255C3.92436 11.7956 4.0112 11.7802 4.09891 11.7802H20.0777C20.2548 11.7802 20.4247 11.8428 20.5499 11.9543C20.6752 12.0658 20.7455 12.217 20.7455 12.3747L20.7393 16.5247Z"
-													fill="#181A20"
-												/>
-											</svg>
-										</Stack>
-										<Stack className={'option-includes'}>
-											<Typography className={'title'}>Bedroom</Typography>
-											<Typography className={'option-data'}>{product?.productLeftCount}</Typography>
-										</Stack>
-									</Stack>
-									<Stack className={'option'}>
-										<Stack className={'svg-box'}>
-											<img src={'/img/icons/room.svg'} />
-										</Stack>
-										<Stack className={'option-includes'}>
-											<Typography className={'title'}>Room</Typography>
-											<Typography className={'option-data'}>{product?.productSoldCount}</Typography>
-										</Stack>
-									</Stack>
-									<Stack className={'option'}>
-										<Stack className={'svg-box'}>
-											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="20" viewBox="0 0 24 20" fill="none">
-												<path
-													d="M20.0464 2.29271H16.7196V1.10938H15.3839V2.29271H8.73021V1.10938H7.39448V2.29271H4.06766C3.53793 2.29271 3.0299 2.48001 2.65532 2.81341C2.28075 3.14681 2.07031 3.59899 2.07031 4.07049V17.1094C2.07031 17.5809 2.28075 18.0331 2.65532 18.3665C3.0299 18.6999 3.53793 18.8872 4.06766 18.8872H20.0464C20.5761 18.8872 21.0842 18.6999 21.4587 18.3665C21.8333 18.0331 22.0438 17.5809 22.0438 17.1094V4.07049C22.0438 3.59899 21.8333 3.14681 21.4587 2.81341C21.0842 2.48001 20.5761 2.29271 20.0464 2.29271ZM4.06766 3.4816H7.39448V4.66493H8.72397V3.4816H15.3839V4.66493H16.7133V3.4816H20.0464C20.2235 3.4816 20.3934 3.54423 20.5187 3.65571C20.6439 3.76719 20.7143 3.91839 20.7143 4.07604V7.03715H3.39979V4.07049C3.40144 3.91379 3.47253 3.76402 3.5976 3.65374C3.72267 3.54346 3.8916 3.48159 4.06766 3.4816ZM20.0464 17.7038H4.06766C3.89053 17.7038 3.72066 17.6412 3.59541 17.5297C3.47016 17.4182 3.39979 17.267 3.39979 17.1094V8.22049H20.7143V17.1094C20.7143 17.267 20.6439 17.4182 20.5187 17.5297C20.3934 17.6412 20.2235 17.7038 20.0464 17.7038Z"
-													fill="#181A20"
-												/>
-												<path
-													d="M15.1397 11.8023L13.6042 11.2801L12.5744 10.1412C12.5117 10.0727 12.4327 10.0174 12.3431 9.97949C12.2535 9.94156 12.1555 9.92188 12.0563 9.92188C11.9571 9.92188 11.8591 9.94156 11.7695 9.97949C11.6798 10.0174 11.6009 10.0727 11.5382 10.1412L10.5083 11.2801L8.97289 11.8023C8.88037 11.8343 8.79703 11.8842 8.72892 11.9485C8.66081 12.0127 8.60965 12.0897 8.57916 12.1738C8.54868 12.2578 8.53962 12.3469 8.55267 12.4345C8.56571 12.5221 8.60052 12.606 8.65456 12.6801L9.55961 13.8912L9.64075 15.3523C9.64596 15.4408 9.67332 15.5271 9.72083 15.6049C9.76835 15.6828 9.83482 15.7502 9.91539 15.8023C9.99685 15.8535 10.0898 15.8884 10.1878 15.9047C10.2858 15.921 10.3866 15.9183 10.4834 15.8967L12.0563 15.5245L13.6417 15.9078C13.7387 15.9304 13.8401 15.9332 13.9385 15.9161C14.0369 15.8991 14.1297 15.8625 14.21 15.8091C14.2903 15.7558 14.3562 15.687 14.4026 15.6079C14.449 15.5288 14.4748 15.4414 14.4781 15.3523L14.553 13.8912L15.4518 12.6634C15.5058 12.5893 15.5406 12.5054 15.5537 12.4178C15.5667 12.3302 15.5577 12.2412 15.5272 12.1571C15.4967 12.073 15.4455 11.9961 15.3774 11.9318C15.3093 11.8675 15.226 11.8176 15.1334 11.7856L15.1397 11.8023ZM13.3483 13.3912C13.2844 13.4793 13.2478 13.5808 13.2422 13.6856L13.1923 14.5745L12.2311 14.3412C12.1166 14.3138 11.996 14.3138 11.8815 14.3412L10.9203 14.5745L10.8704 13.6856C10.8648 13.5808 10.8282 13.4793 10.7643 13.3912L10.2212 12.6467L11.1512 12.3301C11.2614 12.2921 11.3584 12.2289 11.4321 12.1467L12.0563 11.4523L12.6805 12.1467C12.7542 12.2289 12.8511 12.2921 12.9613 12.3301L13.8913 12.6467L13.3483 13.3912Z"
-													fill="#181A20"
-												/>
-											</svg>
-										</Stack>
-										<Stack className={'option-includes'}>
-											<Typography className={'title'}>Year Build</Typography>
-											<Typography className={'option-data'}>{moment(product?.createdAt).format('YYYY')}</Typography>
-										</Stack>
-									</Stack>
-									<Stack className={'option'}>
-										<Stack className={'svg-box'}>
-											<svg xmlns="http://www.w3.org/2000/svg" width="23" height="20" viewBox="0 0 23 20" fill="none">
-												<path d="M9.60156 1.10938H13.5963V2.29271H9.60156V1.10938Z" fill="#181A20" />
-												<path
-													d="M20.2628 17.1144C20.2628 17.2721 20.1924 17.4233 20.0671 17.5347C19.9419 17.6462 19.772 17.7089 19.5949 17.7089H16.9297V18.8922H19.5949C20.1246 18.8922 20.6327 18.7049 21.0072 18.3715C21.3818 18.0381 21.5922 17.5859 21.5922 17.1144V14.7422H20.2628V17.1144Z"
-													fill="#181A20"
-												/>
-												<path
-													d="M19.5949 1.10938H16.9297V2.29271H19.5949C19.6826 2.29271 19.7694 2.30808 19.8505 2.33796C19.9315 2.36783 20.0051 2.41162 20.0671 2.46682C20.1292 2.52202 20.1784 2.58755 20.2119 2.65967C20.2455 2.73179 20.2628 2.80909 20.2628 2.88715V5.25938H21.5922V2.88715C21.5922 2.41566 21.3818 1.96347 21.0072 1.63007C20.6327 1.29668 20.1246 1.10938 19.5949 1.10938Z"
-													fill="#181A20"
-												/>
-												<path
-													d="M2.94667 2.88715C2.94667 2.80909 2.96394 2.73179 2.99751 2.65967C3.03107 2.58755 3.08027 2.52202 3.14228 2.46682C3.2043 2.41162 3.27792 2.36783 3.35895 2.33796C3.43998 2.30808 3.52683 2.29271 3.61453 2.29271H6.27974V1.10938H3.61453C3.0848 1.10938 2.57677 1.29668 2.2022 1.63007C1.82762 1.96347 1.61719 2.41566 1.61719 2.88715V5.25938H2.94667V2.88715Z"
-													fill="#181A20"
-												/>
-												<path d="M20.2578 8.21875H21.5873V11.7743H20.2578V8.21875Z" fill="#181A20" />
-												<path
-													d="M16.9281 9.40781V5.85226C16.9281 5.6946 16.8577 5.5434 16.7325 5.43192C16.6072 5.32044 16.4373 5.25781 16.2602 5.25781H12.2655V6.4467H14.6499L11.1233 9.58559C10.8569 9.46989 10.5646 9.40912 10.2682 9.40781H3.61453C3.38637 9.41019 3.16039 9.44778 2.94667 9.51892V8.22448H1.61719V17.1134C1.61719 17.5849 1.82762 18.037 2.2022 18.3704C2.57677 18.7038 3.0848 18.8911 3.61453 18.8911H13.6013V17.7078H12.1469C12.2269 17.5176 12.2691 17.3165 12.2718 17.1134V11.1856C12.2703 10.9218 12.202 10.6616 12.072 10.4245L15.5986 7.28559V9.40781H16.9281ZM3.61453 17.7078C3.4374 17.7078 3.26753 17.6452 3.14228 17.5337C3.01703 17.4222 2.94667 17.271 2.94667 17.1134V11.1856C2.94832 11.0289 3.0194 10.8791 3.14447 10.7688C3.26955 10.6586 3.43848 10.5967 3.61453 10.5967H10.2744C10.4516 10.5967 10.6214 10.6593 10.7467 10.7708C10.8719 10.8823 10.9423 11.0335 10.9423 11.1911V17.1134C10.9423 17.271 10.8719 17.4222 10.7467 17.5337C10.6214 17.6452 10.4516 17.7078 10.2744 17.7078H3.61453Z"
-													fill="#181A20"
-												/>
-											</svg>
-										</Stack>
-										<Stack className={'option-includes'}>
-											<Typography className={'title'}>Size</Typography>
-											<Typography className={'option-data'}>{product?.productVolume} m2</Typography>
-										</Stack>
-									</Stack>
-									<Stack className={'option'}>
-										<Stack className={'svg-box'}>
-											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="20" viewBox="0 0 24 20" fill="none">
-												<path
-													d="M17.2955 18.8863H6.64714C5.76532 18.8848 4.92008 18.5724 4.29654 18.0174C3.673 17.4624 3.32196 16.7101 3.32031 15.9252V7.21961C3.32207 6.73455 3.45794 6.25732 3.71592 5.83005C3.97391 5.40277 4.34608 5.03858 4.7996 4.76961L10.0988 1.6085C10.6506 1.27315 11.3032 1.09375 11.9713 1.09375C12.6394 1.09375 13.292 1.27315 13.8438 1.6085L19.168 4.76961C19.618 5.04048 19.9866 5.4055 20.2412 5.83265C20.4958 6.25981 20.6289 6.73605 20.6285 7.21961V15.9252C20.6269 16.711 20.275 17.4642 19.6501 18.0193C19.0252 18.5745 18.1784 18.8863 17.2955 18.8863ZM11.9713 2.29183C11.5779 2.29281 11.1936 2.39717 10.8665 2.59183L5.53612 5.75294C5.26468 5.91407 5.04189 6.1321 4.88734 6.38784C4.73279 6.64359 4.65122 6.92922 4.64979 7.21961V15.9252C4.64979 16.3967 4.86023 16.8488 5.2348 17.1822C5.60938 17.5156 6.11741 17.7029 6.64714 17.7029H17.2955C17.8252 17.7029 18.3332 17.5156 18.7078 17.1822C19.0824 16.8488 19.2928 16.3967 19.2928 15.9252V7.21961C19.2935 6.92734 19.2129 6.63946 19.0582 6.38163C18.9036 6.12379 18.6797 5.904 18.4065 5.74183L13.0761 2.59183C12.7492 2.39687 12.3648 2.29248 11.9713 2.29183Z"
-													fill="#181A20"
-												/>
-												<path d="M9.30469 14.7422H14.6289V15.9255H9.30469V14.7422Z" fill="#181A20" />
-											</svg>
-										</Stack>
-										<Stack className={'option-includes'}>
-											<Typography className={'title'}>Property Type</Typography>
-											<Typography className={'option-data'}>{product?.productCollection}</Typography>
-										</Stack>
-									</Stack>
-								</Stack>
 								<Stack className={'prop-desc-config'}>
 									<Stack className={'top'}>
 										<Typography className={'title'}>Property Description</Typography>
