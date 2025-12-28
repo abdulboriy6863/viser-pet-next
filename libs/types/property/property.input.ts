@@ -107,10 +107,14 @@ export interface ProductInput {
 export interface PISearch {
 	memberId?: string; // Product.memberId bilan mos
 	typeList?: ProductCollection[]; // Product.productCollection bilan mos
+	volumeList?: ProductVolume[]; // Product.productVolume bilan mos
 	pricesRange?: Range; // Product.productPrice uchun
 	text?: string; // Product.productName / productDetail / productDesc bo‘yicha qidiruv
 	inStock?: boolean; // productLeftCount > 0
 	discounted?: boolean; // productDiscount mavjudligi
+	roomsList?: Number[];
+	options?: string[];
+
 	//bunga yana ishlov berish kerak bo'lishi mumkin
 }
 

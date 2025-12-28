@@ -6,15 +6,15 @@ import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import Filter from '../../libs/components/property/Filter';
 import { useRouter } from 'next/router';
-import { PropertiesInquiry } from '../../libs/types/property/property.input';
-import { Property } from '../../libs/types/property/property';
+import { ProductInquiry, PropertiesInquiry } from '../../libs/types/property/property.input';
+import { Product, Property } from '../../libs/types/property/property';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import { Direction, Message } from '../../libs/enums/common.enum';
 import { useMutation, useQuery } from '@apollo/client';
-import { GET_PROPERTIES } from '../../apollo/user/query';
+import { GET_PRODUCTS } from '../../apollo/user/query';
 import { T } from '../../libs/types/common';
-import { LIKE_TARGET_PROPERTY } from '../../apollo/user/mutation';
+import { LIKE_TARGET_PRODUCT } from '../../apollo/user/mutation';
 import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
 
 export const getStaticProps = async ({ locale }: any) => ({
@@ -26,10 +26,10 @@ export const getStaticProps = async ({ locale }: any) => ({
 const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
-	const [searchFilter, setSearchFilter] = useState<PropertiesInquiry>(
+	const [searchFilter, setSearchFilter] = useState<ProductInquiry>(
 		router?.query?.input ? JSON.parse(router?.query?.input as string) : initialInput,
 	);
-	const [properties, setProperties] = useState<Property[]>([]);
+	const [properties, setProperties] = useState<Product[]>([]);
 	const [total, setTotal] = useState<number>(0);
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -37,20 +37,20 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 	const [filterSortName, setFilterSortName] = useState('New');
 
 	/** APOLLO REQUESTS **/
-	const [likeTargetProperty] = useMutation(LIKE_TARGET_PROPERTY);
+	const [likeTargetProperty] = useMutation(LIKE_TARGET_PRODUCT);
 
 	const {
-		loading: getPropertiesLoading,
-		data: getPropertiesData,
-		error: getPropertiesError,
-		refetch: getPropertiesRefetch,
-	} = useQuery(GET_PROPERTIES, {
+		loading: getProductsLoading,
+		data: getProductsData,
+		error: getProductsError,
+		refetch: getProductsRefetch,
+	} = useQuery(GET_PRODUCTS, {
 		fetchPolicy: 'network-only',
 		variables: { input: searchFilter },
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
-			setProperties(data?.getProperties?.list);
-			setTotal(data?.getProperties?.metaCounter[0]?.total);
+			setProperties(data?.getProducts?.list);
+			setTotal(data?.getProducts?.metaCounter[0]?.total);
 		},
 	});
 
@@ -75,7 +75,7 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 			await likeTargetProperty({
 				variables: { input: id },
 			});
-			await getPropertiesRefetch({ input: initialInput });
+			await getProductsRefetch({ input: initialInput });
 			//execute get property refetch
 			await sweetTopSmallSuccessAlert('success', 800);
 		} catch (err: any) {
@@ -177,9 +177,9 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 										<p>No Properties found!</p>
 									</div>
 								) : (
-									properties.map((property: Property) => {
+									properties.map((property: Product) => {
 										return (
-											<PropertyCard property={property} likePropertyHandler={likePropertyHandler} key={property?._id} />
+											<PropertyCard product={property} likePropertyHandler={likePropertyHandler} key={property?._id} />
 										);
 									})
 								)}
@@ -220,10 +220,10 @@ PropertyList.defaultProps = {
 		sort: 'createdAt',
 		direction: 'DESC',
 		search: {
-			squaresRange: {
-				start: 0,
-				end: 500,
-			},
+			// squaresRange: {
+			// 	start: 0,
+			// 	end: 500,
+			// },
 			pricesRange: {
 				start: 0,
 				end: 2000000,

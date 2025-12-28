@@ -8,7 +8,7 @@ import TopPropertyCard from './TopPropertyCard';
 import { ProductsInquiry, PropertiesInquiry } from '../../types/property/property.input';
 import { Product, Property } from '../../types/property/property';
 import { useMutation, useQuery } from '@apollo/client';
-import { GET_PRODUCTS, GET_PROPERTIES } from '../../../apollo/user/query';
+import { GET_PRODUCTS } from '../../../apollo/user/query';
 import { T } from '../../types/common';
 import { LIKE_TARGET_PRODUCT, LIKE_TARGET_PROPERTY } from '../../../apollo/user/mutation';
 import { Message } from '../../enums/common.enum';

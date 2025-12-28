@@ -1,6 +1,7 @@
 import {
 	ProductCollection,
 	ProductStatus,
+	ProductVolume,
 	PropertyLocation,
 	PropertyStatus,
 	PropertyType,
@@ -58,6 +59,7 @@ export interface Product {
 	_id: string;
 	productCollection: ProductCollection;
 	productStatus: ProductStatus;
+	productVolume: ProductVolume;
 	productName: string;
 	productDetail: string;
 	productDesc?: string;
