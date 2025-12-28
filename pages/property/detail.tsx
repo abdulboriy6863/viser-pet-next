@@ -57,6 +57,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 		commentContent: '',
 		commentRefId: '',
 	});
+	const [activePdTab, setActivePdTab] = useState('description');
 
 	/** APOLLO REQUESTS **/
 	const [likeTargetProperty] = useMutation(LIKE_TARGET_PRODUCT);
@@ -327,57 +328,131 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 
 						<Stack className={'property-desc-config'}>
 							<Stack className={'left-config'}>
+								{/*  */}
 								<Stack className={'prop-desc-config'}>
-									<Stack className={'top'}>
-										<Typography className={'title'}>Property Description</Typography>
-										<Typography className={'desc'}>{product?.productDesc ?? 'No Description!'}</Typography>
+									{/* Tabs header */}
+									<Stack className={'pd-tabs'}>
+										<button
+											type="button"
+											className={`pd-tab ${activePdTab === 'description' ? 'active' : ''}`}
+											onClick={() => setActivePdTab('description')}
+										>
+											Description
+										</button>
+
+										<button
+											type="button"
+											className={`pd-tab ${activePdTab === 'comment' ? 'active' : ''}`}
+											onClick={() => setActivePdTab('comment')}
+										>
+											Comment
+										</button>
+
+										<button
+											type="button"
+											className={`pd-tab ${activePdTab === 'faq' ? 'active' : ''}`}
+											onClick={() => setActivePdTab('faq')}
+										>
+											FAQ
+										</button>
 									</Stack>
-									<Stack className={'bottom'}>
-										<Typography className={'title'}>Property Details</Typography>
-										<Stack className={'info-box'}>
-											<Stack className={'left'}>
-												<Box component={'div'} className={'info'}>
-													<Typography className={'title'}>Price</Typography>
-													<Typography className={'data'}>${formatterStr(product?.productPrice)}</Typography>
-												</Box>
-												<Box component={'div'} className={'info'}>
-													<Typography className={'title'}>Property Size</Typography>
-													<Typography className={'data'}>{product?.productVolume} m2</Typography>
-												</Box>
-												<Box component={'div'} className={'info'}>
-													<Typography className={'title'}>Rooms</Typography>
-													<Typography className={'data'}>{product?.productLeftCount}</Typography>
-												</Box>
-												<Box component={'div'} className={'info'}>
-													<Typography className={'title'}>Bedrooms</Typography>
-													<Typography className={'data'}>{product?.productSoldCount}</Typography>
-												</Box>
+
+									{/* Content */}
+									<Stack className={'pd-tabBody'}>
+										{/* DESCRIPTION */}
+										{activePdTab === 'description' && (
+											<Stack className={'pd-description'}>
+												<Typography className={'desc'}>{product?.productDesc ?? 'No Description!'}</Typography>
 											</Stack>
-											<Stack className={'right'}>
-												<Box component={'div'} className={'info'}>
-													<Typography className={'title'}>Year Built</Typography>
-													<Typography className={'data'}>{moment(product?.createdAt).format('YYYY')}</Typography>
-												</Box>
-												<Box component={'div'} className={'info'}>
-													<Typography className={'title'}>Property Type</Typography>
-													<Typography className={'data'}>{product?.productCollection}</Typography>
-												</Box>
-												<Box component={'div'} className={'info'}>
-													<Typography className={'title'}>Property Options</Typography>
-													<Typography className={'data'}>
-														For {product?.productDiscount && 'Barter'} {product?.productDiscount && 'Rent'}
+										)}
+
+										{/* COMMENT (existing comments only) */}
+										{activePdTab === 'comment' && (
+											<Stack className={'pd-comments'}>
+												<Stack className={'pd-commentsHead'}>
+													<Typography className={'pd-commentsTitle'}>Comments</Typography>
+													<Typography className={'pd-commentsCount'}>{commentTotal ?? 0} total</Typography>
+												</Stack>
+
+												{/* MUHIM: Review component styles ishlashi uchun shu wrapper kerak */}
+												<Stack className={'reviews-config pd-commentsWrap'}>
+													<Stack className={'review-list'}>
+														{!commentTotal ? (
+															<Typography className={'pd-empty'}>Hozircha comment yo‘q.</Typography>
+														) : (
+															<>
+																{productComments?.map((comment: Comment) => (
+																	<Review comment={comment} key={comment?._id} />
+																))}
+
+																<Box component={'div'} className={'pagination-box'}>
+																	<MuiPagination
+																		page={commentInquiry.page}
+																		count={Math.ceil(commentTotal / commentInquiry.limit)}
+																		onChange={commentPaginationChangeHandler}
+																		shape="circular"
+																		color="primary"
+																	/>
+																</Box>
+															</>
+														)}
+													</Stack>
+												</Stack>
+											</Stack>
+										)}
+
+										{/* FAQ */}
+										{activePdTab === 'faq' && (
+											<Stack className={'pd-faq'}>
+												<Stack className={'pd-faqItem'} component="details">
+													<Typography component="summary" className={'pd-faqQ'}>
+														Yetkazib berish qancha vaqt oladi?
 													</Typography>
-												</Box>
+													<Typography className={'pd-faqA'}>
+														Odatda 1–3 ish kuni ichida yetkazib beriladi. Hududga qarab ozgina farq qilishi mumkin.
+													</Typography>
+												</Stack>
+
+												<Stack className={'pd-faqItem'} component="details">
+													<Typography component="summary" className={'pd-faqQ'}>
+														Discount qanday ishlaydi?
+													</Typography>
+													<Typography className={'pd-faqA'}>
+														Discount bo‘lsa narx yonida ko‘rinadi. Aksiyadagi mahsulotlar tez tugashi mumkin.
+													</Typography>
+												</Stack>
+
+												<Stack className={'pd-faqItem'} component="details">
+													<Typography component="summary" className={'pd-faqQ'}>
+														Qaytarish (refund) mumkinmi?
+													</Typography>
+													<Typography className={'pd-faqA'}>
+														Ha, mahsulot holati saqlangan bo‘lsa 7 kun ichida qaytarish mumkin. Chek/receipt talab
+														qilinadi.
+													</Typography>
+												</Stack>
+
+												<Stack className={'pd-faqItem'} component="details">
+													<Typography component="summary" className={'pd-faqQ'}>
+														Commentlar qanday tekshiriladi?
+													</Typography>
+													<Typography className={'pd-faqA'}>
+														Spam yoki haqoratli kontent o‘chiriladi. Real foydalanuvchi izohlari ustuvor.
+													</Typography>
+												</Stack>
 											</Stack>
-										</Stack>
+										)}
 									</Stack>
 								</Stack>
+
+								{/*  */}
 								<Stack className={'floor-plans-config'}>
 									<Typography className={'title'}>Floor Plans</Typography>
 									<Stack className={'image-box'}>
 										<img src={'/img/property/floorPlan.png'} alt={'image'} />
 									</Stack>
 								</Stack>
+								{/*  */}
 								<Stack className={'address-config'}>
 									<Typography className={'title'}>Address</Typography>
 									<Stack className={'map-box'}>
