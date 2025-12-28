@@ -1425,6 +1425,13 @@ body::-webkit-scrollbar {
 			}
 		}
 	}
+
+	&.home-page {
+		#footer {
+			background: radial-gradient(820px at 24% 40%, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0)),
+				linear-gradient(135deg, #f2d4b8 0%, #f0c7a4 52%, #eec29d 100%);
+		}
+	}
 }
 
 .MuiPaper-root.MuiMenu-paper {

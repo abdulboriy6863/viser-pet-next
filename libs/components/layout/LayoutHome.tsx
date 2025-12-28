@@ -32,7 +32,7 @@ const withLayoutMain = (Component: any) => {
 						<title>Nestar</title>
 						<meta name={'title'} content={`Nestar`} />
 					</Head>
-					<Stack id="mobile-wrap">
+					<Stack id="mobile-wrap" className="home-page">
 						<Stack id={'top'}>
 							<Top />
 						</Stack>
@@ -54,7 +54,7 @@ const withLayoutMain = (Component: any) => {
 						<title>Viser Pet | Pet care & shop</title>
 						<meta name={'title'} content={`Viser Pet`} />
 					</Head>
-					<Stack id="pc-wrap">
+					<Stack id="pc-wrap" className="home-page">
 						<Stack id={'top'}>
 							<Top />
 						</Stack>
