@@ -1,7 +1,6 @@
 #pc-wrap {
 	#property-list-page {
 		padding-bottom: 40px;
-		background: #f6f6f6;
 
 		.filter-top {
 			margin: 90px auto 12px;
@@ -463,9 +462,10 @@
 						.filter-promoCard {
 							margin-top: 10px;
 							width: 100%;
+							height: 275px;
 							border-radius: 18px;
-							background: #f6f2ff; /* yengil background */
-							border: 1px solid #ece7ff;
+							// background: #f6f2ff; /* yengil background */
+							// border: 1px solid #ece7ff;
 							overflow: hidden;
 							padding: 14px;
 						}
@@ -495,99 +495,70 @@
 						.card-config {
 							width: 296px;
 							height: 413px;
-							margin-bottom: 7px;
+							// margin-bottom: 7px;
 							border-radius: 12px;
-							background: #fff;
-							box-shadow: 0px 1px 4px 0px rgba(24, 26, 32, 0.07);
+							// background: #fff;
+							// box-shadow: 0px 1px 4px 0px rgba(24, 26, 32, 0.07);
+
 							.top {
 								position: relative;
 								width: 100%;
 								height: 240px;
+
+								background: #fff;
+								border-radius: 18px;
+								overflow: hidden;
+
+								box-shadow: 0px 12px 32px rgba(24, 26, 32, 0.08);
+
 								a {
+									width: 100%;
 									height: 100%;
+									display: block;
 								}
+
 								img {
 									width: 100%;
 									height: 100%;
-									object-fit: cover;
-									border-radius: 12px 12px 0 0;
-								}
-								.top-badge {
-									position: absolute;
-									top: 20px;
-									left: 16px;
-									display: flex;
-									width: 80px;
-									height: 30px;
-									justify-content: center;
-									align-items: center;
-									border-radius: 6px;
-									padding: 6px 20px;
-									background: #eb6753;
-									color: #fff;
-									text-align: center;
-									text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-									font-family: $font;
-									font-size: 12px;
-									font-style: normal;
-									font-weight: 600;
-									line-height: normal;
-									img {
-										height: 16px;
-									}
-								}
-								.price-box {
-									position: absolute;
-									bottom: 20px;
-									left: 20px;
-									padding: 8px 15px;
-									align-items: center;
-									border-radius: 6px;
-									border: 1px solid rgba(255, 255, 255, 0.5);
-									background: #fff;
-									p {
-										color: #181a20;
-										font-family: $font;
-										font-size: 15px;
-										font-style: normal;
-										font-weight: 600;
-										line-height: normal;
-									}
+									object-fit: cover; // 🔥 rasm blokni to'liq egallaydi
+									object-position: center;
+									display: block;
 								}
 							}
+
+							///////////////////////////
 							.bottom {
+								text-align: center;
 								width: 100%;
 								height: 173px;
 								padding: 20px 16px 10px 16px;
 								.name-address {
 									width: 100%;
-									height: 48px;
-									gap: 5px;
+									// height: 54px;
+									gap: 6px;
 									margin-bottom: 20px;
 									.name {
 										width: 100%;
-										height: 23px;
+										height: 50px;
 										overflow: hidden;
 										p {
-											color: #181a20;
-											font-family: $font;
-											font-size: 15px;
-											font-style: normal;
-											font-weight: 600;
-											line-height: normal;
-											text-transform: capitalize;
+											color: #1a1a1a;
+											font-family: 'Nunito', sans-serif;
+											font-size: 20px;
+											font-weight: 800;
+											letter-spacing: -0.2px;
 										}
 									}
-									.address {
+									.price {
 										width: 100%;
+										// height: 50px;
 										overflow: hidden;
 										p {
-											color: #717171;
-											font-family: $font;
-											font-size: 13px;
-											font-style: normal;
-											font-weight: 400;
-											line-height: normal;
+											color: #1a1a1a;
+											font-family: 'Nunito', sans-serif;
+											font-size: 18px;
+											font-weight: 800;
+											letter-spacing: -0.2px;
 										}
 									}
 								}
@@ -663,22 +634,44 @@
 						align-items: center;
 						gap: 20px;
 						.pagination-box {
-							width: 100%;
-							align-items: center;
+							display: flex;
+							justify-content: center;
 						}
+
+						/* FAQAT pagination itemlar */
+						.pagination-box .MuiPaginationItem-root {
+							color: #181a20;
+						}
+
+						/* ACTIVE PAGE */
+						.pagination-box .MuiPaginationItem-root.Mui-selected {
+							background: #17c3b2 !important;
+							color: #ffffff !important;
+						}
+
+						/* hover */
+						.pagination-box .MuiPaginationItem-root:hover {
+							background: rgba(23, 195, 178, 0.15);
+						}
+
+						/* active hover */
+						.pagination-box .MuiPaginationItem-root.Mui-selected:hover {
+							background: #14b3a4 !important;
+						}
+
 						.total-result {
 							p {
-								color: #181a20;
-								text-align: center;
-								font-family: $font;
-								font-size: 24px;
-								font-style: normal;
-								font-weight: 275;
-								line-height: 26px;
+								color: #1a1a1a;
+								font-family: 'Nunito', sans-serif;
+								font-size: 18px;
+								font-weight: 800;
+								letter-spacing: -0.2px;
 							}
 						}
 					}
 				}
+
+				/////////////////////////////
 			}
 		}
 	}

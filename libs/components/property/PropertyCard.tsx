@@ -27,6 +27,21 @@ const PropertyCard = (props: PropertyCardType) => {
 		? `${REACT_APP_API_URL}/${product?.productImages[0]}`
 		: '/img/banner/header1.svg';
 
+	const basePrice = Number(product?.productPrice) || 0;
+	const discountValue = Number(product?.productDiscount) || 0;
+	const hasDiscount = discountValue > 0;
+	const isPercentDiscount = hasDiscount && discountValue <= 100;
+	const discountPrice =
+		hasDiscount && basePrice
+			? isPercentDiscount
+				? basePrice * (1 - discountValue / 100)
+				: Math.max(0, discountValue)
+			: basePrice;
+	const priceLabel =
+		hasDiscount && discountPrice > 0 && discountPrice !== basePrice
+			? `$${formatterStr(Math.min(basePrice, discountPrice))} - $${formatterStr(Math.max(basePrice, discountPrice))}`
+			: `$${formatterStr(basePrice)}`;
+
 	if (device === 'mobile') {
 		return <div>PROPERTY CARD</div>;
 	} else {
@@ -44,13 +59,11 @@ const PropertyCard = (props: PropertyCardType) => {
 					{product && product?.productRank > 50 && (
 						<Box component={'div'} className={'top-badge'}>
 							<img src="/img/icons/electricity.svg" alt="" />
-							<Typography>TOP</Typography>
+							<Typography>TO1111</Typography>
 						</Box>
 					)}
-					<Box component={'div'} className={'price-box'}>
-						<Typography>${formatterStr(product?.productPrice)}</Typography>
-					</Box>
 				</Stack>
+				{/* shu yerni ozgartirish kerak */}
 				<Stack className="bottom">
 					<Stack className="name-address">
 						<Stack className="name">
@@ -60,43 +73,22 @@ const PropertyCard = (props: PropertyCardType) => {
 									query: { id: product?._id },
 								}}
 							>
-								<Typography>{product.productDetail}</Typography>
+								<Typography>{product.productName}</Typography>
 							</Link>
 						</Stack>
-						<Stack className="address">
-							<Typography>
-								{product.productDiscount}, {product.productDiscount}
-							</Typography>
+						<Stack className="price">
+							<Typography className="price">{priceLabel}</Typography>{' '}
 						</Stack>
 					</Stack>
-					<Stack className="options">
-						{/* <Stack className="option">
-							<img src="/img/icons/bed.svg" alt="" /> <Typography>{product.productName} bed</Typography>
-						</Stack> */}
-						{/* <Stack className="option">
-							<img src="/img/icons/room.svg" alt="" /> <Typography>{product.productVolume} room</Typography>
-						</Stack> */}
-						{/* <Stack className="option">
-							<img src="/img/icons/expand.svg" alt="" /> <Typography>{product.productSoldCount} m2</Typography>
-						</Stack> */}
-					</Stack>
-					<Stack className="divider"></Stack>
+
 					<Stack className="type-buttons">
 						<Stack className="type">
 							<Typography
 								sx={{ fontWeight: 500, fontSize: '13px' }}
 								className={product.productName ? '' : 'disabled-type'}
-							>
-								Rent
-							</Typography>
-							<Typography
-								sx={{ fontWeight: 500, fontSize: '13px' }}
-								className={product.productLeftCount ? '' : 'disabled-type'}
-							>
-								Barter
-							</Typography>
+							></Typography>
 						</Stack>
-						{!recentlyVisited && (
+						{/* {!recentlyVisited && (
 							<Stack className="buttons">
 								<IconButton color={'default'}>
 									<RemoveRedEyeIcon />
@@ -113,7 +105,7 @@ const PropertyCard = (props: PropertyCardType) => {
 								</IconButton>
 								<Typography className="view-cnt">{product?.productLikes}</Typography>
 							</Stack>
-						)}
+						)} */}
 					</Stack>
 				</Stack>
 			</Stack>

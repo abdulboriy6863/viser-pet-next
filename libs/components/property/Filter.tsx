@@ -16,7 +16,7 @@ interface FilterType {
 
 type CollectionGroupKey = 'FOOD' | 'ACCESSORIES_TOYS' | 'BEDS_CLOTHING_HYGIENE' | 'HEALTH';
 
-const FILTER_IMAGE_SRC = '/img/filter/pet-zone.png'; // o‘zing keyin almashtirasan
+const FILTER_IMAGE_SRC = '/img/newProduct/filtterImg.webp'; // o‘zing keyin almashtirasan
 
 const Filter = (props: FilterType) => {
 	const { searchFilter, setSearchFilter, initialInput } = props;

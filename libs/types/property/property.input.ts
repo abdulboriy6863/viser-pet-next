@@ -112,8 +112,6 @@ export interface PISearch {
 	text?: string; // Product.productName / productDetail / productDesc bo‘yicha qidiruv
 	inStock?: boolean; // productLeftCount > 0
 	discounted?: boolean; // productDiscount mavjudligi
-	roomsList?: Number[];
-	options?: string[];
 
 	//bunga yana ishlov berish kerak bo'lishi mumkin
 }
