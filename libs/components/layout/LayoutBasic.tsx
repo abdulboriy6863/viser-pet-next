@@ -33,6 +33,11 @@ const withLayoutBasic = (Component: any) => {
 					desc = 'We are glad to see you again!';
 					bgImage = '/img/banner/properties.png';
 					break;
+				case '/product':
+					title = 'Products';
+					desc = 'We are glad to see you again!';
+					bgImage = '/img/banner/properties.png';
+					break;
 				case '/agent':
 					title = 'Agents';
 					desc = 'Home / For Rent';
@@ -81,6 +86,8 @@ const withLayoutBasic = (Component: any) => {
 			return { title, desc, bgImage };
 		}, [router.pathname]);
 
+		const isProductLike = router.pathname.startsWith('/product') || router.pathname.startsWith('/property');
+
 		/** LIFECYCLES **/
 		useEffect(() => {
 			const jwt = getJwtToken();
@@ -123,19 +130,78 @@ const withLayoutBasic = (Component: any) => {
 							<Top />
 						</Stack>
 
-						<Stack
-							className={`header-basic ${authHeader && 'auth'}`}
-							style={{
-								backgroundImage: `url(${memoizedValues.bgImage})`,
-								backgroundSize: 'cover',
-								boxShadow: 'inset 10px 40px 150px 40px rgb(24 22 36)',
-							}}
-						>
-							<Stack className={'container'}>
-								<strong>{t(memoizedValues.title)}</strong>
-								<span>{t(memoizedValues.desc)}</span>
+						{!isProductLike && (
+							<Stack
+								className={`header-basic ${authHeader && 'auth'}`}
+								style={{
+									backgroundImage: `url(${memoizedValues.bgImage})`,
+									backgroundSize: 'cover',
+									boxShadow: 'inset 10px 40px 150px 40px rgb(24 22 36)',
+								}}
+							>
+								<Stack className={'container'}>
+									<strong>{t(memoizedValues.title)}</strong>
+									<span>{t(memoizedValues.desc)}</span>
+								</Stack>
 							</Stack>
-						</Stack>
+						)}
+
+						{isProductLike && (
+							<Stack className={'hero-banner-product'}>
+								<Stack className={'hero-banner__inner'}>
+									<Stack className={'hero-banner__content'}>
+										<span className={'hero-banner__title'}>
+											New & Exclusive
+											<br />
+											Dog Clothing
+										</span>
+
+										<span
+											className="hero-banner__title-button"
+											style={{
+												color: '#1a1a1a',
+												fontFamily: '"Nunito", sans-serif',
+												fontSize: '20px',
+												fontWeight: 500,
+												letterSpacing: '-0.2px',
+												lineHeight: '1.6',
+											}}
+										>
+											Shop our new range of winter dog
+											<br />
+											coats & jackets in-store or online
+										</span>
+
+										{/* <Stack className={'hero-banner__actions'}>
+											<a className={'hero-banner__cta'} href={'/property'}>
+												Shop now
+											</a>
+										</Stack> */}
+									</Stack>
+
+									<Stack className={'hero-banner__visual'}>
+										<img
+											className={'hero-banner__image'}
+											src="/img/newProduct/image2.png"
+											alt="Puppy with bow tie"
+											loading="lazy"
+										/>
+									</Stack>
+								</Stack>
+
+								<span className={'hero-ellipse hero-ellipse--1'} aria-hidden />
+								<span className={'hero-ellipse hero-ellipse--2'} aria-hidden />
+								<span className={'hero-ellipse hero-ellipse--3'} aria-hidden />
+								<span className={'hero-ellipse hero-ellipse--4'} aria-hidden />
+								<span className={'hero-ellipse hero-ellipse--5'} aria-hidden />
+								<span className={'hero-ellipse hero-ellipse--6'} aria-hidden />
+								<span className={'hero-ellipse hero-ellipse--7'} aria-hidden />
+								<span className={'hero-ellipse hero-ellipse--1b'} aria-hidden />
+								<span className={'hero-ellipse hero-ellipse--3b'} aria-hidden />
+								<span className={'hero-ellipse hero-ellipse--7b'} aria-hidden />
+								<span className={'hero-banner__wave'} aria-hidden />
+							</Stack>
+						)}
 
 						<Stack id={'main'}>
 							<Component {...props} />

@@ -323,15 +323,39 @@ body::-webkit-scrollbar {
 		display: flex;
 		align-items: center;
 	}
-	.hero-banner::before {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background: radial-gradient(940px at 76% 50%, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0)),
-			radial-gradient(620px at 18% 32%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0)),
-			radial-gradient(420px at 40% 78%, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0));
-		pointer-events: none;
+
+	// product banner uchun ///
+	.hero-banner-product {
+		position: relative;
+		width: 100%;
+		height: 800px;
+		overflow: hidden;
+		display: flex;
+		align-items: center;
+
+		background: #dff3f7;
 	}
+	// .hero-banner-product::before {
+	// 	content: '';
+	// 	position: absolute;
+	// 	inset: 0;
+	// 	pointer-events: none;
+	// 	background: radial-gradient(940px at 76% 50%, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0)),
+	// 		radial-gradient(620px at 18% 32%, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0)),
+	// 		radial-gradient(420px at 40% 78%, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0));
+	// }
+	// .hero-banner::before {
+	// 	content: '';
+	// 	position: absolute;
+	// 	inset: 0;
+	// 	background: radial-gradient(940px at 76% 50%, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0)),
+	// 		radial-gradient(620px at 18% 32%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0)),
+	// 		radial-gradient(420px at 40% 78%, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0));
+	// 	pointer-events: none;
+	// }
+
+	// product banner uchun ///
+
 	.hero-banner__inner {
 		position: relative;
 		display: grid;
@@ -416,7 +440,7 @@ body::-webkit-scrollbar {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 100%;
+		width: 116%;
 		position: relative;
 	}
 	.hero-banner__image {
@@ -424,6 +448,7 @@ body::-webkit-scrollbar {
 		width: 440px;
 		max-width: 100%;
 		height: auto;
+		object-fit: cover;
 		display: block;
 		z-index: 2;
 	}
