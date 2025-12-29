@@ -86,7 +86,8 @@ const withLayoutBasic = (Component: any) => {
 			return { title, desc, bgImage };
 		}, [router.pathname]);
 
-		const isProductLike = router.pathname.startsWith('/product') || router.pathname.startsWith('/property');
+		const isAgent = router.pathname.startsWith('/agent');
+		const isProductLike = router.pathname.startsWith('/product') || router.pathname.startsWith('/property') || isAgent;
 
 		/** LIFECYCLES **/
 		useEffect(() => {
@@ -147,7 +148,7 @@ const withLayoutBasic = (Component: any) => {
 						)}
 
 						{isProductLike && (
-							<Stack className={'hero-banner-product'}>
+							<Stack className={'hero-banner-product'} style={isAgent ? { background: '#fff7f2' } : undefined}>
 								<Stack className={'hero-banner__inner'}>
 									<Stack className={'hero-banner__content'}>
 										<span className={'hero-banner__title'}>
@@ -179,12 +180,16 @@ const withLayoutBasic = (Component: any) => {
 										</Stack> */}
 									</Stack>
 
-									<Stack className={'hero-banner__visual'}>
+									<Stack
+										className={'hero-banner__visual'}
+										style={isAgent ? { alignSelf: 'flex-end', justifyContent: 'flex-end' } : undefined}
+									>
 										<img
 											className={'hero-banner__image'}
-											src="/img/newProduct/image2.png"
+											src={isAgent ? '/img/newProduct/dog_headphones.png' : '/img/newProduct/dog_headphones.png'}
 											alt="Puppy with bow tie"
 											loading="lazy"
+											style={isAgent ? { marginTop: 'auto' } : undefined}
 										/>
 									</Stack>
 								</Stack>
