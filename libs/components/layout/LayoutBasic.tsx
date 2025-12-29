@@ -88,6 +88,7 @@ const withLayoutBasic = (Component: any) => {
 
 		const isAgent = router.pathname.startsWith('/agent');
 		const isProductLike = router.pathname.startsWith('/product') || router.pathname.startsWith('/property') || isAgent;
+		const footerClassName = isAgent ? 'footer--agent hero-section' : undefined;
 
 		/** LIFECYCLES **/
 		useEffect(() => {
@@ -113,8 +114,8 @@ const withLayoutBasic = (Component: any) => {
 							<Component {...props} />
 						</Stack>
 
-						<Stack id={'footer'}>
-							<Footer />
+						<Stack id={'footer'} className={footerClassName}>
+							<Footer className={footerClassName} />
 						</Stack>
 					</Stack>
 				</>
@@ -212,8 +213,8 @@ const withLayoutBasic = (Component: any) => {
 
 						<Chat />
 
-						<Stack id={'footer'}>
-							<Footer />
+						<Stack id={'footer'} className={footerClassName}>
+							<Footer className={footerClassName} />
 						</Stack>
 					</Stack>
 				</>

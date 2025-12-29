@@ -8,12 +8,16 @@ import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import moment from 'moment';
 import useDeviceDetect from '../hooks/useDeviceDetect';
 
-const Footer = () => {
+type FooterProps = {
+	className?: string;
+};
+
+const Footer = ({ className }: FooterProps) => {
 	const device = useDeviceDetect();
 	const isMobile = device === 'mobile';
 
 	return (
-		<Stack id="footer" component="footer">
+		<Stack id="footer" component="footer" className={className}>
 			{/* TOP WAVE (rasm senda bor - pathni o'zing qo'yasan) */}
 			<Box className="vp-footer__wave" aria-hidden />
 
