@@ -4,17 +4,16 @@ import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutFull from '../../libs/components/layout/LayoutFull';
 import { NextPage } from 'next';
 import Review from '../../libs/components/property/Review';
-import { Swiper, SwiperSlide } from 'swiper/react';
+// import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore, { Autoplay, Navigation, Pagination } from 'swiper';
 import PropertyBigCard from '../../libs/components/common/PropertyBigCard';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import WestIcon from '@mui/icons-material/West';
-import EastIcon from '@mui/icons-material/East';
+// import WestIcon from '@mui/icons-material/West';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { Product, Property } from '../../libs/types/property/property';
-import moment from 'moment';
+// import moment from 'moment';
 import { formatterStr } from '../../libs/utils';
 import { REACT_APP_API_URL } from '../../libs/config';
 import { userVar } from '../../apollo/store';
@@ -27,11 +26,12 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import { GET_COMMENTS, GET_PRODUCT, GET_PRODUCTS, GET_PROPERTIES, GET_PROPERTY } from '../../apollo/user/query';
+import { GET_COMMENTS, GET_PRODUCT, GET_PRODUCTS } from '../../apollo/user/query';
 import { T } from '../../libs/types/common';
 import { Direction, Message } from '../../libs/enums/common.enum';
-import { CREATE_COMMENT, LIKE_TARGET_PRODUCT, LIKE_TARGET_PROPERTY } from '../../apollo/user/mutation';
+import { CREATE_COMMENT, LIKE_TARGET_PRODUCT } from '../../apollo/user/mutation';
 import { sweetErrorHandling, sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
+import dynamic from 'next/dynamic';
 
 SwiperCore.use([Autoplay, Navigation, Pagination]);
 
@@ -48,7 +48,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 	const [productId, setProductId] = useState<string | null>(null);
 	const [product, setProduct] = useState<Product | null>(null);
 	const [slideImage, setSlideImage] = useState<string>('');
-	const [destinationProperties, setDestinationProperties] = useState<Product[]>([]);
+	// const [destinationProperties, setDestinationProperties] = useState<Product[]>([]);
 	const [commentInquiry, setCommentInquiry] = useState<CommentsInquiry>(initialComment);
 	const [productComments, setProductComments] = useState<Comment[]>([]);
 	const [commentTotal, setCommentTotal] = useState<number>(0);
@@ -64,6 +64,10 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 	const [likeTargetProduct] = useMutation(LIKE_TARGET_PRODUCT);
 
 	const [createComment] = useMutation(CREATE_COMMENT);
+
+	const KoreaPetStatsMap = dynamic(() => import('./koreaPetsStatsMap'), {
+		ssr: false,
+	});
 
 	const {
 		loading: getProductLoading,
@@ -94,16 +98,14 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 				limit: 4,
 				sort: 'createdAt',
 				direction: Direction.DESC,
-				search: {
-					locationList: product?.productDetail ? [product?.productDetail] : [],
-				},
+				search: {},
 			},
 		},
 		skip: !productId && !product,
 		notifyOnNetworkStatusChange: true,
-		onCompleted: (data: T) => {
-			if (data?.getProducts?.list) setDestinationProperties(data?.getProducts?.list);
-		},
+		// onCompleted: (data: T) => {
+		// 	if (data?.getProducts?.list) setDestinationProperties(data?.getProducts?.list);
+		// },
 	});
 
 	const {
@@ -167,9 +169,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 					limit: 4,
 					sort: 'createdAt',
 					direction: Direction.DESC,
-					search: {
-						locationList: product?.productDetail ? [product?.productDetail] : [],
-					},
+					search: {},
 				},
 			});
 
@@ -311,7 +311,11 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 
 											<Stack className="button-box">
 												{product?.meLiked && product?.meLiked[0]?.myFavorite ? (
-													<FavoriteIcon color="primary" fontSize={'medium'} onClick={() => likeProductHandler(product?._id)} />
+													<FavoriteIcon
+														color="primary"
+														fontSize={'medium'}
+														onClick={() => likeProductHandler(product?._id)}
+													/>
 												) : (
 													<FavoriteBorderIcon fontSize={'medium'} onClick={() => likeProductHandler(product?._id)} />
 												)}
@@ -445,14 +449,29 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 								</Stack>
 
 								{/*  */}
-								<Stack className={'floor-plans-config'}>
-									<Typography className={'title'}>Floor Plans</Typography>
-									<Stack className={'image-box'}>
-										<img src={'/img/property/floorPlan.png'} alt={'image'} />
-									</Stack>
+								<Stack className="floor-plans-config">
+									{/* Overlay text */}
+									<div className="video-overlay">
+										<h2>반려동물을 보호합시다</h2>
+										<p>
+											반려동물은 단순한 동물이 아니라 우리의 가족이자 소중한 친구입니다. 작은 관심과 사랑이 그들의 삶을
+											더 안전하고 행복하게 만듭니다.
+										</p>
+									</div>
+
+									{/* Video */}
+									<video
+										className="floor-video"
+										src="/img/newProduct/detailvideo1.mp4"
+										autoPlay
+										muted
+										loop
+										playsInline
+									/>
 								</Stack>
+
 								{/*  */}
-								<Stack className={'address-config'}>
+								{/* <Stack className={'address-config'}>
 									<Typography className={'title'}>Address</Typography>
 									<Stack className={'map-box'}>
 										<iframe
@@ -465,7 +484,10 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 											referrerPolicy="no-referrer-when-downgrade"
 										></iframe>
 									</Stack>
-								</Stack>
+								</Stack> */}
+								{/* <KoreaPetStats /> */}
+								<KoreaPetStatsMap />
+
 								{commentTotal !== 0 && (
 									<Stack className={'reviews-config'}>
 										<Stack className={'filter-box'}>
@@ -607,49 +629,6 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 								</Stack>
 							</Stack>
 						</Stack>
-						{destinationProperties.length !== 0 && (
-							<Stack className={'similar-properties-config'}>
-								<Stack className={'title-pagination-box'}>
-									<Stack className={'title-box'}>
-										<Typography className={'main-title'}>Destination Property</Typography>
-										<Typography className={'sub-title'}>Aliquam lacinia diam quis lacus euismod</Typography>
-									</Stack>
-									<Stack className={'pagination-box'}>
-										<WestIcon className={'swiper-similar-prev'} />
-										<div className={'swiper-similar-pagination'}></div>
-										<EastIcon className={'swiper-similar-next'} />
-									</Stack>
-								</Stack>
-								<Stack className={'cards-box'}>
-									<Swiper
-										className={'similar-homes-swiper'}
-										slidesPerView={'auto'}
-										spaceBetween={35}
-										modules={[Autoplay, Navigation, Pagination]}
-										navigation={{
-											nextEl: '.swiper-similar-next',
-											prevEl: '.swiper-similar-prev',
-										}}
-										pagination={{
-											el: '.swiper-similar-pagination',
-										}}
-									>
-										{destinationProperties.map((product: Product) => {
-											return (
-												<SwiperSlide className={'similar-homes-slide'} key={product.productDesc}>
-													<PropertyBigCard //shu yerda togirlangan qismi bor
-														product={product}
-														likeTargetProduct={likeProductHandler}
-														key={product?._id}
-														likeProductHandler={likeProductHandler}
-													/>
-												</SwiperSlide>
-											);
-										})}
-									</Swiper>
-								</Stack>
-							</Stack>
-						)}
 					</Stack>
 				</div>
 			</div>

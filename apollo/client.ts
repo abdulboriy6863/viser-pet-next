@@ -8,7 +8,7 @@ import { getJwtToken } from '../libs/auth';
 import { TokenRefreshLink } from 'apollo-link-token-refresh';
 import { sweetErrorAlert } from '../libs/sweetAlert';
 import { error } from 'console';
-import { socketVar } from './store';
+import { petStatsVar, socketVar } from './store';
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 
 function getHeaders() {
@@ -43,8 +43,20 @@ class LoggingWebSocket {
 			console.log('WebSocket connection');
 		};
 
+		// this.socket.onmessage = (msg) => {
+		// 	console.log('WebSocket message', msg.data);
+		// };
+
 		this.socket.onmessage = (msg) => {
 			console.log('WebSocket message', msg.data);
+
+			try {
+				const parsed = JSON.parse(msg.data as string);
+
+				if (parsed?.event === 'petStats:krCities' && Array.isArray(parsed?.rows)) {
+					petStatsVar(parsed.rows);
+				}
+			} catch {}
 		};
 
 		this.socket.onerror = (error) => {

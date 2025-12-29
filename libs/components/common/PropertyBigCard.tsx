@@ -13,12 +13,11 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
 interface PropertyBigCardProps {
 	product: Product;
-	likeTargetProduct: any;
-	likeProductHandler: any;
+	likeProductHandler: (productId: string) => void | Promise<void>;
 }
 
 const PropertyBigCard = (props: PropertyBigCardProps) => {
-	const { product, likeTargetProduct, likeProductHandler } = props;
+	const { product, likeProductHandler } = props;
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const router = useRouter();

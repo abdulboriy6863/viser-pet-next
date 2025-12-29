@@ -8,22 +8,22 @@ import {
 } from '../../enums/property.enum';
 import { Direction } from '../../enums/common.enum';
 
-export interface PropertyInput {
-	propertyType: PropertyType;
-	propertyLocation: PropertyLocation;
-	propertyAddress: string;
-	propertyTitle: string;
-	propertyPrice: number;
-	propertySquare: number;
-	propertyBeds: number;
-	propertyRooms: number;
-	propertyImages: string[];
-	propertyDesc?: string;
-	propertyBarter?: boolean;
-	propertyRent?: boolean;
-	memberId?: string;
-	constructedAt?: Date;
-}
+// export interface PropertyInput {
+// 	propertyType: PropertyType;
+// 	propertyLocation: PropertyLocation;
+// 	propertyAddress: string;
+// 	propertyTitle: string;
+// 	propertyPrice: number;
+// 	propertySquare: number;
+// 	propertyBeds: number;
+// 	propertyRooms: number;
+// 	propertyImages: string[];
+// 	propertyDesc?: string;
+// 	propertyBarter?: boolean;
+// 	propertyRent?: boolean;
+// 	memberId?: string;
+// 	constructedAt?: Date;
+// }
 
 // interface PISearch {
 // 	memberId?: string;
@@ -81,14 +81,6 @@ interface Range {
 // 	end: Date | number;
 // }
 
-export interface ProductInquiry {
-	page: number;
-	limit: number;
-	sort?: string;
-	direction?: Direction;
-	search: PISearch;
-}
-
 //////////////VISER PET NEXT NEW INPUT TYPES/////////////////////
 export interface ProductInput {
 	propertyType: ProductCollection;
@@ -122,4 +114,24 @@ export interface ProductsInquiry {
 	sort?: string;
 	direction?: Direction;
 	search: PISearch;
+}
+
+export interface ProductInquiry {
+	page: number;
+	limit: number;
+	sort?: string;
+	direction?: Direction;
+	search: PISearch;
+}
+
+interface APISearch {
+	productStatus?: ProductStatus;
+}
+
+export interface AgentProductInquiry {
+	page: number;
+	limit: number;
+	sort?: string;
+	direction?: Direction;
+	search: APISearch;
 }

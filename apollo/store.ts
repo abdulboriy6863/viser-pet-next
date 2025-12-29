@@ -26,3 +26,4 @@ export const userVar = makeVar<CustomJwtPayload>({
 
 //@ts-ignore
 export const socketVar = makeVar<WebSocket>();
+export const petStatsVar = makeVar<{ label: string; value: number }[]>([]);
