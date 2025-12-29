@@ -15,6 +15,13 @@ import { GET_AGENTS } from '../../apollo/user/query';
 import { T } from '../../libs/types/common';
 import { Messages } from '../../libs/config';
 import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
+import SwiperCore, { Navigation, Pagination as SwiperPagination } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+
+SwiperCore.use([Navigation, SwiperPagination]);
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -177,9 +184,25 @@ const AgentList: NextPage = ({ initialInput, ...props }: any) => {
 								<p>No Agents found!</p>
 							</div>
 						) : (
-							agents.map((agent: Member) => {
-								return <AgentCard agent={agent} likeMemberHandler={likeMemberHandler} key={agent._id} />;
-							})
+							<Swiper
+								className={'agent-swiper'}
+								slidesPerView={4}
+								spaceBetween={20}
+								navigation
+								pagination={{ clickable: true }}
+								breakpoints={{
+									0: { slidesPerView: 1.05, spaceBetween: 14 },
+									640: { slidesPerView: 2, spaceBetween: 16 },
+									960: { slidesPerView: 3, spaceBetween: 18 },
+									1280: { slidesPerView: 4, spaceBetween: 22 },
+								}}
+							>
+								{agents.map((agent: Member) => (
+									<SwiperSlide key={agent._id}>
+										<AgentCard agent={agent} likeMemberHandler={likeMemberHandler} />
+									</SwiperSlide>
+								))}
+							</Swiper>
 						)}
 					</Stack>
 					<Stack className={'pagination'}>

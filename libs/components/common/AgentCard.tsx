@@ -34,18 +34,12 @@ const AgentCard = (props: AgentCardProps) => {
 						query: { agentId: agent?._id },
 					}}
 				>
-					<Box
-						component={'div'}
-						className={'agent-img'}
-						style={{
-							backgroundImage: `url(${imagePath})`,
-							backgroundSize: 'cover',
-							backgroundPosition: 'center',
-							backgroundRepeat: 'no-repeat',
-						}}
-					>
-						<div>{agent?.memberProperties} properties</div>
-					</Box>
+					<Stack className={'agent-img'}>
+						<Box className={'image-ring'}>
+							<img src={imagePath} alt={agent?.memberFullName ?? agent?.memberNick ?? 'Agent'} />
+						</Box>
+						<div className={'badge'}>{agent?.memberProperties ?? 0} listings</div>
+					</Stack>
 				</Link>
 
 				<Stack className={'agent-desc'}>
@@ -53,27 +47,31 @@ const AgentCard = (props: AgentCardProps) => {
 						<Link
 							href={{
 								pathname: '/agent/detail',
-								query: { agentId: 'id' },
+								query: { agentId: agent?._id },
 							}}
 						>
-							<strong>{agent?.memberFullName ?? agent?.memberNick}</strong>
+							<Typography component={'strong'} className={'agent-name'}>
+								{agent?.memberFullName ?? agent?.memberNick}
+							</Typography>
 						</Link>
-						<span>Agent</span>
+						<Typography className={'agent-role'}>{agent?.memberType ?? 'Agent'}</Typography>
 					</Box>
-					<Box component={'div'} className={'buttons'}>
-						<IconButton color={'default'}>
-							<RemoveRedEyeIcon />
-						</IconButton>
-						<Typography className="view-cnt">{agent?.memberViews}</Typography>
-						<IconButton color={'default'} onClick={() => likeMemberHandler(user, agent?._id)}>
-							{agent?.meLiked && agent?.meLiked[0]?.myFavorite ? (
-								<FavoriteIcon color={'primary'} />
-							) : (
-								<FavoriteBorderIcon />
-							)}
-						</IconButton>
-						<Typography className="view-cnt">{agent?.memberLikes}</Typography>
-					</Box>
+					<Stack className={'agent-meta'}>
+						<Stack className={'stat'}>
+							<RemoveRedEyeIcon fontSize="small" />
+							<Typography className="stat-text">{agent?.memberViews}</Typography>
+						</Stack>
+						<Stack className={'stat'}>
+							<IconButton color={'default'} onClick={() => likeMemberHandler(user, agent?._id)}>
+								{agent?.meLiked && agent?.meLiked[0]?.myFavorite ? (
+									<FavoriteIcon color={'primary'} />
+								) : (
+									<FavoriteBorderIcon />
+								)}
+							</IconButton>
+							<Typography className="stat-text">{agent?.memberLikes}</Typography>
+						</Stack>
+					</Stack>
 				</Stack>
 			</Stack>
 		);
