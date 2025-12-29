@@ -335,6 +335,12 @@ body::-webkit-scrollbar {
 
 		background: #dff3f7;
 	}
+	.hero-section {
+		background: linear-gradient(135deg, #fdb813 0%, #fdb813 35%, #f9a602 100%);
+	}
+	.hero-banner-product--agent {
+		background: linear-gradient(135deg, #fdb813 0%, #fdb813 35%, #f9a602 100%);
+	}
 	// .hero-banner-product::before {
 	// 	content: '';
 	// 	position: absolute;
@@ -369,6 +375,10 @@ body::-webkit-scrollbar {
 		padding: 140px 0 140px;
 		box-sizing: border-box;
 		z-index: 2;
+	}
+	.hero-banner__inner--agent {
+		height: 100%;
+		align-content: stretch;
 	}
 	.hero-banner__content {
 		display: flex;
@@ -443,6 +453,14 @@ body::-webkit-scrollbar {
 		width: 116%;
 		position: relative;
 	}
+	.hero-banner__visual--agent {
+		align-self: stretch;
+		justify-self: end;
+		height: 100%;
+		align-items: flex-end;
+		justify-content: flex-end;
+		position: relative;
+	}
 	.hero-banner__image {
 		position: relative;
 		width: 440px;
@@ -451,6 +469,11 @@ body::-webkit-scrollbar {
 		object-fit: cover;
 		display: block;
 		z-index: 2;
+	}
+	.hero-banner__visual--agent .hero-banner__image {
+		position: absolute;
+		right: 0;
+		bottom: 0;
 	}
 
 	.hero-banner__wave {

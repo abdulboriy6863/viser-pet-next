@@ -148,8 +148,10 @@ const withLayoutBasic = (Component: any) => {
 						)}
 
 						{isProductLike && (
-							<Stack className={'hero-banner-product'} style={isAgent ? { background: '#fff7f2' } : undefined}>
-								<Stack className={'hero-banner__inner'}>
+							<Stack
+								className={`hero-banner-product${isAgent ? ' hero-banner-product--agent hero-section' : ''}`}
+							>
+								<Stack className={`hero-banner__inner${isAgent ? ' hero-banner__inner--agent' : ''}`}>
 									<Stack className={'hero-banner__content'}>
 										<span className={'hero-banner__title'}>
 											New & Exclusive
@@ -180,16 +182,12 @@ const withLayoutBasic = (Component: any) => {
 										</Stack> */}
 									</Stack>
 
-									<Stack
-										className={'hero-banner__visual'}
-										style={isAgent ? { alignSelf: 'flex-end', justifyContent: 'flex-end' } : undefined}
-									>
+									<Stack className={`hero-banner__visual${isAgent ? ' hero-banner__visual--agent' : ''}`}>
 										<img
 											className={'hero-banner__image'}
-											src={isAgent ? '/img/newProduct/dog_headphones.png' : '/img/newProduct/dog_headphones.png'}
+											src={isAgent ? '/img/newProduct/dog_headphones.png' : '/img/newProduct/image2.png'}
 											alt="Puppy with bow tie"
 											loading="lazy"
-											style={isAgent ? { marginTop: 'auto' } : undefined}
 										/>
 									</Stack>
 								</Stack>
