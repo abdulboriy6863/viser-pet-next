@@ -1,13 +1,11 @@
 import React from 'react';
-import { Stack, Box, Divider, Typography } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
+import { Stack, Box, Divider, Typography, IconButton } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { Product, Property } from '../../types/property/property';
-import { REACT_APP_API_URL, topPropertyRank } from '../../config';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { Product } from '../../types/property/property';
+import { REACT_APP_API_URL, topProductRank } from '../../config';
 import { formatterStr } from '../../utils';
-import { useReactiveVar } from '@apollo/client';
-import { userVar } from '../../../apollo/store';
 import { useRouter } from 'next/router';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
@@ -19,83 +17,73 @@ interface PropertyBigCardProps {
 const PropertyBigCard = (props: PropertyBigCardProps) => {
 	const { product, likeProductHandler } = props;
 	const device = useDeviceDetect();
-	const user = useReactiveVar(userVar);
 	const router = useRouter();
 
-	/** HANDLERS **/
-	const goPropertyDetatilPage = (productId: string) => {
+	const goPropertyDetailPage = (productId: string) => {
 		router.push(`/property/detail?id=${productId}`);
 	};
 
-	if (device === 'mobile') {
-		return <div>APARTMEND BIG CARD</div>;
-	} else {
-		return (
-			<Stack className="property-big-card-box" onClick={() => goPropertyDetatilPage(product?._id)}>
-				<Box
-					component={'div'}
-					className={'card-img'}
-					style={{ backgroundImage: `url(${REACT_APP_API_URL}/${product?.productImages?.[0]})` }}
-				>
-					{product && product?.productRank >= topPropertyRank && (
-						<div className={'status'}>
-							<img src="/img/icons/electricity.svg" alt="" />
-							<span>top</span>
-						</div>
-					)}
+	if (device === 'mobile') return <div>APARTMEND BIG CARD</div>;
 
-					<div className={'price'}>${formatterStr(product?.productPrice)}</div>
-				</Box>
-				<Box component={'div'} className={'info'}>
-					<strong className={'title'}>{product?.productDetail}</strong>
-					<p className={'desc'}>{product?.productDesc}</p>
-					<div className={'options'}>
-						<div>
-							<img src="/img/icons/bed.svg" alt="" />
-							<span>{product?.productVolume} bed</span>
-						</div>
-						<div>
-							<img src="/img/icons/room.svg" alt="" />
-							<span>{product?.productDiscount} rooms</span>
-						</div>
-						<div>
-							<img src="/img/icons/expand.svg" alt="" />
-							<span>{product?.productName} m2</span>
-						</div>
+	const bgUrl = product?.productImages?.[0]
+		? `${REACT_APP_API_URL}/${product.productImages[0]}`
+		: '/img/property/defaultProperty.jpg'; // o‘zingda bo‘lmasa olib tashla
+
+	return (
+		<Stack className="property-big-card-box" onClick={() => goPropertyDetailPage(product?._id)}>
+			<Box component="div" className="card-img" style={{ backgroundImage: `url(${bgUrl})` }}>
+				{product?.productRank >= topProductRank && (
+					<div className="status">
+						<img src="/img/icons/electricity.svg" alt="" />
+						<span>top</span>
 					</div>
-					<Divider sx={{ mt: '15px', mb: '17px' }} />
-					<div className={'bott'}>
-						<div>
-							{product?.productVolume ? <p>Rent</p> : <span>Rent</span>}
-							{product?.productVolume ? <p>Barter</p> : <span>Barter</span>}
-						</div>
-						<div className="buttons-box">
-							<IconButton color={'default'}>
-								<RemoveRedEyeIcon />
-							</IconButton>
-							<Typography className="view-cnt">{product?.productViews}</Typography>
-							<IconButton
-								color={'default'}
-								onClick={(e: { stopPropagation: () => void }) => {
-									//O'zim tomonimdan o'zgarish bo'lgan
-									e.stopPropagation();
-									likeProductHandler?.(product._id);
-									//O'zim tomonimdan o'zgarish bo'lgan
-								}}
-							>
-								{product?.meLiked && product?.meLiked[0]?.myFavorite ? (
-									<FavoriteIcon style={{ color: 'red' }} />
-								) : (
-									<FavoriteIcon />
-								)}
-							</IconButton>
-							<Typography className="view-cnt">{product?.productLikes}</Typography>
-						</div>
+				)}
+
+				<div className="price">${formatterStr(product?.productPrice)}</div>
+			</Box>
+
+			<Box component="div" className="info">
+				<strong className="title">{product?.productDetail}</strong>
+				<p className="desc">{product?.productDesc}</p>
+
+				<Divider sx={{ mt: '15px', mb: '17px' }} />
+
+				<div className="bott">
+					<div>
+						<span>Rent</span>
+						<span>Barter</span>
 					</div>
-				</Box>
-			</Stack>
-		);
-	}
+
+					<div className="buttons-box">
+						{/* View */}
+						<IconButton
+							color="default"
+							onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+								e.stopPropagation();
+								// agar view clickda boshqa ish qilmoqchi bo‘lsang shu yerga yozasan
+							}}
+						>
+							<RemoveRedEyeIcon />
+						</IconButton>
+						<Typography className="view-cnt">{product?.productViews}</Typography>
+
+						{/* Like */}
+						<IconButton
+							color="default"
+							onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+								e.stopPropagation();
+								void likeProductHandler(product?._id);
+							}}
+						>
+							{product?.meLiked?.[0]?.myFavorite ? <FavoriteIcon sx={{ color: 'red' }} /> : <FavoriteBorderIcon />}
+						</IconButton>
+
+						<Typography className="view-cnt">{product?.productLikes}</Typography>
+					</div>
+				</div>
+			</Box>
+		</Stack>
+	);
 };
 
 export default PropertyBigCard;
