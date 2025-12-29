@@ -48,7 +48,7 @@ const TrendProductCard = (props: TrendProductCardProps) => {
 
 	/** HANDLERS **/
 	const pushDetailHandler = async (productId: string) => {
-		await router.push({ pathname: '/product/detail', query: { id: productId } });
+		await router.push({ pathname: '/property/detail', query: { id: productId } });
 	};
 
 	return (

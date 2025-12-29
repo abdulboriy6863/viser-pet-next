@@ -157,134 +157,290 @@
 		}
 	}
 }
+// .agent-general-card {
+// 	width: 265px;
+// 	min-height: 420px;
+// 	padding: 18px 18px 16px;
+// 	border-radius: 20px;
+// 	background: #fff;
+// 	border: 1px solid #f0f0f5;
+// 	box-shadow: 0px 15px 35px rgba(24, 26, 32, 0.08);
+// 	display: flex;
+// 	flex-direction: column;
+// 	gap: 18px;
+// 	transition: all 0.25s ease;
+
+// 	&:hover {
+// 		transform: translateY(-8px);
+// 		box-shadow: 0 20px 45px rgba(235, 103, 83, 0.25);
+// 		border-color: #ffb7aa;
+// 		background: linear-gradient(180deg, #ffffff 0%, rgba(235, 103, 83, 0.08) 100%);
+// 	}
+
+// 	.agent-img {
+// 		position: relative;
+// 		width: 100%;
+// 		display: flex;
+// 		align-items: center;
+// 		justify-content: center;
+// 		padding: 10px 0 6px;
+
+// 		.image-ring {
+// 			width: 210px;
+// 			height: 210px;
+// 			border-radius: 50%;
+// 			background: linear-gradient(135deg, #ffd76f, #ff9f43);
+// 			display: flex;
+// 			align-items: center;
+// 			justify-content: center;
+// 			overflow: hidden;
+// 			box-shadow: inset 0 0 0 10px #fff;
+
+// 			img {
+// 				width: 100%;
+// 				height: 100%;
+// 				object-fit: cover;
+// 				border-radius: 50%;
+// 			}
+// 		}
+
+// 		.badge {
+// 			position: absolute;
+// 			top: 10px;
+// 			left: 10px;
+// 			padding: 8px 12px;
+// 			border-radius: 999px;
+// 			background: rgba(24, 26, 32, 0.88);
+// 			color: #fff;
+// 			font-family: $font;
+// 			font-size: 12px;
+// 			font-weight: 700;
+// 			letter-spacing: 0.2px;
+// 		}
+// 	}
+
+// 	.agent-desc {
+// 		display: flex;
+// 		flex-direction: column;
+// 		gap: 12px;
+// 		align-items: center;
+
+// 		.agent-info {
+// 			display: flex;
+// 			flex-direction: column;
+// 			align-items: center;
+// 			gap: 6px;
+
+// 			.agent-name {
+// 				color: #181a20;
+// 				font-family: $font;
+// 				font-size: 16px;
+// 				font-weight: 800;
+// 				line-height: 1.2;
+// 				cursor: pointer;
+// 			}
+
+// 			.agent-role {
+// 				color: #6b7280;
+// 				font-family: $font;
+// 				font-size: 12px;
+// 				font-weight: 700;
+// 				letter-spacing: 0.5px;
+// 				text-transform: uppercase;
+// 			}
+// 		}
+
+// 		.agent-meta {
+// 			display: flex;
+// 			flex-direction: row;
+// 			gap: 12px;
+
+// 			.stat {
+// 				display: flex;
+// 				align-items: center;
+// 				gap: 6px;
+// 				background: #f9fafb;
+// 				border-radius: 12px;
+// 				padding: 8px 10px;
+
+// 				.stat-text {
+// 					font-family: $font;
+// 					font-size: 13px;
+// 					font-weight: 700;
+// 					color: #181a20;
+// 				}
+
+// 				svg {
+// 					color: #eb6753;
+// 				}
+
+// 				button {
+// 					padding: 0;
+// 					svg {
+// 						width: 22px;
+// 						height: 22px;
+// 					}
+// 				}
+// 			}
+// 		}
+// 	}
+// }
+
 .agent-general-card {
 	width: 265px;
 	min-height: 420px;
-	padding: 18px 18px 16px;
-	border-radius: 20px;
-	background: #fff;
-	border: 1px solid #f0f0f5;
-	box-shadow: 0px 15px 35px rgba(24, 26, 32, 0.08);
-	display: flex;
-	flex-direction: column;
-	gap: 18px;
-	transition: all 0.25s ease;
+	border-radius: 26px;
+	background: #ffffff;
+	border: 1px solid rgba(0, 0, 0, 0.04);
+	box-shadow: 0px 18px 40px rgba(24, 26, 32, 0.12);
+	overflow: hidden;
+	transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
 
-	&:hover {
-		transform: translateY(-8px);
-		box-shadow: 0 20px 45px rgba(235, 103, 83, 0.25);
-		border-color: #ffb7aa;
-		background: linear-gradient(180deg, #ffffff 0%, rgba(235, 103, 83, 0.08) 100%);
+	.agent-link {
+		text-decoration: none;
+		color: inherit;
+		display: flex;
+		flex-direction: column;
+		height: 100%;
 	}
 
-	.agent-img {
+	/* TOP */
+	.agent-top {
 		position: relative;
-		width: 100%;
+		height: 270px;
+		background: #f6c54a;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 10px 0 6px;
+		overflow: hidden;
 
-		.image-ring {
-			width: 210px;
-			height: 210px;
-			border-radius: 50%;
-			background: linear-gradient(135deg, #ffd76f, #ff9f43);
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			overflow: hidden;
-			box-shadow: inset 0 0 0 10px #fff;
-
-			img {
-				width: 100%;
-				height: 100%;
-				object-fit: cover;
-				border-radius: 50%;
-			}
-		}
-
-		.badge {
+		/* katta yumaloq pastki qism (rasmdagidek) */
+		&::after {
+			content: '';
 			position: absolute;
-			top: 10px;
-			left: 10px;
-			padding: 8px 12px;
-			border-radius: 999px;
-			background: rgba(24, 26, 32, 0.88);
-			color: #fff;
-			font-family: $font;
-			font-size: 12px;
-			font-weight: 700;
-			letter-spacing: 0.2px;
+			left: 50%;
+			bottom: -120px;
+			transform: translateX(-50%);
+			width: 520px;
+			height: 320px;
+			background: #ffffff; /* pastki oq qismni “kesib” beradi */
+			border-radius: 50%;
 		}
 	}
 
-	.agent-desc {
+	/* Image container (rasm tepa qismda markazda) */
+	.agent-photo {
+		position: relative;
+		z-index: 2;
+		width: 190px;
+		height: 190px;
+		border-radius: 999px;
+		overflow: hidden;
+		background: rgba(255, 255, 255, 0.25);
+		box-shadow: 0 18px 30px rgba(0, 0, 0, 0.18);
+
+		img {
+			width: 100%;
+			height: 100%;
+			display: block;
+			object-fit: cover;
+		}
+	}
+
+	/* BOTTOM */
+	.agent-bottom {
+		flex: 1;
+		padding: 26px 18px 22px;
 		display: flex;
-		flex-direction: column;
-		gap: 12px;
 		align-items: center;
+		justify-content: center;
+		gap: 10px;
+		text-align: center;
+	}
 
-		.agent-info {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			gap: 6px;
+	.agent-name {
+		font-family: $font;
+		font-size: 28px;
+		font-weight: 900;
+		line-height: 1.05;
+		letter-spacing: -0.3px;
+		color: #1f2a6d;
+	}
 
-			.agent-name {
-				color: #181a20;
-				font-family: $font;
-				font-size: 16px;
-				font-weight: 800;
-				line-height: 1.2;
-				cursor: pointer;
+	.agent-role {
+		font-family: $font;
+		font-size: 12px;
+		font-weight: 900;
+		letter-spacing: 3px;
+		text-transform: uppercase;
+		color: rgba(31, 42, 109, 0.75);
+		margin-top: 2px;
+	}
+
+	.agent-socials {
+		margin-top: 10px;
+		gap: 10px;
+		align-items: center;
+		justify-content: center;
+
+		.soc-btn {
+			width: 38px;
+			height: 38px;
+			border-radius: 999px;
+			padding: 0;
+			transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+
+			svg {
+				font-size: 22px;
+				color: #1f2a6d;
+				transition: color 0.2s ease;
 			}
 
-			.agent-role {
-				color: #6b7280;
-				font-family: $font;
-				font-size: 12px;
-				font-weight: 700;
-				letter-spacing: 0.5px;
-				text-transform: uppercase;
+			&:hover {
+				transform: translateY(-2px);
+				background: rgba(31, 42, 109, 0.08);
+			}
+		}
+	}
+
+	/* HOVER: butun card background bir xil bo‘ladi */
+	&:hover {
+		transform: translateY(-7px);
+		box-shadow: 0px 28px 60px rgba(24, 26, 32, 0.18);
+		background: #f3a23b;
+
+		.agent-top {
+			background: #f3a23b;
+
+			&::after {
+				background: #f3a23b; /* pastdagi oq “kesma” ham yo‘qoladi -> hammasi bir xil */
 			}
 		}
 
-		.agent-meta {
-			display: flex;
-			flex-direction: row;
-			gap: 12px;
+		.agent-name,
+		.agent-role {
+			color: #ffffff;
+		}
 
-			.stat {
-				display: flex;
-				align-items: center;
-				gap: 6px;
-				background: #f9fafb;
-				border-radius: 12px;
-				padding: 8px 10px;
-
-				.stat-text {
-					font-family: $font;
-					font-size: 13px;
-					font-weight: 700;
-					color: #181a20;
+		.agent-socials {
+			.soc-btn {
+				&:hover {
+					background: rgba(255, 255, 255, 0.18);
 				}
 
 				svg {
-					color: #eb6753;
-				}
-
-				button {
-					padding: 0;
-					svg {
-						width: 22px;
-						height: 22px;
-					}
+					color: #ffffff;
 				}
 			}
 		}
+
+		.agent-photo {
+			background: rgba(255, 255, 255, 0.18);
+		}
 	}
 }
+
+///////////////////////////
 .community-general-card-config {
 	position: relative;
 	height: auto;
