@@ -58,18 +58,18 @@ export interface AgentPropertiesInquiry {
 	search: APISearch;
 }
 
-interface ALPISearch {
-	propertyStatus?: PropertyStatus;
-	propertyLocationList?: PropertyLocation[];
-}
+// interface ALPISearch {
+// 	propertyStatus?: PropertyStatus;
+// 	propertyLocationList?: PropertyLocation[];
+// }
 
-export interface AllPropertiesInquiry {
-	page: number;
-	limit: number;
-	sort?: string;
-	direction?: Direction;
-	search: ALPISearch;
-}
+// export interface AllPropertiesInquiry {
+// 	page: number;
+// 	limit: number;
+// 	sort?: string;
+// 	direction?: Direction;
+// 	search: ALPISearch;
+// }
 
 interface Range {
 	start: number;

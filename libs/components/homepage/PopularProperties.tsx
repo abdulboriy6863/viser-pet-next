@@ -38,7 +38,7 @@ const CATEGORY_COLLECTIONS: Record<FeaturedCategory, ProductCollection[]> = {
 		ProductCollection.MEDICINE_DOG,
 	],
 	fish: [ProductCollection.ANIMAL_FISH, ProductCollection.FOOD_FISH, ProductCollection.ACCESSORY_FISH],
-	'small-pet': [ProductCollection.ANIMAL_OTHER, ProductCollection.ACCESSORY_GENERAL, ProductCollection.OTHER],
+	'small-pet': [ProductCollection.ANIMAL_OTHER, ProductCollection.ACCESSORY_GENERAL],
 };
 
 const FEATURED_CATEGORIES: { label: string; value: FeaturedCategory }[] = [

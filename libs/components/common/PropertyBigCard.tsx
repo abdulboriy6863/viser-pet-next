@@ -80,7 +80,8 @@ const PropertyBigCard = (props: PropertyBigCardProps) => {
 								onClick={(e: { stopPropagation: () => void }) => {
 									//O'zim tomonimdan o'zgarish bo'lgan
 									e.stopPropagation();
-									likeTargetProduct(user, product?._id);
+									likeProductHandler?.(product._id);
+									//O'zim tomonimdan o'zgarish bo'lgan
 								}}
 							>
 								{product?.meLiked && product?.meLiked[0]?.myFavorite ? (

@@ -60,7 +60,9 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 	const [activePdTab, setActivePdTab] = useState('description');
 
 	/** APOLLO REQUESTS **/
-	const [likeTargetProperty] = useMutation(LIKE_TARGET_PRODUCT);
+	// const [likeTargetProperty] = useMutation(LIKE_TARGET_PRODUCT);
+	const [likeTargetProduct] = useMutation(LIKE_TARGET_PRODUCT);
+
 	const [createComment] = useMutation(CREATE_COMMENT);
 
 	const {
@@ -148,15 +150,17 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 		setSlideImage(image);
 	};
 
-	const likePropertyHandler = async (user: T, id: string) => {
+	const likeProductHandler = async (productId?: string) => {
 		try {
-			if (!id) return;
-			if (!user._id) throw new Error(Message.NOT_AUTHENTICATED);
-			//execute like tartget Property mutation
-			await likeTargetProperty({
-				variables: { input: id },
-			});
-			await getProductRefetch({ input: id });
+			if (!productId) return;
+			if (!user?._id) throw new Error(Message.NOT_AUTHENTICATED);
+
+			await likeTargetProduct({ variables: { input: productId } });
+
+			if (productId === product?._id) {
+				await getProductRefetch({ input: productId });
+			}
+
 			await getProductsRefetch({
 				input: {
 					page: 1,
@@ -164,15 +168,14 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 					sort: 'createdAt',
 					direction: Direction.DESC,
 					search: {
-						locationList: [product?.productCollection],
+						locationList: product?.productDetail ? [product?.productDetail] : [],
 					},
 				},
 			});
-			//execute get product refetch
+
 			await sweetTopSmallSuccessAlert('success', 800);
 		} catch (err: any) {
-			console.log('ERROR likePropertyHandler', err.message);
-			sweetMixinErrorAlert(err.message).then();
+			sweetMixinErrorAlert(err?.message || 'Unable to like product');
 		}
 	};
 
@@ -218,7 +221,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 			: `$${formatterStr(basePrice)}`;
 
 	if (device === 'mobile') {
-		return <div>PROPERTY DETAIL PAGE</div>;
+		return <div>PRODUCT DETAIL PAGE</div>;
 	} else {
 		return (
 			<div id={'property-detail-page'}>
@@ -308,13 +311,9 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 
 											<Stack className="button-box">
 												{product?.meLiked && product?.meLiked[0]?.myFavorite ? (
-													<FavoriteIcon color="primary" fontSize={'medium'} />
+													<FavoriteIcon color="primary" fontSize={'medium'} onClick={() => likeProductHandler(product?._id)} />
 												) : (
-													<FavoriteBorderIcon
-														fontSize={'medium'}
-														// @ts-ignore
-														onClick={() => likePropertyHandler(user, product?._id)}
-													/>
+													<FavoriteBorderIcon fontSize={'medium'} onClick={() => likeProductHandler(product?._id)} />
 												)}
 												<Typography>{product?.productLikes}</Typography>
 											</Stack>
@@ -640,9 +639,9 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 												<SwiperSlide className={'similar-homes-slide'} key={product.productDesc}>
 													<PropertyBigCard //shu yerda togirlangan qismi bor
 														product={product}
-														likeTargetProduct={likePropertyHandler}
+														likeTargetProduct={likeProductHandler}
 														key={product?._id}
-														likeProductHandler={undefined}
+														likeProductHandler={likeProductHandler}
 													/>
 												</SwiperSlide>
 											);
