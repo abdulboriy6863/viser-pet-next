@@ -83,7 +83,7 @@
 					}
 
 					.swiper-pagination-bullet-active {
-						background: #eb6753;
+						background: linear-gradient(135deg, #fdb813 0%, #fdb813 35%, #f9a602 100%);
 						width: 18px;
 						border-radius: 6px;
 					}
@@ -104,9 +104,10 @@
 
 					&:hover {
 						transform: translateY(-8px);
-						box-shadow: 0 20px 45px rgba(235, 103, 83, 0.25);
-						border-color: #ffb7aa;
-						background: linear-gradient(180deg, #ffffff 0%, rgba(235, 103, 83, 0.08) 100%);
+						box-shadow: linear-gradient(135deg, #fdb813 0%, #fdb813 35%, #f9a602 100%);
+
+						border-color: linear-gradient(135deg, #fdb813 0%, #fdb813 35%, #f9a602 100%);
+						background: linear-gradient(180deg, #ffffff 0%, rgba(237, 159, 81, 0.08) 100%);
 					}
 
 					.agent-img {
