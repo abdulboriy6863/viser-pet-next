@@ -88,7 +88,13 @@ const MyMenu = () => {
 				<div>
 					<Typography className="nav-name">{user?.memberNick ?? 'Guest user'}</Typography>
 					<Typography className="nav-phone">{user?.memberPhone ?? '+000 000 0000'}</Typography>
-					<Typography className="nav-tag">{user?.memberType ?? 'Member'}</Typography>
+					{user?.memberType === 'ADMIN' ? (
+						<a href="/_admin/users" target={'_blank'}>
+							<Typography className={'view-list'}>{user?.memberType}</Typography>
+						</a>
+					) : (
+						<Typography className={'view-list'}>{user?.memberType}</Typography>
+					)}
 				</div>
 			</Stack>
 
