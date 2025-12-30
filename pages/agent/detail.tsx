@@ -229,7 +229,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 										/>
 									</Stack>
 									<span>
-										Total {productTotal} propert{productTotal > 1 ? 'ies' : 'y'} available
+										Total {productTotal} product{productTotal > 1 ? 's' : 'y'} available
 									</span>
 								</>
 							) : (
@@ -310,7 +310,7 @@ const AgentDetail: NextPage = ({ initialInput, initialComment, ...props }: any) 
 AgentDetail.defaultProps = {
 	initialInput: {
 		page: 1,
-		limit: 9,
+		limit: 4,
 		search: {
 			memberId: '',
 		},
