@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { Box, Button, FormControl, MenuItem, Stack, Typography, Select, TextField } from '@mui/material';
-import { BoardArticleCategory } from '../../enums/board-article.enum';
+import { BlogPostCategory, BoardArticleCategory } from '../../enums/board-article.enum';
 import { Editor } from '@toast-ui/react-editor';
 import { getJwtToken } from '../../auth';
 import { REACT_APP_API_URL } from '../../config';
@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 import { T } from '../../types/common';
 import '@toast-ui/editor/dist/toastui-editor.css';
-import { CREATE_BOARD_ARTICLE } from '../../../apollo/user/mutation';
+import { CREATE_BLOG_POST, CREATE_BOARD_ARTICLE } from '../../../apollo/user/mutation';
 import { useMutation } from '@apollo/client';
 import { sweetErrorHandling, sweetTopSuccessAlert } from '../../sweetAlert';
 import { Message } from '../../enums/common.enum';
@@ -17,17 +17,17 @@ const TuiEditor = () => {
 	const editorRef = useRef<Editor>(null),
 		token = getJwtToken(),
 		router = useRouter();
-	const [articleCategory, setArticleCategory] = useState<BoardArticleCategory>(BoardArticleCategory.FREE);
+	const [blogPostCategory, setBlogPostCategory] = useState<BlogPostCategory>(BlogPostCategory.FREE);
 
 	/** APOLLO REQUESTS **/
-	const [createBoardArticle] = useMutation(CREATE_BOARD_ARTICLE);
+	const [createBlogPost] = useMutation(CREATE_BLOG_POST);
 
 	const memoizedValues = useMemo(() => {
-		const articleTitle = '',
-			articleContent = '',
-			articleImage = '';
+		const blogPostTitle = '',
+			blogPostContent = '',
+			blogPostImage = '';
 
-		return { articleTitle, articleContent, articleImage };
+		return { blogPostTitle, blogPostContent, blogPostImage };
 	}, []);
 
 	/** HANDLERS **/
@@ -64,7 +64,7 @@ const TuiEditor = () => {
 
 			const responseImage = response.data.data.imageUploader;
 			console.log('=responseImage: ', responseImage);
-			memoizedValues.articleImage = responseImage;
+			memoizedValues.blogPostImage = responseImage;
 
 			return `${REACT_APP_API_URL}/${responseImage}`;
 		} catch (err) {
@@ -73,27 +73,27 @@ const TuiEditor = () => {
 	};
 
 	const changeCategoryHandler = (e: any) => {
-		setArticleCategory(e.target.value);
+		setBlogPostCategory(e.target.value);
 	};
 
-	const articleTitleHandler = (e: T) => {
+	const blogPostTitleHandler = (e: T) => {
 		console.log(e.target.value);
-		memoizedValues.articleTitle = e.target.value;
+		memoizedValues.blogPostTitle = e.target.value;
 	};
 
 	const handleRegisterButton = async () => {
 		try {
 			const editor = editorRef.current;
-			const articleContent = editor?.getInstance().getHTML() as string;
-			memoizedValues.articleContent = articleContent;
+			const blogPostContent = editor?.getInstance().getHTML() as string;
+			memoizedValues.blogPostContent = blogPostContent;
 
-			if (memoizedValues.articleContent === '' && memoizedValues.articleTitle === '') {
+			if (memoizedValues.blogPostContent === '' && memoizedValues.blogPostTitle === '') {
 				throw new Error(Message.INSERT_ALL_INPUTS);
 			}
 
-			await createBoardArticle({
+			await createBlogPost({
 				variables: {
-					input: { ...memoizedValues, articleCategory },
+					input: { ...memoizedValues, blogPostCategory },
 				},
 			});
 
@@ -111,7 +111,7 @@ const TuiEditor = () => {
 	};
 
 	const doDisabledCheck = () => {
-		if (memoizedValues.articleContent === '' || memoizedValues.articleTitle === '') {
+		if (memoizedValues.blogPostContent === '' || memoizedValues.blogPostTitle === '') {
 			return true;
 		}
 	};
@@ -125,17 +125,17 @@ const TuiEditor = () => {
 					</Typography>
 					<FormControl sx={{ width: '100%', background: 'white' }}>
 						<Select
-							value={articleCategory}
+							value={blogPostCategory}
 							onChange={changeCategoryHandler}
 							displayEmpty
 							inputProps={{ 'aria-label': 'Without label' }}
 						>
-							<MenuItem value={BoardArticleCategory.FREE}>
+							<MenuItem value={BlogPostCategory.FREE}>
 								<span>Free</span>
 							</MenuItem>
-							<MenuItem value={BoardArticleCategory.HUMOR}>Humor</MenuItem>
-							<MenuItem value={BoardArticleCategory.NEWS}>News</MenuItem>
-							<MenuItem value={BoardArticleCategory.RECOMMEND}>Recommendation</MenuItem>
+							<MenuItem value={BlogPostCategory.HUMOR}>Humor</MenuItem>
+							<MenuItem value={BlogPostCategory.NEWS}>News</MenuItem>
+							<MenuItem value={BlogPostCategory.RECOMMEND}>Recommendation</MenuItem>
 						</Select>
 					</FormControl>
 				</Box>
@@ -144,7 +144,7 @@ const TuiEditor = () => {
 						Title
 					</Typography>
 					<TextField
-						onChange={articleTitleHandler}
+						onChange={blogPostTitleHandler}
 						id="filled-basic"
 						label="Type Title"
 						style={{ width: '300px', background: 'white' }}

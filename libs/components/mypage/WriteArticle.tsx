@@ -9,7 +9,7 @@ const WriteArticle: NextPage = () => {
 	const device = useDeviceDetect();
 
 	if (device === 'mobile') {
-		return <>ARTICLE PAGE MOBILE</>;
+		return <>BLOG POST PAGE MOBILE</>;
 	} else
 		return (
 			<div id="write-article-page">
