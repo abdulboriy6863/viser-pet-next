@@ -30,7 +30,7 @@ const withLayoutBasic = (Component: any) => {
 
 			switch (router.pathname) {
 				case '/property':
-					title = 'Property Search';
+					title = 'Shop products made to bring comfort, style, and joy';
 					desc = 'We are glad to see you again!';
 					bgImage = '/img/banner/properties.png';
 					break;
@@ -50,12 +50,12 @@ const withLayoutBasic = (Component: any) => {
 					bgImage = '/img/banner/header2.svg';
 					break;
 				case '/mypage':
-					title = 'my page';
-					desc = 'Home / For Rent';
+					title = 'Your personal space to manage everything you love';
+					desc = '';
 					bgImage = '/img/newProduct/mypageBanner.png';
 					break;
 				case '/community':
-					title = 'Community';
+					title = 'Where our community connects and shares';
 					desc = 'Stories, news, and recommendations';
 					bgImage = '/img/banner/header2.svg';
 					break;
@@ -104,6 +104,8 @@ const withLayoutBasic = (Component: any) => {
 			? 'footer--mypage'
 			: isCommunity
 			? 'footer--community'
+			: isCs
+			? 'footer--cs'
 			: undefined;
 
 		/** LIFECYCLES **/
