@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { NextPage } from 'next';
-import { Stack } from '@mui/material';
+import { Stack, Typography, Button } from '@mui/material';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import MyProperties from '../../libs/components/mypage/MyProperties';
@@ -10,6 +10,7 @@ import RecentlyVisited from '../../libs/components/mypage/RecentlyVisited';
 import AddProperty from '../../libs/components/mypage/AddNewProperty';
 import MyProfile from '../../libs/components/mypage/MyProfile';
 import MyArticles from '../../libs/components/mypage/MyArticles';
+import MyOrders from '../../libs/components/mypage/MyOrders';
 import { useMutation, useReactiveVar } from '@apollo/client';
 import { userVar } from '../../apollo/store';
 import MyMenu from '../../libs/components/mypage/MyMenu';
@@ -111,15 +112,65 @@ const MyPage: NextPage = () => {
 		return <div>MY PAGE</div>;
 	} else {
 		return (
-			<div id="my-page" style={{ position: 'relative' }}>
+			<div id="my-page">
 				<div className="container">
-					<Stack className={'my-page'}>
-						<Stack className={'back-frame'}>
-							<Stack className={'left-config'}>
+					<div className="mypage-shell">
+						<div className="mypage-hero">
+							<div className="hero-grid">
+								<div className="hero-copy">
+									<span className="pill">Personal workspace</span>
+									<Typography component="h1" className="hero-title">
+										Welcome back, {user?.memberNick ?? 'Explorer'}
+									</Typography>
+									<p className="hero-desc">
+										Manage listings, favorites, followers, orders, and articles from a single control center.
+									</p>
+
+									<div className="hero-actions">
+										<Button
+											className="hero-btn primary"
+											variant="contained"
+											onClick={() => router.push('/mypage?category=myProfile')}
+										>
+											Edit profile
+										</Button>
+										{user?.memberType === 'AGENT' && (
+											<Button
+												className="hero-btn ghost"
+												variant="outlined"
+												onClick={() => router.push('/mypage?category=addProperty')}
+											>
+												Add property
+											</Button>
+										)}
+									</div>
+								</div>
+
+								<div className="hero-panels">
+									<div className="hero-card">
+										<span className="eyebrow">Account type</span>
+										<strong>{user?.memberType ?? 'Member'}</strong>
+										<p>Stay up to date with your workspace.</p>
+									</div>
+									<div className="hero-card">
+										<span className="eyebrow">Shortcuts</span>
+										<ul>
+											<li>Favorites & Recent views</li>
+											<li>Followers & Following</li>
+											<li>Orders & Articles</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div className="mypage-layout">
+							<div className="mypage-nav-card">
 								<MyMenu />
-							</Stack>
-							<Stack className="main-config" mb={'76px'}>
-								<Stack className={'list-config'}>
+							</div>
+
+							<div className="mypage-content-card">
+								<div className="mypage-content-inner">
 									{category === 'addProperty' && <AddProperty />}
 									{category === 'myProperties' && <MyProperties />}
 									{category === 'myFavorites' && <MyFavorites />}
@@ -143,10 +194,11 @@ const MyPage: NextPage = () => {
 											redirectToMemberPageHandler={redirectToMemberPageHandler}
 										/>
 									)}
-								</Stack>
-							</Stack>
-						</Stack>
-					</Stack>
+									{category === 'myOrders' && <MyOrders />}
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		);
