@@ -196,6 +196,14 @@ const withLayoutBasic = (Component: any) => {
 												backgroundPosition: 'right',
 												backgroundRepeat: 'no-repeat',
 										  }
+										: isCommunity
+										? {
+												backgroundColor: '#DED0FF',
+												backgroundImage: 'url(/img/newProduct/communityorgbanner.png)',
+												backgroundSize: 'contain',
+												backgroundPosition: 'right',
+												backgroundRepeat: 'no-repeat',
+										  }
 										: undefined
 								}
 							>
@@ -224,7 +232,7 @@ const withLayoutBasic = (Component: any) => {
 										</Stack> */}
 									</Stack>
 
-									{!isMyPage && (
+									{!isMyPage && !isCommunity && (
 										<img
 											className={'hero-banner__image'}
 											src={isAgent ? '/img/newProduct/dog_headphones.png' : '/img/newProduct/image2.png'}
