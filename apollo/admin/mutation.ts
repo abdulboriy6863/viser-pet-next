@@ -50,6 +50,7 @@ export const UPDATE_PRODUCT_BY_ADMIN = gql`
 			productDetail
 			productPrice
 			productDiscount
+			productVolume
 			productLeftCount
 			productSoldCount
 			productViews
@@ -168,6 +169,7 @@ export const UPDATE_PROPERTY_BY_ADMIN = gql`
 			propertyType
 			propertyStatus
 			propertyLocation
+			productVolume
 			propertyAddress
 			propertyTitle
 			propertyPrice
@@ -209,6 +211,7 @@ export const REMOVE_PROPERTY_BY_ADMIN = gql`
 			propertyDesc
 			propertyBarter
 			propertyRent
+			productVolume
 			memberId
 			soldAt
 			deletedAt
@@ -222,58 +225,3 @@ export const REMOVE_PROPERTY_BY_ADMIN = gql`
 /**************************
  *      BOARD-ARTICLE     *
  *************************/
-
-export const UPDATE_BOARD_ARTICLE_BY_ADMIN = gql`
-	mutation UpdateBoardArticleByAdmin($input: BoardArticleUpdate!) {
-		updateBoardArticleByAdmin(input: $input) {
-			_id
-			articleCategory
-			articleStatus
-			articleTitle
-			articleContent
-			articleImage
-			articleViews
-			articleLikes
-			memberId
-			createdAt
-			updatedAt
-		}
-	}
-`;
-
-export const REMOVE_BOARD_ARTICLE_BY_ADMIN = gql`
-	mutation RemoveBoardArticleByAdmin($input: String!) {
-		removeBoardArticleByAdmin(articleId: $input) {
-			_id
-			articleCategory
-			articleStatus
-			articleTitle
-			articleContent
-			articleImage
-			articleViews
-			articleLikes
-			memberId
-			createdAt
-			updatedAt
-		}
-	}
-`;
-
-/**************************
- *         COMMENT        *
- *************************/
-
-// export const REMOVE_COMMENT_BY_ADMIN = gql`
-// 	mutation RemoveCommentByAdmin($input: String!) {
-// 		removeCommentByAdmin(commentId: $input) {
-// 			_id
-// 			commentStatus
-// 			commentGroup
-// 			commentContent
-// 			commentRefId
-// 			memberId
-// 			createdAt
-// 			updatedAt
-// 		}
-// 	}
-// `;

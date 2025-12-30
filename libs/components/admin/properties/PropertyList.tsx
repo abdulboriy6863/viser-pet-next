@@ -68,13 +68,13 @@ const headCells: readonly HeadCell[] = [
 		id: 'location',
 		numeric: false,
 		disablePadding: false,
-		label: 'LOCATION',
+		label: 'COLLECTION',
 	},
 	{
 		id: 'type',
 		numeric: false,
 		disablePadding: false,
-		label: 'TYPE',
+		label: 'VOLUME',
 	},
 	{
 		id: 'status',
@@ -209,7 +209,7 @@ export const ProductPanelList = (props: ProductPanelListType) => {
 															.filter((ele) => ele !== product.productStatus)
 															.map((status: string) => (
 																<MenuItem
-																	onClick={() => updateProductHandler({ _id: product._id, ProductStatus: status })}
+																	onClick={() => updateProductHandler({ _id: product._id, productStatus: status })}
 																	key={status}
 																>
 																	<Typography variant={'subtitle1'} component={'span'}>

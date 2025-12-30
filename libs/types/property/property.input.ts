@@ -21,11 +21,6 @@ interface APISearch {
 // 	search: APISearch;
 // }
 
-// interface ALPISearch {
-// 	propertyStatus?: PropertyStatus;
-// 	propertyLocationList?: PropertyLocation[];
-// }
-
 // export interface AllPropertiesInquiry {
 // 	page: number;
 // 	limit: number;
@@ -65,6 +60,19 @@ export interface PISearch {
 	discounted?: boolean; // productDiscount mavjudligi
 
 	//bunga yana ishlov berish kerak bo'lishi mumkin
+}
+
+export interface AllProductsInquiry {
+	page: number;
+	limit: number;
+	sort?: string;
+	direction?: Direction;
+	search: ALPISearch;
+}
+
+interface ALPISearch {
+	productStatus?: ProductStatus;
+	productCollection?: ProductCollection[];
 }
 
 export interface ProductsInquiry {

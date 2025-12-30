@@ -142,7 +142,7 @@ const withAdminLayout = (Component: ComponentType) => {
 					>
 						<Toolbar sx={{ flexDirection: 'column', alignItems: 'flexStart' }}>
 							<Stack className={'logo-box'}>
-								<img src={'/img/logo/logoText.svg'} alt={'logo'} />
+								<img src={'/img/logo/Frame.svg'} alt={'logo'} />
 							</Stack>
 
 							<Stack
