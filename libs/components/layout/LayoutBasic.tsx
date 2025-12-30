@@ -157,7 +157,9 @@ const withLayoutBasic = (Component: any) => {
 								}`}
 								style={
 									isAgent
-										? { background: '#fff7f2' }
+										? {
+												background: 'linear-gradient(135deg, #fdb813 0%, #fdb813 35%, #f9a602 100%)',
+										  }
 										: isMyPage
 										? {
 												backgroundColor: '#E1FFD5',
