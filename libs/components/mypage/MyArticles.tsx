@@ -6,9 +6,9 @@ import CommunityCard from '../common/CommunityCard';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import { T } from '../../types/common';
-import { BoardArticle } from '../../types/board-article/board-article';
-import { LIKE_TARGET_BOARD_ARTICLE } from '../../../apollo/user/mutation';
-import { GET_BOARD_ARTICLES } from '../../../apollo/user/query';
+import { BlogPost, BoardArticle } from '../../types/board-article/board-article';
+import { LIKE_TARGET_BLOG_POST, LIKE_TARGET_BOARD_ARTICLE } from '../../../apollo/user/mutation';
+import { GET_BLOG_POSTS, GET_BOARD_ARTICLES } from '../../../apollo/user/query';
 import { Messages } from '../../config';
 import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../sweetAlert';
 
@@ -19,26 +19,26 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 		...initialInput,
 		search: { memberId: user._id },
 	});
-	const [boardArticles, setBoardArticles] = useState<BoardArticle[]>([]);
+	const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
 	const [totalCount, setTotalCount] = useState<number>(0);
 
 	/** APOLLO REQUESTS **/
-	const [likeTargetBoardArticle] = useMutation(LIKE_TARGET_BOARD_ARTICLE);
+	const [likeTargetBlogPost] = useMutation(LIKE_TARGET_BLOG_POST);
 
 	const {
-		loading: boardAriclesLoading,
-		data: boardAriclesData,
-		error: boardAriclesError,
-		refetch: boardAriclesRefetch,
-	} = useQuery(GET_BOARD_ARTICLES, {
+		loading: BlogPostsLoading,
+		data: BlogPostssData,
+		error: BlogPostError,
+		refetch: BlogPostsRefetch,
+	} = useQuery(GET_BLOG_POSTS, {
 		fetchPolicy: 'network-only',
 		variables: {
 			input: searchCommunity,
 		},
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
-			setBoardArticles(data?.getBoardArticles?.list);
-			setTotalCount(data?.getBoardArticles?.metaCounter[0]?.total || 0);
+			setBlogPosts(data?.getBlogPosts?.list);
+			setTotalCount(data?.getBlogPosts?.metaCounter[0]?.total || 0);
 		},
 	});
 	/** HANDLERS **/
@@ -52,40 +52,40 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 			if (!id) return;
 			if (!user._id) throw new Error(Messages.error2);
 
-			await likeTargetBoardArticle({
+			await likeTargetBlogPost({
 				variables: {
 					input: id,
 				},
 			});
-			await boardAriclesRefetch({ input: searchCommunity });
+			await BlogPostsRefetch({ input: searchCommunity });
 
 			await sweetTopSmallSuccessAlert('Success', 750);
 		} catch (err: any) {
-			console.log('ERROR, likePropertyHandler:', err.message);
+			console.log('ERROR, likeProductHandler:', err.message);
 			sweetMixinErrorAlert(err.message).then();
 		}
 	};
 
 	if (device === 'mobile') {
-		return <>ARTICLE PAGE MOBILE</>;
+		return <>BLOG POST PAGE MOBILE</>;
 	} else
 		return (
 			<div id="my-articles-page">
 				<Stack className="main-title-box">
 					<Stack className="right-box">
-						<Typography className="main-title">Article</Typography>
+						<Typography className="main-title">Blog Post</Typography>
 						<Typography className="sub-title">We are glad to see you again!</Typography>
 					</Stack>
 				</Stack>
 				<Stack className="article-list-box">
-					{boardArticles?.length > 0 ? (
-						boardArticles?.map((boardArticle: BoardArticle) => {
+					{blogPosts?.length > 0 ? (
+						blogPosts?.map((blogPost: BlogPost) => {
 							return (
 								<CommunityCard
-									boardArticle={boardArticle}
-									key={boardArticle?._id}
+									blogPost={blogPost}
+									key={blogPost?._id}
 									size={'small'}
-									likeArticleHandler={likeBoardArticleHandler}
+									likeBlogPostHandler={likeTargetBlogPost}
 								/>
 							);
 						})
@@ -97,7 +97,7 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 					)}
 				</Stack>
 
-				{boardArticles?.length > 0 && (
+				{blogPosts?.length > 0 && (
 					<Stack className="pagination-conf">
 						<Stack className="pagination-box">
 							<Pagination

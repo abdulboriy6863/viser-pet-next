@@ -14,7 +14,7 @@ export interface Member {
 	memberImage?: string;
 	memberAddress?: string;
 	memberDesc?: string;
-	memberProperties: number;
+	memberProducts: number;
 	memberRank: number;
 	memberArticles: number;
 	memberPoints: number;
@@ -38,3 +38,5 @@ export interface Members {
 	list: Member[];
 	metaCounter: TotalCounter[];
 }
+
+//o'zgartirdim

@@ -5,7 +5,7 @@ import { Pagination, Stack, Typography } from '@mui/material';
 import PropertyCard from '../property/PropertyCard';
 import { Product } from '../../types/property/property';
 import { T } from '../../types/common';
-import { LIKE_TARGET_PRODUCT, LIKE_TARGET_PROPERTY } from '../../../apollo/user/mutation';
+import { LIKE_TARGET_PRODUCT } from '../../../apollo/user/mutation';
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_FAVORITES } from '../../../apollo/user/query';
 import { sweetMixinErrorAlert } from '../../sweetAlert';
@@ -59,7 +59,7 @@ const MyFavorites: NextPage = () => {
 	};
 
 	if (device === 'mobile') {
-		return <div>NESTAR MY FAVORITES MOBILE</div>;
+		return <div>VISER PET MY FAVORITES MOBILE</div>;
 	} else {
 		return (
 			<div id="my-favorites-page">

@@ -1,11 +1,4 @@
-import {
-	ProductCollection,
-	ProductStatus,
-	ProductVolume,
-	PropertyLocation,
-	PropertyStatus,
-	PropertyType,
-} from '../../enums/property.enum';
+import { ProductCollection, ProductStatus, ProductVolume, PropertyStatus } from '../../enums/property.enum';
 import { Direction } from '../../enums/common.enum';
 
 export interface PropertiesInquiry {

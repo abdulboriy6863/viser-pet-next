@@ -56,21 +56,22 @@ const MyMenu = () => {
 				{ id: 'myOrders', label: 'My Orders', icon: <ShoppingBagIcon /> },
 			],
 		},
+		//o'zgartirdim myorder
 		{
 			title: 'Listings',
 			items:
 				user?.memberType === 'AGENT'
 					? [
-							{ id: 'addProperty', label: 'Add Property', icon: <AddHomeWorkOutlinedIcon /> },
-							{ id: 'myProperties', label: 'My Properties', icon: <HomeWorkOutlinedIcon /> },
+							{ id: 'addProperty', label: 'Add Product', icon: <AddHomeWorkOutlinedIcon /> },
+							{ id: 'myProperties', label: 'My Products', icon: <HomeWorkOutlinedIcon /> },
 					  ]
 					: [],
 		},
 		{
 			title: 'Community',
 			items: [
-				{ id: 'myArticles', label: 'Articles', icon: <ArticleOutlinedIcon /> },
-				{ id: 'writeArticle', label: 'Write Article', icon: <EditNoteOutlinedIcon /> },
+				{ id: 'myArticles', label: 'Blog Post', icon: <ArticleOutlinedIcon /> },
+				{ id: 'writeArticle blogPost', label: 'Write Blog Post', icon: <EditNoteOutlinedIcon /> },
 			],
 		},
 	].filter((section) => section.items.length);

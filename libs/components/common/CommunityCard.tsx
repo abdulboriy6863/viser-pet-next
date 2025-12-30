@@ -2,7 +2,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Stack, Typography } from '@mui/material';
-import { BoardArticle } from '../../types/board-article/board-article';
+import { BlogPost, BoardArticle } from '../../types/board-article/board-article';
 import Moment from 'react-moment';
 import { REACT_APP_API_URL } from '../../config';
 import { useReactiveVar } from '@apollo/client';
@@ -13,26 +13,26 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 interface CommunityCardProps {
-	boardArticle: BoardArticle;
+	blogPost: BlogPost;
 	size?: string;
-	likeArticleHandler: any;
+	likeBlogPostHandler: any;
 }
 
 const CommunityCard = (props: CommunityCardProps) => {
-	const { boardArticle, size = 'normal', likeArticleHandler } = props;
+	const { blogPost, size = 'normal', likeBlogPostHandler } = props;
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
-	const imagePath: string = boardArticle?.articleImage
-		? `${REACT_APP_API_URL}/${boardArticle?.articleImage}`
+	const imagePath: string = blogPost?.blogPostImage
+		? `${REACT_APP_API_URL}/${blogPost?.blogPostImage}`
 		: '/img/community/communityImg.png';
 
 	/** HANDLERS **/
-	const chooseArticleHandler = (e: React.SyntheticEvent, boardArticle: BoardArticle) => {
+	const chooseBlogPostHandler = (e: React.SyntheticEvent, blogPost: BlogPost) => {
 		router.push(
 			{
 				pathname: '/community/detail',
-				query: { articleCategory: boardArticle?.articleCategory, id: boardArticle?._id },
+				query: { blogPostCategory: blogPost?.blogPostCategory, id: blogPost?._id },
 			},
 			undefined,
 			{ shallow: true },
@@ -51,7 +51,7 @@ const CommunityCard = (props: CommunityCardProps) => {
 			<Stack
 				sx={{ width: size === 'small' ? '285px' : '317px' }}
 				className="community-general-card-config"
-				onClick={(e: any) => chooseArticleHandler(e, boardArticle)}
+				onClick={(e: any) => chooseBlogPostHandler(e, blogPost)}
 			>
 				<Stack className="image-box">
 					<img src={imagePath} alt="" className="card-img" />
@@ -62,34 +62,34 @@ const CommunityCard = (props: CommunityCardProps) => {
 							className="desc"
 							onClick={(e: any) => {
 								e.stopPropagation();
-								goMemberPage(boardArticle?.memberData?._id as string);
+								goMemberPage(blogPost?.memberData?._id as string);
 							}}
 						>
-							{boardArticle?.memberData?.memberNick}
+							{blogPost?.memberData?.memberNick}
 						</Typography>
-						<Typography className="title">{boardArticle?.articleTitle}</Typography>
+						<Typography className="title">{blogPost?.blogPostTitle}</Typography>
 					</Stack>
 					<Stack className={'buttons'}>
 						<IconButton color={'default'}>
 							<RemoveRedEyeIcon />
 						</IconButton>
-						<Typography className="view-cnt">{boardArticle?.articleViews}</Typography>
+						<Typography className="view-cnt">{blogPost?.blogPostViews}</Typography>
 						<IconButton color={'default'}>
-							{boardArticle?.meLiked && boardArticle?.meLiked[0]?.myFavorite ? (
+							{blogPost?.meLiked && blogPost?.meLiked[0]?.myFavorite ? (
 								<FavoriteIcon color={'primary'} />
 							) : (
 								<FavoriteBorderIcon />
 							)}
 						</IconButton>
-						<Typography className="view-cnt">{boardArticle?.articleLikes}</Typography>
+						<Typography className="view-cnt">{blogPost?.blogPostLikes}</Typography>
 					</Stack>
 				</Stack>
 				<Stack className="date-box">
 					<Moment className="month" format={'MMMM'}>
-						{boardArticle?.createdAt}
+						{blogPost?.createdAt}
 					</Moment>
 					<Typography className="day">
-						<Moment format={'DD'}>{boardArticle?.createdAt}</Moment>
+						<Moment format={'DD'}>{blogPost?.createdAt}</Moment>
 					</Typography>
 				</Stack>
 			</Stack>
