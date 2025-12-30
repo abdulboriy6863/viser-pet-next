@@ -4,36 +4,36 @@ import useDeviceDetect from '../../hooks/useDeviceDetect';
 import IconButton from '@mui/material/IconButton';
 import ModeIcon from '@mui/icons-material/Mode';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Property } from '../../types/property/property';
+import { Product } from '../../types/property/property';
 import { formatterStr } from '../../utils';
 import Moment from 'react-moment';
 import { useRouter } from 'next/router';
-import { PropertyStatus } from '../../enums/property.enum';
+import { ProductStatus } from '../../enums/property.enum';
 
 interface PropertyCardProps {
-	property: Property;
-	deletePropertyHandler?: any;
+	product: Product;
+	deleteProductHandler?: any;
 	memberPage?: boolean;
-	updatePropertyHandler?: any;
+	updateProductHandler?: any;
 }
 
 export const PropertyCard = (props: PropertyCardProps) => {
-	const { property, deletePropertyHandler, memberPage, updatePropertyHandler } = props;
+	const { product, deleteProductHandler, memberPage, updateProductHandler } = props;
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
 
 	/** HANDLERS **/
-	const pushEditProperty = async (id: string) => {
+	const pushEditProduct = async (id: string) => {
 		console.log('+pushEditProperty: ', id);
 		await router.push({
 			pathname: '/mypage',
-			query: { category: 'addProperty', propertyId: id },
+			query: { category: 'addProduct', productId: id },
 		});
 	};
 
-	const pushPropertyDetail = async (id: string) => {
+	const pushProductDetail = async (id: string) => {
 		if (memberPage)
 			await router.push({
 				pathname: '/property/detail',
@@ -51,33 +51,33 @@ export const PropertyCard = (props: PropertyCardProps) => {
 	};
 
 	if (device === 'mobile') {
-		return <div>MOBILE PROPERTY CARD</div>;
+		return <div>MOBILE PRODUCT CARD</div>;
 	} else
 		return (
 			<Stack className="property-card-box">
-				<Stack className="image-box" onClick={() => pushPropertyDetail(property?._id)}>
-					<img src={`${process.env.REACT_APP_API_URL}/${property.propertyImages[0]}`} alt="" />
+				<Stack className="image-box" onClick={() => pushProductDetail(product?._id)}>
+					<img src={`${process.env.REACT_APP_API_URL}/${product.productImages[0]}`} alt="" />
 				</Stack>
-				<Stack className="information-box" onClick={() => pushPropertyDetail(property?._id)}>
-					<Typography className="name">{property.propertyTitle}</Typography>
-					<Typography className="address">{property.propertyAddress}</Typography>
+				<Stack className="information-box" onClick={() => pushProductDetail(product?._id)}>
+					<Typography className="name">{product.productName}</Typography>
+					<Typography className="address">{product.productCollection}</Typography>
 					<Typography className="price">
-						<strong>${formatterStr(property?.propertyPrice)}</strong>
+						<strong>${formatterStr(product?.productPrice)}</strong>
 					</Typography>
 				</Stack>
 				<Stack className="date-box">
 					<Typography className="date">
-						<Moment format="DD MMMM, YYYY">{property.createdAt}</Moment>
+						<Moment format="DD MMMM, YYYY">{product.createdAt}</Moment>
 					</Typography>
 				</Stack>
 				<Stack className="status-box">
 					<Stack className="coloured-box" sx={{ background: '#E5F0FD' }} onClick={handleClick}>
 						<Typography className="status" sx={{ color: '#3554d1' }}>
-							{property.propertyStatus}
+							{product.productStatus}
 						</Typography>
 					</Stack>
 				</Stack>
-				{!memberPage && property.propertyStatus !== 'SOLD' && (
+				{!memberPage && product.productStatus !== 'SOLD' && (
 					<Menu
 						anchorEl={anchorEl}
 						open={open}
@@ -98,13 +98,13 @@ export const PropertyCard = (props: PropertyCardProps) => {
 							},
 						}}
 					>
-						{property.propertyStatus === 'ACTIVE' && (
+						{product.productStatus === 'ACTIVE' && (
 							<>
 								<MenuItem
 									disableRipple
 									onClick={() => {
 										handleClose();
-										updatePropertyHandler(PropertyStatus.SOLD, property?._id);
+										updateProductHandler(ProductStatus.SOLD, product?._id);
 									}}
 								>
 									Sold
@@ -115,14 +115,14 @@ export const PropertyCard = (props: PropertyCardProps) => {
 				)}
 
 				<Stack className="views-box">
-					<Typography className="views">{property.propertyViews.toLocaleString()}</Typography>
+					<Typography className="views">{product.productViews.toLocaleString()}</Typography>
 				</Stack>
-				{!memberPage && property.propertyStatus === PropertyStatus.ACTIVE && (
+				{!memberPage && product.productStatus === ProductStatus.ACTIVE && (
 					<Stack className="action-box">
-						<IconButton className="icon-button" onClick={() => pushEditProperty(property._id)}>
+						<IconButton className="icon-button" onClick={() => pushEditProduct(product._id)}>
 							<ModeIcon className="buttons" />
 						</IconButton>
-						<IconButton className="icon-button" onClick={() => deletePropertyHandler(property._id)}>
+						<IconButton className="icon-button" onClick={() => deleteProductHandler(product._id)}>
 							<DeleteIcon className="buttons" />
 						</IconButton>
 					</Stack>

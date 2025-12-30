@@ -8,36 +8,6 @@ import {
 } from '../../enums/property.enum';
 import { Direction } from '../../enums/common.enum';
 
-// export interface PropertyInput {
-// 	propertyType: PropertyType;
-// 	propertyLocation: PropertyLocation;
-// 	propertyAddress: string;
-// 	propertyTitle: string;
-// 	propertyPrice: number;
-// 	propertySquare: number;
-// 	propertyBeds: number;
-// 	propertyRooms: number;
-// 	propertyImages: string[];
-// 	propertyDesc?: string;
-// 	propertyBarter?: boolean;
-// 	propertyRent?: boolean;
-// 	memberId?: string;
-// 	constructedAt?: Date;
-// }
-
-// interface PISearch {
-// 	memberId?: string;
-// 	locationList?: PropertyLocation[];
-// 	typeList?: PropertyType[];
-// 	roomsList?: Number[];
-// 	options?: string[];
-// 	bedsList?: Number[];
-// 	pricesRange?: Range;
-// 	periodsRange?: PeriodsRange;
-// 	squaresRange?: Range;
-// 	text?: string;
-// }
-
 export interface PropertiesInquiry {
 	page: number;
 	limit: number;
@@ -83,8 +53,9 @@ interface Range {
 
 //////////////VISER PET NEXT NEW INPUT TYPES/////////////////////
 export interface ProductInput {
-	propertyType: ProductCollection;
+	productCollection: ProductCollection;
 	productStatus: ProductStatus;
+	productVolume: ProductVolume;
 	productName: string;
 	productDetail: string;
 	productPrice: number;
@@ -95,6 +66,36 @@ export interface ProductInput {
 	memberId?: string;
 	constructedAt?: Date;
 }
+
+// export interface PropertyInput {
+// 	propertyType: PropertyType;
+// 	propertyLocation: PropertyLocation;
+// 	propertyAddress: string;
+// 	propertyTitle: string;
+// 	propertyPrice: number;
+// 	propertySquare: number;
+// 	propertyBeds: number;
+// 	propertyRooms: number;
+// 	propertyImages: string[];
+// 	propertyDesc?: string;
+// 	propertyBarter?: boolean;
+// 	propertyRent?: boolean;
+// 	memberId?: string;
+// 	constructedAt?: Date;
+// }
+
+// interface PISearch {
+// 	memberId?: string;
+// 	locationList?: PropertyLocation[];
+// 	typeList?: PropertyType[];
+// 	roomsList?: Number[];
+// 	options?: string[];
+// 	bedsList?: Number[];
+// 	pricesRange?: Range;
+// 	periodsRange?: PeriodsRange;
+// 	squaresRange?: Range;
+// 	text?: string;
+// }
 
 export interface PISearch {
 	memberId?: string; // Product.memberId bilan mos

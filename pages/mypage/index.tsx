@@ -22,6 +22,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { LIKE_TARGET_MEMBER, SUBSCRIBE, UNSUBSCRIBE } from '../../apollo/user/mutation';
 import { Messages } from '../../libs/config';
 import { getJwtToken } from '../../libs/auth';
+import AddProduct from '../../libs/components/mypage/AddNewProperty';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -173,7 +174,7 @@ const MyPage: NextPage = () => {
 
 							<div className="mypage-content-card">
 								<div className="mypage-content-inner">
-									{category === 'addProperty' && <AddProperty />}
+									{category === 'addProperty' && <AddProduct />}
 									{category === 'myProperties' && <MyProperties />}
 									{category === 'myFavorites' && <MyFavorites />}
 									{category === 'recentlyVisited' && <RecentlyVisited />}
