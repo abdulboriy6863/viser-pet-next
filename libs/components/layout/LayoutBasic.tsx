@@ -55,12 +55,12 @@ const withLayoutBasic = (Component: any) => {
 					break;
 				case '/community':
 					title = 'Community';
-					desc = 'Home / For Rent';
+					desc = 'Stories, news, and recommendations';
 					bgImage = '/img/banner/header2.svg';
 					break;
 				case '/community/detail':
 					title = 'Community Detail';
-					desc = 'Home / For Rent';
+					desc = 'Full story and discussion';
 					bgImage = '/img/banner/header2.svg';
 					break;
 				case '/cs':
@@ -87,9 +87,16 @@ const withLayoutBasic = (Component: any) => {
 		}, [router.pathname]);
 
 		const isAgent = router.pathname.startsWith('/agent');
+		const isCommunity = router.pathname.startsWith('/community');
+		const isCs = router.pathname.startsWith('/cs');
 		const isMyPage = router.pathname.startsWith('/mypage');
 		const isProductLike =
-			router.pathname.startsWith('/product') || router.pathname.startsWith('/property') || isAgent || isMyPage;
+			router.pathname.startsWith('/product') ||
+			router.pathname.startsWith('/property') ||
+			isAgent ||
+			isMyPage ||
+			isCommunity ||
+			isCs;
 		const footerClassName = isAgent ? 'footer--agent hero-section' : isMyPage ? 'footer--mypage' : undefined;
 
 		/** LIFECYCLES **/
@@ -99,6 +106,26 @@ const withLayoutBasic = (Component: any) => {
 		}, []);
 
 		/** HANDLERS **/
+
+		const heroTitleCopy = isAgent ? (
+			<>
+				New & Exclusive
+				<br />
+				Dog Clothing
+			</>
+		) : (
+			t(memoizedValues.title)
+		);
+
+		const heroSubtitleCopy = isAgent ? (
+			<>
+				Shop our new range of winter dog
+				<br />
+				coats & jackets in-store or online
+			</>
+		) : (
+			t(memoizedValues.desc)
+		);
 
 		if (device == 'mobile') {
 			return (
@@ -174,11 +201,7 @@ const withLayoutBasic = (Component: any) => {
 							>
 								<Stack className={`hero-banner__inner${isAgent ? ' hero-banner__inner--agent' : ''}`}>
 									<Stack className={'hero-banner__content'}>
-										<span className={'hero-banner__title'}>
-											New & Exclusive
-											<br />
-											Dog Clothing
-										</span>
+										<span className={'hero-banner__title'}>{heroTitleCopy}</span>
 
 										<span
 											className="hero-banner__title-button"
@@ -191,9 +214,7 @@ const withLayoutBasic = (Component: any) => {
 												lineHeight: '1.6',
 											}}
 										>
-											Shop our new range of winter dog
-											<br />
-											coats & jackets in-store or online
+											{heroSubtitleCopy}
 										</span>
 
 										{/* <Stack className={'hero-banner__actions'}>
