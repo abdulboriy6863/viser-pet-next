@@ -464,6 +464,11 @@ body::-webkit-scrollbar {
 	.hero-banner__visual--community {
 		justify-content: flex-end;
 	}
+	.hero-banner__visual--mypage {
+		margin-top: 100px;
+		object-fit: contain;
+		// justify-content: space-around;
+	}
 	.hero-banner__image {
 		position: relative;
 		width: 440px;
@@ -486,6 +491,9 @@ body::-webkit-scrollbar {
 	.hero-banner__image--community {
 		max-width: 520px;
 		transform: translateX(-80px);
+	}
+	.hero-banner__image--mypage {
+		max-width: 520px;
 	}
 	.hero-banner--mypage .hero-banner__visual .hero-banner__image {
 		background-size: contain;

@@ -197,10 +197,6 @@ const withLayoutBasic = (Component: any) => {
 										: isMyPage
 										? {
 												backgroundColor: '#E1FFD5',
-												backgroundImage: 'url(/img/newProduct/mypageBanner.png)',
-												backgroundSize: 'contain',
-												backgroundPosition: 'right',
-												backgroundRepeat: 'no-repeat',
 										  }
 										: isCommunity
 										? {
@@ -245,28 +241,28 @@ const withLayoutBasic = (Component: any) => {
 										</Stack> */}
 									</Stack>
 
-									{!isMyPage && (
-										<Stack
-											className={`hero-banner__visual${isAgent ? ' hero-banner__visual--agent' : ''}${
-												isCommunity ? ' hero-banner__visual--community' : ''
-											}`}
-										>
-											<img
-												className={`hero-banner__image${isAgent ? ' hero-banner__image--agent' : ''}${
-													isCommunity ? ' hero-banner__image--community' : ''
-												}`}
-												src={
-													isAgent
-														? '/img/newProduct/dog_headphones.png'
-														: isCommunity
-														? '/img/newProduct/communityorgbanner.png'
-														: '/img/newProduct/image2.png'
-												}
-												alt="Hero banner"
-												loading="lazy"
-											/>
-										</Stack>
-									)}
+									<Stack
+										className={`hero-banner__visual${isAgent ? ' hero-banner__visual--agent' : ''}${
+											isCommunity ? ' hero-banner__visual--community' : ''
+										}${isMyPage ? ' hero-banner__visual--mypage' : ''}`}
+									>
+										<img
+											className={`hero-banner__image${isAgent ? ' hero-banner__image--agent' : ''}${
+												isCommunity ? ' hero-banner__image--community' : ''
+											}${isMyPage ? ' hero-banner__image--mypage' : ''}`}
+											src={
+												isAgent
+													? '/img/newProduct/dog_headphones.png'
+													: isCommunity
+													? '/img/newProduct/communityorgbanner.png'
+													: isMyPage
+													? '/img/newProduct/mypageBanner.png'
+													: '/img/newProduct/image2.png'
+											}
+											alt="Hero banner"
+											loading="lazy"
+										/>
+									</Stack>
 								</Stack>
 
 								<span className={'hero-ellipse hero-ellipse--1'} aria-hidden />
