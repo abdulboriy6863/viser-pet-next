@@ -137,6 +137,7 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 									alt=""
 								/>
 							</Stack>
+
 							<Stack className="upload-big-box">
 								<input
 									type="file"

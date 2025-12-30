@@ -7,7 +7,7 @@ import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import Filter from '../../libs/components/property/Filter';
 import { useRouter } from 'next/router';
 import { ProductInquiry, PropertiesInquiry } from '../../libs/types/property/property.input';
-import { Product, Property } from '../../libs/types/property/property';
+import { Product } from '../../libs/types/property/property';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import { Direction, Message } from '../../libs/enums/common.enum';
@@ -184,7 +184,7 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 								) : (
 									properties.map((property: Product) => {
 										return (
-											<PropertyCard product={property} likePropertyHandler={likePropertyHandler} key={property?._id} />
+											<PropertyCard product={property} likeProductHandler={likePropertyHandler} key={property?._id} />
 										);
 									})
 								)}

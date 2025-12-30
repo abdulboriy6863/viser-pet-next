@@ -168,25 +168,54 @@
 				position: sticky;
 				top: 120px;
 				align-self: start;
-				background: rgba(255, 255, 255, 0.96);
-				border-radius: 20px;
-				padding: 20px 18px;
-				box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);
-				backdrop-filter: blur(6px);
+				background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(248, 249, 255, 0.98));
+				border-radius: 22px;
+				padding: 22px 18px;
+				box-shadow: 0 24px 55px rgba(0, 0, 0, 0.12);
+				backdrop-filter: blur(10px);
+				border: 1px solid rgba(255, 255, 255, 0.7);
 			}
 
 			.mypage-content-card {
-				background: #ffffff;
-				border-radius: 20px;
-				padding: 26px;
-				box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+				position: relative;
+				background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(246, 249, 255, 0.95));
+				border-radius: 24px;
+				padding: 30px;
+				box-shadow: 0 28px 60px rgba(0, 0, 0, 0.16);
+				border: 1px solid rgba(255, 255, 255, 0.7);
 				min-height: 640px;
+				overflow: hidden;
+
+				&::before {
+					content: '';
+					position: absolute;
+					width: 220px;
+					height: 220px;
+					right: -60px;
+					top: -80px;
+					border-radius: 50%;
+					background: radial-gradient(circle, rgba(31, 42, 109, 0.08), transparent 60%);
+					pointer-events: none;
+				}
 			}
 
 			.mypage-content-inner {
 				display: flex;
 				flex-direction: column;
 				gap: 18px;
+
+				.card-config {
+					border-radius: 18px;
+					border: 1px solid #eef1f6;
+					box-shadow: 0 14px 32px rgba(0, 0, 0, 0.08);
+
+					.top {
+						overflow: hidden;
+						img {
+							border-radius: 18px 18px 0 0;
+						}
+					}
+				}
 			}
 		}
 

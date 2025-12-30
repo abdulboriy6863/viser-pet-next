@@ -3,7 +3,7 @@ import { Stack, Typography, Box } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { Product, Property } from '../../types/property/property';
+import { Product } from '../../types/property/property';
 import Link from 'next/link';
 import { formatterStr } from '../../utils';
 import { REACT_APP_API_URL } from '../../config';
@@ -14,13 +14,12 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
 interface PropertyCardType {
 	product: Product;
-	likePropertyHandler?: any;
+	likeProductHandler?: any;
 	myFavorites?: boolean;
-	recentlyVisited?: boolean;
 }
 
 const PropertyCard = (props: PropertyCardType) => {
-	const { product, likePropertyHandler, myFavorites, recentlyVisited } = props;
+	const { product, myFavorites } = props;
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const imagePath: string = product?.productImages[0]
@@ -43,7 +42,7 @@ const PropertyCard = (props: PropertyCardType) => {
 			: `$${formatterStr(basePrice)}`;
 
 	if (device === 'mobile') {
-		return <div>PROPERTY CARD</div>;
+		return <div>PODUCT CARD</div>;
 	} else {
 		return (
 			<Stack className="card-config">
@@ -59,7 +58,7 @@ const PropertyCard = (props: PropertyCardType) => {
 					{product && product?.productRank > 50 && (
 						<Box component={'div'} className={'top-badge'}>
 							<img src="/img/icons/electricity.svg" alt="" />
-							<Typography>TO1111</Typography>
+							<Typography>TO1111===============</Typography>
 						</Box>
 					)}
 				</Stack>
@@ -88,24 +87,6 @@ const PropertyCard = (props: PropertyCardType) => {
 								className={product.productName ? '' : 'disabled-type'}
 							></Typography>
 						</Stack>
-						{/* {!recentlyVisited && (
-							<Stack className="buttons">
-								<IconButton color={'default'}>
-									<RemoveRedEyeIcon />
-								</IconButton>
-								<Typography className="view-cnt">{product?.productViews}</Typography>
-								<IconButton color={'default'} onClick={() => likePropertyHandler(user, product?._id)}>
-									{myFavorites ? (
-										<FavoriteIcon color="primary" />
-									) : product?.meLiked && product?.meLiked[0]?.myFavorite ? (
-										<FavoriteIcon color="primary" />
-									) : (
-										<FavoriteBorderIcon />
-									)}
-								</IconButton>
-								<Typography className="view-cnt">{product?.productLikes}</Typography>
-							</Stack>
-						)} */}
 					</Stack>
 				</Stack>
 			</Stack>
