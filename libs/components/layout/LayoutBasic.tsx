@@ -202,6 +202,11 @@ const withLayoutBasic = (Component: any) => {
 										? {
 												backgroundColor: '#DED0FF',
 										  }
+										: isCs
+										? {
+												backgroundColor: '#FFDBD0;',
+												marginTop: '100px',
+										  }
 										: undefined
 								}
 							>
@@ -257,6 +262,8 @@ const withLayoutBasic = (Component: any) => {
 													? '/img/newProduct/communityorgbanner.png'
 													: isMyPage
 													? '/img/newProduct/mypageBanner.png'
+													: isCs
+													? '/img/newProduct/csbanner.png'
 													: '/img/newProduct/image2.png'
 											}
 											alt="Hero banner"
