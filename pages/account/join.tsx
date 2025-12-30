@@ -69,20 +69,36 @@ const Join: NextPage = () => {
 		return (
 			<Stack className={'join-page'}>
 				<Stack className={'container'}>
-					<Stack className={'main'}>
-						<Stack className={'left'}>
-							{/* @ts-ignore */}
-							<Box className={'logo'}>
-								<img src="/img/logo/logoText.svg" alt="" />
-								<span>Nestar</span>
+					<Stack className={'join-card'}>
+						<Stack className={'join-left'}>
+							<Box className={'brand'}>
+								<img src="/img/logo/Frame.svg" alt="ViserPet" />
+								<div>
+									<strong>ViserPet</strong>
+									<span>Happy pets, happier people</span>
+								</div>
 							</Box>
-							<Box className={'info'}>
-								<span>{loginView ? 'login' : 'signup'}</span>
-								<p>{loginView ? 'Login' : 'Sign'} in with this account across the following sites.</p>
+
+							<Box className={'mode-toggle'}>
+								<button className={loginView ? 'active' : ''} onClick={() => viewChangeHandler(true)}>
+									Log in
+								</button>
+								<button className={!loginView ? 'active' : ''} onClick={() => viewChangeHandler(false)}>
+									Sign up
+								</button>
 							</Box>
+
+							<Box className={'hero-copy'}>
+								<span className="eyebrow">{loginView ? 'Welcome back' : 'Join the pack'}</span>
+								<h1>{loginView ? 'Log in to your pet world' : 'Create your ViserPet account'}</h1>
+								<p>
+									Stay close to your favorite pets, agents, and community stories. Manage everything from one comfy place.
+								</p>
+							</Box>
+
 							<Box className={'input-wrap'}>
 								<div className={'input-box'}>
-									<span>Nickname</span>
+									<label>Nickname</label>
 									<input
 										type="text"
 										placeholder={'Enter Nickname'}
@@ -95,9 +111,9 @@ const Join: NextPage = () => {
 									/>
 								</div>
 								<div className={'input-box'}>
-									<span>Password</span>
+									<label>Password</label>
 									<input
-										type="text"
+										type="password"
 										placeholder={'Enter Password'}
 										onChange={(e) => handleInput('password', e.target.value)}
 										required={true}
@@ -109,9 +125,9 @@ const Join: NextPage = () => {
 								</div>
 								{!loginView && (
 									<div className={'input-box'}>
-										<span>Phone</span>
+										<label>Phone</label>
 										<input
-											type="text"
+											type="tel"
 											placeholder={'Enter Phone'}
 											onChange={(e) => handleInput('phone', e.target.value)}
 											required={true}
@@ -122,11 +138,12 @@ const Join: NextPage = () => {
 									</div>
 								)}
 							</Box>
+
 							<Box className={'register'}>
 								{!loginView && (
 									<div className={'type-option'}>
-										<span className={'text'}>I want to be registered as:</span>
-										<div>
+										<span className={'text'}>Register as</span>
+										<div className={'type-checkboxes'}>
 											<FormGroup>
 												<FormControlLabel
 													control={
@@ -166,47 +183,65 @@ const Join: NextPage = () => {
 									</div>
 								)}
 
-								{loginView ? (
-									<Button
-										variant="contained"
-										endIcon={<img src="/img/icons/rightup.svg" alt="" />}
-										disabled={input.nick == '' || input.password == ''}
-										onClick={doLogin}
-									>
-										LOGIN
-									</Button>
-								) : (
-									<Button
-										variant="contained"
-										disabled={input.nick == '' || input.password == '' || input.phone == '' || input.type == ''}
-										onClick={doSignUp}
-										endIcon={<img src="/img/icons/rightup.svg" alt="" />}
-									>
-										SIGNUP
-									</Button>
-								)}
-							</Box>
-							<Box className={'ask-info'}>
-								{loginView ? (
-									<p>
-										Not registered yet?
-										<b
-											onClick={() => {
-												viewChangeHandler(false);
-											}}
+								<div className="cta-row">
+									{loginView ? (
+										<Button
+											variant="contained"
+											endIcon={<img src="/img/icons/rightup.svg" alt="" />}
+											disabled={input.nick == '' || input.password == ''}
+											onClick={doLogin}
 										>
-											SIGNUP
-										</b>
+											Log in
+										</Button>
+									) : (
+										<Button
+											variant="contained"
+											disabled={input.nick == '' || input.password == '' || input.phone == '' || input.type == ''}
+											onClick={doSignUp}
+											endIcon={<img src="/img/icons/rightup.svg" alt="" />}
+										>
+											Sign up
+										</Button>
+									)}
+									<p className="switch-text">
+										{loginView ? (
+											<>
+												New here?{' '}
+												<b
+													onClick={() => {
+														viewChangeHandler(false);
+													}}
+												>
+													Create account
+												</b>
+											</>
+										) : (
+											<>
+												Already a member?{' '}
+												<b onClick={() => viewChangeHandler(true)}>Log in</b>
+											</>
+										)}
 									</p>
-								) : (
-									<p>
-										Have account?
-										<b onClick={() => viewChangeHandler(true)}> LOGIN</b>
-									</p>
-								)}
+								</div>
 							</Box>
 						</Stack>
-						<Stack className={'right'}></Stack>
+
+						<Stack className={'join-right'}>
+							<div className="visual">
+								<span className={'hero-ellipse hero-ellipse--1'} aria-hidden />
+								<span className={'hero-ellipse hero-ellipse--2'} aria-hidden />
+								<span className={'hero-ellipse hero-ellipse--3'} aria-hidden />
+								<span className={'hero-ellipse hero-ellipse--4'} aria-hidden />
+								<span className={'hero-ellipse hero-ellipse--5'} aria-hidden />
+								<span className={'hero-ellipse hero-ellipse--6'} aria-hidden />
+								<div className="glow" />
+								<div className="card">
+									<p>Safe & easy</p>
+									<strong>Care for every pet</strong>
+								</div>
+								<img src="/img/newProduct/dog_headphones.png" alt="Happy pet" />
+							</div>
+						</Stack>
 					</Stack>
 				</Stack>
 			</Stack>
