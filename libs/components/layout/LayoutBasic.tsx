@@ -98,7 +98,13 @@ const withLayoutBasic = (Component: any) => {
 			isMyPage ||
 			isCommunity ||
 			isCs;
-		const footerClassName = isAgent ? 'footer--agent hero-section' : isMyPage ? 'footer--mypage' : undefined;
+		const footerClassName = isAgent
+			? 'footer--agent hero-section'
+			: isMyPage
+			? 'footer--mypage'
+			: isCommunity
+			? 'footer--community'
+			: undefined;
 
 		/** LIFECYCLES **/
 		useEffect(() => {
