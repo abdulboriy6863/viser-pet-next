@@ -51,7 +51,7 @@ const withLayoutBasic = (Component: any) => {
 				case '/mypage':
 					title = 'my page';
 					desc = 'Home / For Rent';
-					bgImage = '/img/banner/header1.svg';
+					bgImage = '/img/newProduct/mypageBanner.png';
 					break;
 				case '/community':
 					title = 'Community';
@@ -87,8 +87,10 @@ const withLayoutBasic = (Component: any) => {
 		}, [router.pathname]);
 
 		const isAgent = router.pathname.startsWith('/agent');
-		const isProductLike = router.pathname.startsWith('/product') || router.pathname.startsWith('/property') || isAgent;
-		const footerClassName = isAgent ? 'footer--agent hero-section' : undefined;
+		const isMyPage = router.pathname.startsWith('/mypage');
+		const isProductLike =
+			router.pathname.startsWith('/product') || router.pathname.startsWith('/property') || isAgent || isMyPage;
+		const footerClassName = isAgent ? 'footer--agent hero-section' : isMyPage ? 'footer--mypage' : undefined;
 
 		/** LIFECYCLES **/
 		useEffect(() => {
@@ -150,7 +152,23 @@ const withLayoutBasic = (Component: any) => {
 
 						{isProductLike && (
 							<Stack
-								className={`hero-banner-product${isAgent ? ' hero-banner-product--agent hero-section' : ''}`}
+								className={`hero-banner-product${isAgent ? ' hero-banner-product--agent hero-section' : ''} ${
+									isMyPage ? 'hero-banner--mypage' : ''
+								}`}
+								style={
+									isAgent
+										? { background: '#fff7f2' }
+										: isMyPage
+										? {
+												backgroundColor: '#E1FFD5',
+												marginTop: '70px',
+												backgroundImage: 'url(/img/newProduct/mypageBanner.png)',
+												backgroundSize: 'contain',
+												backgroundPosition: 'right',
+												backgroundRepeat: 'no-repeat',
+										  }
+										: undefined
+								}
 							>
 								<Stack className={`hero-banner__inner${isAgent ? ' hero-banner__inner--agent' : ''}`}>
 									<Stack className={'hero-banner__content'}>
@@ -183,14 +201,21 @@ const withLayoutBasic = (Component: any) => {
 										</Stack> */}
 									</Stack>
 
-									<Stack className={`hero-banner__visual${isAgent ? ' hero-banner__visual--agent' : ''}`}>
+									{!isMyPage && (
 										<img
 											className={'hero-banner__image'}
 											src={isAgent ? '/img/newProduct/dog_headphones.png' : '/img/newProduct/image2.png'}
 											alt="Puppy with bow tie"
 											loading="lazy"
+											style={
+												isMyPage
+													? {
+															position: 'relative',
+													  }
+													: undefined
+											}
 										/>
-									</Stack>
+									)}
 								</Stack>
 
 								<span className={'hero-ellipse hero-ellipse--1'} aria-hidden />
