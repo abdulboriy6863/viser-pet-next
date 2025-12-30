@@ -20,13 +20,13 @@ interface APISearch {
 	propertyStatus?: PropertyStatus;
 }
 
-export interface AgentPropertiesInquiry {
-	page: number;
-	limit: number;
-	sort?: string;
-	direction?: Direction;
-	search: APISearch;
-}
+// export interface AgentPropertiesInquiry {
+// 	page: number;
+// 	limit: number;
+// 	sort?: string;
+// 	direction?: Direction;
+// 	search: APISearch;
+// }
 
 // interface ALPISearch {
 // 	propertyStatus?: PropertyStatus;
@@ -46,11 +46,6 @@ interface Range {
 	end: number;
 }
 
-// interface PeriodsRange {
-// 	start: Date | number;
-// 	end: Date | number;
-// }
-
 //////////////VISER PET NEXT NEW INPUT TYPES/////////////////////
 export interface ProductInput {
 	productCollection: ProductCollection;
@@ -66,36 +61,6 @@ export interface ProductInput {
 	memberId?: string;
 	constructedAt?: Date;
 }
-
-// export interface PropertyInput {
-// 	propertyType: PropertyType;
-// 	propertyLocation: PropertyLocation;
-// 	propertyAddress: string;
-// 	propertyTitle: string;
-// 	propertyPrice: number;
-// 	propertySquare: number;
-// 	propertyBeds: number;
-// 	propertyRooms: number;
-// 	propertyImages: string[];
-// 	propertyDesc?: string;
-// 	propertyBarter?: boolean;
-// 	propertyRent?: boolean;
-// 	memberId?: string;
-// 	constructedAt?: Date;
-// }
-
-// interface PISearch {
-// 	memberId?: string;
-// 	locationList?: PropertyLocation[];
-// 	typeList?: PropertyType[];
-// 	roomsList?: Number[];
-// 	options?: string[];
-// 	bedsList?: Number[];
-// 	pricesRange?: Range;
-// 	periodsRange?: PeriodsRange;
-// 	squaresRange?: Range;
-// 	text?: string;
-// }
 
 export interface PISearch {
 	memberId?: string; // Product.memberId bilan mos

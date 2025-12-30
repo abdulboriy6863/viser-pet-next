@@ -5,28 +5,28 @@ export const formatterStr = (value: number | undefined): string => {
 	return numeral(value).format('0,0') != '0' ? numeral(value).format('0,0') : '';
 };
 
-export const likeTargetPropertyHandler = async (likeTargetProperty: any, id: string) => {
+export const likeTargetProductHandler = async (likeTargetProduct: any, id: string) => {
 	try {
-		await likeTargetProperty({
+		await likeTargetProduct({
 			variables: {
 				input: id,
 			},
 		});
 	} catch (err: any) {
-		console.log('ERROR, likeTargetPropertyHandler:', err.message);
+		console.log('ERROR, likeTargetProductHandler:', err.message);
 		sweetMixinErrorAlert(err.message).then();
 	}
 };
 
-export const likeTargetBoardArticleHandler = async (likeTargetBoardArticle: any, id: string) => {
+export const likeTargetblogPostHandler = async (likeTargetBlogPost: any, id: string) => {
 	try {
-		await likeTargetBoardArticle({
+		await likeTargetBlogPost({
 			variables: {
 				input: id,
 			},
 		});
 	} catch (err: any) {
-		console.log('ERROR, likeTargetBoardArticleHandler:', err.message);
+		console.log('ERROR, likeTargetblogPostHandler:', err.message);
 		sweetMixinErrorAlert(err.message).then();
 	}
 };
@@ -43,3 +43,5 @@ export const likeTargetMemberHandler = async (likeTargetMember: any, id: string)
 		sweetMixinErrorAlert(err.message).then();
 	}
 };
+
+//o'zgartirdim

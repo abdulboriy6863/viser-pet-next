@@ -19,32 +19,41 @@ const MAX_IMAGES = 5;
 const AddProduct = ({ initialValues }: any) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
-	const inputRef = useRef<HTMLInputElement | null>(null);
 
+	const inputRef = useRef<HTMLInputElement | null>(null);
 	const token = getJwtToken();
 	const user = useReactiveVar(userVar);
 
 	const [insertProductData, setInsertProductData] = useState<ProductInput>(initialValues);
 	const [isUploading, setIsUploading] = useState(false);
 
+	// ✅ numeric inputs fix (string state)
+	const [priceStr, setPriceStr] = useState<string>('0');
+	const [leftStr, setLeftStr] = useState<string>('0');
+	const [discountStr, setDiscountStr] = useState<string>('0');
+
+	// ✅ drag states
+	const [isDragActive, setIsDragActive] = useState(false);
+
 	const productVolumeList = useMemo(() => Object.values(ProductVolume), []);
 	const productCollectionList = useMemo(() => Object.values(ProductCollection), []);
-
 	const isEditMode = Boolean(router.query.productId);
 
 	/** APOLLO **/
 	const [createProduct] = useMutation(CREATE_PRODUCT);
 	const [updateProduct] = useMutation(UPDATE_PRODUCT);
 
-	const {
-		loading: getProductLoading,
-		data: getProductData,
-		refetch: getProductRefetch,
-	} = useQuery(GET_PRODUCT, {
+	const { loading: getProductLoading, data: getProductData } = useQuery(GET_PRODUCT, {
 		fetchPolicy: 'network-only',
 		skip: !isEditMode,
 		variables: { input: router.query.productId },
 	});
+
+	/** Access control **/
+	useEffect(() => {
+		if (!user) return;
+		if (user?.memberType !== 'ADMIN' && user?.memberType !== 'AGENT') router.back();
+	}, [user, router]);
 
 	/** Hydrate form on edit **/
 	useEffect(() => {
@@ -56,10 +65,10 @@ const AddProduct = ({ initialValues }: any) => {
 
 		setInsertProductData((prev) => ({
 			...prev,
-			_id: p?._id, // if your backend accepts it; if not, remove
-			productVolume: p?.productVolume ?? '',
+			_id: p?._id,
+			productVolume: p?.productVolume ?? ('' as any),
 			productPrice: Number(p?.productPrice ?? 0),
-			productCollection: p?.productCollection ?? '',
+			productCollection: p?.productCollection ?? ('' as any),
 			productName: p?.productName ?? '',
 			productDetail: p?.productDetail ?? '',
 			productDiscount: Number(p?.productDiscount ?? 0),
@@ -68,110 +77,133 @@ const AddProduct = ({ initialValues }: any) => {
 		}));
 	}, [isEditMode, getProductLoading, getProductData]);
 
-	/** Access control (admin/agent) **/
+	/** ✅ keep numeric string fields in sync **/
 	useEffect(() => {
-		// sen "admin" dediing, lekin eski code AGENT tekshirardi.
-		// Ikkalasiga ruxsat beramiz (xohlasang faqat ADMIN qilamiz).
-		if (!user) return;
-		if (user?.memberType !== 'ADMIN' && user?.memberType !== 'AGENT') {
-			router.back();
-		}
-	}, [user, router]);
+		setPriceStr(String(insertProductData.productPrice ?? 0));
+		setLeftStr(String(insertProductData.productLeftCount ?? 0));
+		setDiscountStr(String(insertProductData.productDiscount ?? 0));
+	}, [insertProductData.productPrice, insertProductData.productLeftCount, insertProductData.productDiscount]);
 
 	/** Helpers **/
 	const setField = useCallback(<K extends keyof ProductInput>(key: K, value: ProductInput[K]) => {
 		setInsertProductData((prev) => ({ ...prev, [key]: value }));
 	}, []);
 
-	const doDisabledCheck = useMemo(() => {
-		const d = insertProductData;
+	/** ✅ images uploader (works for input + drop) **/
+	const uploadFiles = useCallback(
+		async (files: File[]) => {
+			try {
+				if (!files || files.length === 0) return;
 
-		if (!d.productName?.trim()) return true;
-		if (!d.productDetail?.trim()) return true;
+				const currentCount = insertProductData.productImages?.length ?? 0;
+				if (currentCount + files.length > MAX_IMAGES) {
+					throw new Error(`You can upload up to ${MAX_IMAGES} images total.`);
+				}
 
-		// required enums
-		// @ts-ignore
-		if (!d.productVolume || d.productVolume === '') return true;
-		// @ts-ignore
-		if (!d.productCollection || d.productCollection === '') return true;
+				// Next.js env ko‘p hollarda NEXT_PUBLIC bo‘ladi. Ikkalasini ham tekshiramiz.
+				const graphqlUrl =
+					(process.env.NEXT_PUBLIC_API_GRAPHQL_URL as string) || (process.env.REACT_APP_API_GRAPHQL_URL as string);
 
-		if (!Number.isFinite(d.productPrice) || d.productPrice <= 0) return true;
+				if (!graphqlUrl) {
+					throw new Error(
+						'GraphQL upload URL is missing. Set NEXT_PUBLIC_API_GRAPHQL_URL (or REACT_APP_API_GRAPHQL_URL).',
+					);
+				}
 
-		// leftCount required (sen avval 0 bo'lsa disable qilgansan)
-		const left = Number(d.productLeftCount ?? 0);
-		if (!Number.isFinite(left) || left <= 0) return true;
+				setIsUploading(true);
 
-		// discount optional: 0 bo’lsa ham mumkin
-		const imgs = Array.isArray(d.productImages) ? d.productImages : [];
-		if (imgs.length === 0) return true;
+				const filesCount = Math.min(files.length, MAX_IMAGES);
+				const formData = new FormData();
 
-		return false;
-	}, [insertProductData]);
+				formData.append(
+					'operations',
+					JSON.stringify({
+						query: `mutation ImagesUploader($files: [Upload!]!, $target: String!) {
+							imagesUploader(files: $files, target: $target)
+						}`,
+						variables: {
+							files: new Array(filesCount).fill(null),
+							target: 'product', // agar backend product uchun "product" bo‘lsa, shu yerini "product" qil
+						},
+					}),
+				);
 
-	/** Upload **/
-	const uploadImages = useCallback(async () => {
-		try {
-			if (!inputRef.current?.files) return;
+				const map: Record<string, string[]> = {};
+				for (let i = 0; i < filesCount; i++) map[String(i)] = [`variables.files.${i}`];
+				formData.append('map', JSON.stringify(map));
 
-			const selectedFiles = inputRef.current.files;
-			if (selectedFiles.length === 0) return;
+				for (let i = 0; i < filesCount; i++) formData.append(String(i), files[i]);
 
-			const currentCount = insertProductData.productImages?.length ?? 0;
-			if (currentCount + selectedFiles.length > MAX_IMAGES) {
-				throw new Error(`You can upload up to ${MAX_IMAGES} images total.`);
-			}
-
-			setIsUploading(true);
-
-			const formData = new FormData();
-			const filesCount = Math.min(selectedFiles.length, MAX_IMAGES);
-
-			formData.append(
-				'operations',
-				JSON.stringify({
-					query: `mutation ImagesUploader($files: [Upload!]!, $target: String!) {
-						imagesUploader(files: $files, target: $target)
-					}`,
-					variables: {
-						files: new Array(filesCount).fill(null),
-						target: 'property',
+				const res = await axios.post(graphqlUrl, formData, {
+					headers: {
+						'Content-Type': 'multipart/form-data',
+						'apollo-require-preflight': true,
+						Authorization: `Bearer ${token}`,
 					},
-				}),
-			);
+				});
 
-			const map: Record<string, string[]> = {};
-			for (let i = 0; i < filesCount; i++) map[String(i)] = [`variables.files.${i}`];
+				const uploaded: string[] = res?.data?.data?.imagesUploader ?? [];
 
-			formData.append('map', JSON.stringify(map));
+				setInsertProductData((prev) => ({
+					...prev,
+					productImages: [...(prev.productImages ?? []), ...uploaded].slice(0, MAX_IMAGES),
+				}));
+			} catch (err: any) {
+				await sweetMixinErrorAlert(err?.message || 'Image upload failed');
+			} finally {
+				setIsUploading(false);
+			}
+		},
+		[insertProductData.productImages, token],
+	);
 
-			for (let i = 0; i < filesCount; i++) {
-				formData.append(String(i), selectedFiles[i]);
+	const uploadImages = useCallback(async () => {
+		const fl = inputRef.current?.files;
+		if (!fl || fl.length === 0) return;
+		await uploadFiles(Array.from(fl));
+		if (inputRef.current) inputRef.current.value = '';
+	}, [uploadFiles]);
+
+	/** ✅ drag & drop handlers **/
+	const onDragOver = useCallback((e: React.DragEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+	}, []);
+
+	const onDragEnter = useCallback((e: React.DragEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setIsDragActive(true);
+	}, []);
+
+	const onDragLeave = useCallback((e: React.DragEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setIsDragActive(false);
+	}, []);
+
+	const onDrop = useCallback(
+		async (e: React.DragEvent) => {
+			e.preventDefault();
+			e.stopPropagation();
+			setIsDragActive(false);
+
+			const dt = e.dataTransfer;
+			if (!dt?.files || dt.files.length === 0) return;
+
+			const files = Array.from(dt.files).filter((f) => ['image/jpeg', 'image/png', 'image/jpg'].includes(f.type));
+
+			if (files.length === 0) {
+				await sweetMixinErrorAlert('Only JPG/JPEG/PNG images are allowed.');
+				return;
 			}
 
-			const response = await axios.post(`${process.env.REACT_APP_API_GRAPHQL_URL}`, formData, {
-				headers: {
-					'Content-Type': 'multipart/form-data',
-					'apollo-require-preflight': true,
-					Authorization: `Bearer ${token}`,
-				},
-			});
+			await uploadFiles(files);
+		},
+		[uploadFiles],
+	);
 
-			const responseImages: string[] = response?.data?.data?.imagesUploader ?? [];
-
-			setInsertProductData((prev) => ({
-				...prev,
-				productImages: [...(prev.productImages ?? []), ...responseImages].slice(0, MAX_IMAGES),
-			}));
-
-			// reset input so same file can be re-uploaded
-			if (inputRef.current) inputRef.current.value = '';
-		} catch (err: any) {
-			await sweetMixinErrorAlert(err?.message || 'Image upload failed');
-		} finally {
-			setIsUploading(false);
-		}
-	}, [insertProductData.productImages, token]);
-
+	/** Remove image **/
 	const removeImage = useCallback((idx: number) => {
 		setInsertProductData((prev) => {
 			const next = [...(prev.productImages ?? [])];
@@ -180,11 +212,44 @@ const AddProduct = ({ initialValues }: any) => {
 		});
 	}, []);
 
+	/** ✅ Cover select: move idx to 0 **/
+	const makeCover = useCallback((idx: number) => {
+		setInsertProductData((prev) => {
+			const arr = [...(prev.productImages ?? [])];
+			if (idx <= 0 || idx >= arr.length) return prev;
+			const [picked] = arr.splice(idx, 1);
+			arr.unshift(picked);
+			return { ...prev, productImages: arr };
+		});
+	}, []);
+
+	/** Disabled check **/
+	const doDisabledCheck = useMemo(() => {
+		const d = insertProductData;
+
+		if (!d.productName?.trim()) return true;
+		if (!d.productDetail?.trim()) return true;
+
+		// @ts-ignore
+		if (!d.productVolume || d.productVolume === '') return true;
+		// @ts-ignore
+		if (!d.productCollection || d.productCollection === '') return true;
+
+		if (!Number.isFinite(d.productPrice) || d.productPrice <= 0) return true;
+
+		const left = Number(d.productLeftCount ?? 0);
+		if (!Number.isFinite(left) || left <= 0) return true;
+
+		const imgs = Array.isArray(d.productImages) ? d.productImages : [];
+		if (imgs.length === 0) return true;
+
+		return false;
+	}, [insertProductData]);
+
 	/** Submit **/
 	const insertProductHandler = useCallback(async () => {
 		try {
 			await createProduct({ variables: { input: insertProductData } });
-
 			await sweetMixinSuccessAlert('Product created successfully.');
 			await router.push({ pathname: '/mypage', query: { category: 'myProperties' } });
 		} catch (err) {
@@ -194,20 +259,55 @@ const AddProduct = ({ initialValues }: any) => {
 
 	const updateProductHandler = useCallback(async () => {
 		try {
-			// edit mode uchun productId ni inputga qo’shib yuboramiz (backend shuni kutsa)
 			const payload: any = {
 				...insertProductData,
 				_id: getProductData?.getProduct?._id ?? router.query.productId,
 			};
 
 			await updateProduct({ variables: { input: payload } });
-
 			await sweetMixinSuccessAlert('Product updated successfully.');
 			await router.push({ pathname: '/mypage', query: { category: 'myProperties' } });
 		} catch (err) {
 			await sweetErrorHandling(err);
 		}
 	}, [updateProduct, insertProductData, getProductData, router]);
+
+	/** ✅ numeric input handlers (so you can type freely) **/
+	const onPriceChange = (v: string) => {
+		// allow empty
+		if (v === '') {
+			setPriceStr('');
+			setInsertProductData((prev) => ({ ...prev, productPrice: 0 }));
+			return;
+		}
+		// only digits
+		if (!/^\d+$/.test(v)) return;
+		setPriceStr(v);
+		setInsertProductData((prev) => ({ ...prev, productPrice: Number(v) }));
+	};
+
+	const onLeftChange = (v: string) => {
+		if (v === '') {
+			setLeftStr('');
+			setInsertProductData((prev) => ({ ...prev, productLeftCount: 0 }));
+			return;
+		}
+		if (!/^\d+$/.test(v)) return;
+		setLeftStr(v);
+		setInsertProductData((prev) => ({ ...prev, productLeftCount: Number(v) }));
+	};
+
+	const onDiscountChange = (v: string) => {
+		if (v === '') {
+			setDiscountStr('');
+			setInsertProductData((prev) => ({ ...prev, productDiscount: 0 }));
+			return;
+		}
+		if (!/^\d+$/.test(v)) return;
+		const num = Math.min(100, Number(v));
+		setDiscountStr(String(num));
+		setInsertProductData((prev) => ({ ...prev, productDiscount: num }));
+	};
 
 	if (device === 'mobile') return <div>ADD PRODUCT MOBILE (TODO)</div>;
 
@@ -250,11 +350,16 @@ const AddProduct = ({ initialValues }: any) => {
 							<label className="ap-label">Price</label>
 							<input
 								className="ap-input"
-								type="number"
-								min={0}
+								inputMode="numeric"
 								placeholder="0"
-								value={insertProductData.productPrice}
-								onChange={(e) => setField('productPrice', Number(e.target.value))}
+								value={priceStr}
+								onChange={(e) => onPriceChange(e.target.value)}
+								onBlur={() => {
+									if (priceStr === '') {
+										setPriceStr('0');
+										setField('productPrice', 0 as any);
+									}
+								}}
 							/>
 						</div>
 
@@ -262,11 +367,16 @@ const AddProduct = ({ initialValues }: any) => {
 							<label className="ap-label">Stock (Left Count)</label>
 							<input
 								className="ap-input"
-								type="number"
-								min={0}
+								inputMode="numeric"
 								placeholder="0"
-								value={insertProductData.productLeftCount ?? 0}
-								onChange={(e) => setField('productLeftCount', Number(e.target.value))}
+								value={leftStr}
+								onChange={(e) => onLeftChange(e.target.value)}
+								onBlur={() => {
+									if (leftStr === '') {
+										setLeftStr('0');
+										setField('productLeftCount', 0 as any);
+									}
+								}}
 							/>
 						</div>
 
@@ -316,12 +426,16 @@ const AddProduct = ({ initialValues }: any) => {
 							<label className="ap-label">Discount (%)</label>
 							<input
 								className="ap-input"
-								type="number"
-								min={0}
-								max={100}
+								inputMode="numeric"
 								placeholder="0"
-								value={insertProductData.productDiscount ?? 0}
-								onChange={(e) => setField('productDiscount', Number(e.target.value))}
+								value={discountStr}
+								onChange={(e) => onDiscountChange(e.target.value)}
+								onBlur={() => {
+									if (discountStr === '') {
+										setDiscountStr('0');
+										setField('productDiscount', 0 as any);
+									}
+								}}
 							/>
 							<span className="ap-hint">Optional. 0 means no discount.</span>
 						</div>
@@ -344,7 +458,7 @@ const AddProduct = ({ initialValues }: any) => {
 						<div>
 							<Typography className="ap-card__title">Product Images</Typography>
 							<Typography className="ap-mediaSub">
-								Upload up to {MAX_IMAGES}. First image is usually the cover.
+								Upload up to {MAX_IMAGES}. Click “Make cover” to set the first image.
 							</Typography>
 						</div>
 
@@ -365,11 +479,17 @@ const AddProduct = ({ initialValues }: any) => {
 						</Button>
 					</div>
 
-					<div className="ap-drop">
+					<div
+						className={`ap-drop ${isDragActive ? 'is-active' : ''}`}
+						onDragOver={onDragOver}
+						onDragEnter={onDragEnter}
+						onDragLeave={onDragLeave}
+						onDrop={onDrop}
+					>
 						<div className="ap-drop__icon">⬆</div>
 						<div className="ap-drop__text">
-							<div className="t1">Drop files here or click “Add Images”</div>
-							<div className="t2">JPEG/PNG recommended. Keep it clean & sharp.</div>
+							<div className="t1">Drag & drop images here</div>
+							<div className="t2">Or click “Add Images”. JPG/PNG only.</div>
 						</div>
 					</div>
 
@@ -379,10 +499,20 @@ const AddProduct = ({ initialValues }: any) => {
 							return (
 								<div className="ap-thumb" key={`${image}-${idx}`}>
 									<img src={imagePath} alt={`product-${idx}`} />
-									<button type="button" className="ap-remove" onClick={() => removeImage(idx)}>
-										✕
-									</button>
-									{idx === 0 ? <div className="ap-badge">Cover</div> : null}
+
+									<div className="ap-thumbActions">
+										{idx !== 0 ? (
+											<button type="button" className="ap-coverBtn" onClick={() => makeCover(idx)}>
+												Make cover
+											</button>
+										) : (
+											<div className="ap-badge">Cover</div>
+										)}
+
+										<button type="button" className="ap-remove" onClick={() => removeImage(idx)}>
+											✕
+										</button>
+									</div>
 								</div>
 							);
 						})}

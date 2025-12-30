@@ -88,7 +88,7 @@ const headCells: readonly HeadCell[] = [
 
 interface EnhancedTableProps {
 	numSelected: number;
-	onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
+	onRequestSort: (event: React.MouseEvent<unknown>, product: keyof Data) => void;
 	onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
 	order: Order;
 	orderBy: string;
@@ -97,13 +97,13 @@ interface EnhancedTableProps {
 
 interface EnhancedTableToolbarProps {
 	numSelected: number;
-	onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
+	onRequestSort: (event: React.MouseEvent<unknown>, product: keyof Data) => void;
 	onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
 	order: Order;
 	orderBy: string;
 	rowCount: number;
 }
-
+//o'zgartirdim
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
 	const [select, setSelect] = useState('');
 	const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;

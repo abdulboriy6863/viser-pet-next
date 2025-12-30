@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper';
 import TopPropertyCard from './TopPropertyCard';
 import { ProductsInquiry, PropertiesInquiry } from '../../types/property/property.input';
-import { Product, Property } from '../../types/property/property';
+import { Product } from '../../types/property/property';
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_PRODUCTS } from '../../../apollo/user/query';
 import { T } from '../../types/common';

@@ -99,6 +99,7 @@
 				&--media {
 					position: sticky;
 					top: 90px;
+
 					@media (max-width: 1100px) {
 						position: relative;
 						top: auto;
@@ -159,6 +160,11 @@
 					border-color: rgba(23, 195, 178, 0.65);
 					box-shadow: 0 0 0 6px rgba(23, 195, 178, 0.16);
 				}
+
+				&::placeholder {
+					color: rgba(17, 24, 39, 0.45);
+					font-weight: 600;
+				}
 			}
 
 			.ap-input {
@@ -218,16 +224,20 @@
 				font-weight: 900 !important;
 				background: #111827 !important;
 				color: #fff !important;
+				transition: transform 0.15s ease, filter 0.15s ease;
 
 				&:hover {
 					background: #0b1220 !important;
+					transform: translateY(-1px);
 				}
 				&:disabled {
 					background: rgba(17, 24, 39, 0.25) !important;
 					color: rgba(255, 255, 255, 0.9) !important;
+					transform: none;
 				}
 			}
 
+			/* ===== Drop zone (now interactive) ===== */
 			.ap-drop {
 				margin-top: 14px;
 				display: flex;
@@ -237,6 +247,8 @@
 				border-radius: 16px;
 				border: 1px dashed rgba(23, 195, 178, 0.8);
 				background: linear-gradient(135deg, rgba(23, 195, 178, 0.12) 0%, rgba(255, 255, 255, 1) 70%);
+				transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+				user-select: none;
 
 				&__icon {
 					width: 42px;
@@ -265,6 +277,24 @@
 						font-weight: 600;
 					}
 				}
+
+				&:hover {
+					transform: translateY(-1px);
+					box-shadow: 0 12px 35px rgba(24, 26, 32, 0.08);
+					border-color: rgba(23, 195, 178, 1);
+				}
+
+				&.is-active {
+					transform: translateY(-2px);
+					border-color: rgba(23, 195, 178, 1);
+					box-shadow: 0 0 0 6px rgba(23, 195, 178, 0.18);
+					background: linear-gradient(135deg, rgba(23, 195, 178, 0.18) 0%, rgba(255, 255, 255, 1) 70%);
+
+					.ap-drop__icon {
+						background: rgba(23, 195, 178, 0.22);
+						box-shadow: 0 0 0 6px rgba(23, 195, 178, 0.14);
+					}
+				}
 			}
 
 			.ap-gallery {
@@ -281,6 +311,7 @@
 				}
 			}
 
+			/* ===== Thumb + actions overlay ===== */
 			.ap-thumb {
 				position: relative;
 				width: 100%;
@@ -290,19 +321,63 @@
 				border: 1px solid rgba(0, 0, 0, 0.06);
 				background: rgba(245, 246, 248, 1);
 				box-shadow: 0 10px 22px rgba(24, 26, 32, 0.08);
+				transition: transform 0.18s ease, box-shadow 0.18s ease;
+
+				&::after {
+					content: '';
+					position: absolute;
+					inset: 0;
+					background: linear-gradient(180deg, rgba(17, 24, 39, 0) 40%, rgba(17, 24, 39, 0.45) 100%);
+					opacity: 0;
+					transition: opacity 0.18s ease;
+					pointer-events: none;
+				}
 
 				img {
 					width: 100%;
 					height: 100%;
 					object-fit: cover;
 					transform: scale(1.02);
+					transition: transform 0.2s ease;
+				}
+
+				&:hover {
+					transform: translateY(-2px);
+					box-shadow: 0 18px 40px rgba(24, 26, 32, 0.14);
+
+					&::after {
+						opacity: 1;
+					}
+
+					img {
+						transform: scale(1.06);
+					}
+
+					.ap-thumbActions {
+						opacity: 1;
+						transform: translateY(0);
+					}
 				}
 			}
 
-			.ap-remove {
+			.ap-thumbActions {
 				position: absolute;
-				top: 10px;
+				left: 10px;
 				right: 10px;
+				top: 10px;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 8px;
+
+				opacity: 0;
+				transform: translateY(-6px);
+				transition: opacity 0.18s ease, transform 0.18s ease;
+				z-index: 2;
+			}
+
+			/* Remove button (top-right) */
+			.ap-remove {
 				width: 34px;
 				height: 34px;
 				border: 0;
@@ -314,17 +389,20 @@
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				transition: transform 0.15s ease;
+				transition: transform 0.15s ease, filter 0.15s ease;
 
 				&:hover {
 					transform: translateY(-1px);
+					filter: brightness(1.05);
+				}
+
+				&:active {
+					transform: translateY(0);
 				}
 			}
 
+			/* Cover badge (when idx === 0) */
 			.ap-badge {
-				position: absolute;
-				left: 10px;
-				bottom: 10px;
 				padding: 8px 10px;
 				border-radius: 999px;
 				background: rgba(23, 195, 178, 0.92);
@@ -332,6 +410,32 @@
 				font-family: $font;
 				font-size: 12px;
 				font-weight: 900;
+				box-shadow: 0 10px 20px rgba(24, 26, 32, 0.16);
+				backdrop-filter: blur(6px);
+			}
+
+			/* Cover button (when idx !== 0) */
+			.ap-coverBtn {
+				border: 0;
+				border-radius: 999px;
+				padding: 8px 10px;
+				cursor: pointer;
+				background: rgba(255, 255, 255, 0.92);
+				color: #111827;
+				font-family: $font;
+				font-size: 12px;
+				font-weight: 900;
+				box-shadow: 0 10px 22px rgba(24, 26, 32, 0.14);
+				transition: transform 0.15s ease, filter 0.15s ease;
+
+				&:hover {
+					transform: translateY(-1px);
+					filter: brightness(0.98);
+				}
+
+				&:active {
+					transform: translateY(0);
+				}
 			}
 
 			.ap-empty {
@@ -373,14 +477,17 @@
 				font-weight: 950 !important;
 				background: #17c3b2 !important;
 				color: #ffffff !important;
+				transition: transform 0.15s ease, filter 0.15s ease;
 
 				&:hover {
 					filter: brightness(0.95);
+					transform: translateY(-1px);
 				}
 
 				&:disabled {
 					background: rgba(23, 195, 178, 0.25) !important;
 					color: rgba(255, 255, 255, 0.95) !important;
+					transform: none;
 				}
 			}
 
@@ -393,9 +500,11 @@
 				border: 1px solid rgba(17, 24, 39, 0.14) !important;
 				color: #111827 !important;
 				background: rgba(255, 255, 255, 0.9) !important;
+				transition: transform 0.15s ease, filter 0.15s ease;
 
 				&:hover {
 					background: rgba(245, 246, 248, 1) !important;
+					transform: translateY(-1px);
 				}
 			}
 		}
