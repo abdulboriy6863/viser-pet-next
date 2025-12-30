@@ -19,11 +19,11 @@ import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import OpenInBrowserRoundedIcon from '@mui/icons-material/OpenInBrowserRounded';
 import Moment from 'react-moment';
-import { BoardArticle } from '../../../types/board-article/board-article';
+import { BlogPost } from '../../../types/board-article/board-article';
 import { REACT_APP_API_URL } from '../../../config';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Typography from '@mui/material/Typography';
-import { BoardArticleStatus } from '../../../enums/board-article.enum';
+import { BlogPostStatus } from '../../../enums/board-article.enum';
 
 interface Data {
 	category: string;
@@ -33,7 +33,7 @@ interface Data {
 	view: number;
 	like: number;
 	status: string;
-	article_id: string;
+	blogPost_id: string;
 }
 
 interface HeadCell {
@@ -45,11 +45,12 @@ interface HeadCell {
 
 const headCells: readonly HeadCell[] = [
 	{
-		id: 'article_id',
+		id: 'blogPost_id',
 		numeric: true,
 		disablePadding: false,
 		label: 'ARTICLE ID',
 	},
+	//o'zgarishi kerak
 	{
 		id: 'title',
 		numeric: true,
@@ -119,18 +120,24 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 	);
 }
 
-interface CommunityArticleListProps {
-	articles: BoardArticle[];
+interface CommunityArticleList {
+	blogPosts: BlogPost[];
 	anchorEl: any;
 	menuIconClickHandler: any;
 	menuIconCloseHandler: any;
-	updateArticleHandler: any;
-	removeArticleHandler: any;
+	updateBlogPostHandler: any;
+	removeBlogPostHandler: any;
 }
 
-const CommunityArticleList = (props: CommunityArticleListProps) => {
-	const { articles, anchorEl, menuIconClickHandler, menuIconCloseHandler, updateArticleHandler, removeArticleHandler } =
-		props;
+const CommunityArticleList = (props: CommunityArticleList) => {
+	const {
+		blogPosts,
+		anchorEl,
+		menuIconClickHandler,
+		menuIconCloseHandler,
+		updateBlogPostHandler,
+		removeBlogPostHandler,
+	} = props;
 
 	return (
 		<Stack>
@@ -139,7 +146,7 @@ const CommunityArticleList = (props: CommunityArticleListProps) => {
 					{/*@ts-ignore*/}
 					<EnhancedTableHead />
 					<TableBody>
-						{articles?.length === 0 && (
+						{blogPosts?.length === 0 && (
 							<TableRow>
 								<TableCell align="center" colSpan={8}>
 									<span className={'no-data'}>data not found!</span>
@@ -147,16 +154,16 @@ const CommunityArticleList = (props: CommunityArticleListProps) => {
 							</TableRow>
 						)}
 
-						{articles?.length !== 0 &&
-							articles?.map((article: BoardArticle, index: number) => (
-								<TableRow hover key={article._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-									<TableCell align="left">{article._id}</TableCell>
+						{blogPosts?.length !== 0 &&
+							blogPosts?.map((blogPost: BlogPost, index: number) => (
+								<TableRow hover key={blogPost._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+									<TableCell align="left">{blogPost._id}</TableCell>
 									<TableCell align="left">
 										<Box component={'div'}>
-											{article.articleTitle}
-											{article.articleStatus === BoardArticleStatus.ACTIVE && (
+											{blogPost.blogPostTitle}
+											{blogPost.blogPostStatus === BlogPostStatus.ACTIVE && (
 												<Link
-													href={`/community/detail?articleCategory=${article.articleCategory}&id=${article._id}`}
+													href={`/community/detail?articleCategory=${blogPost.blogPostCategory}&id=${blogPost._id}`}
 													className={'img_box'}
 												>
 													<IconButton className="btn_window">
@@ -168,39 +175,39 @@ const CommunityArticleList = (props: CommunityArticleListProps) => {
 											)}
 										</Box>
 									</TableCell>
-									<TableCell align="left">{article.articleCategory}</TableCell>
+									<TableCell align="left">{blogPost.blogPostCategory}</TableCell>
 									<TableCell align="left" className={'name'}>
-										<Link href={`/member?memberId=${article?.memberData?._id}`}>
+										<Link href={`/member?memberId=${blogPost?.memberData?._id}`}>
 											<Avatar
 												alt="Remy Sharp"
 												src={
-													article?.memberData?.memberImage
-														? `${REACT_APP_API_URL}/${article?.memberData?.memberImage}`
+													blogPost?.memberData?.memberImage
+														? `${REACT_APP_API_URL}/${blogPost?.memberData?.memberImage}`
 														: `/img/profile/defaultUser.svg`
 												}
 												sx={{ ml: '2px', mr: '10px' }}
 											/>
-											{article?.memberData?.memberNick}
+											{blogPost?.memberData?.memberNick}
 										</Link>
 									</TableCell>
-									<TableCell align="center">{article?.articleViews}</TableCell>
-									<TableCell align="center">{article?.articleLikes}</TableCell>
+									<TableCell align="center">{blogPost?.blogPostViews}</TableCell>
+									<TableCell align="center">{blogPost?.blogPostLikes}</TableCell>
 									<TableCell align="left">
-										<Moment format={'DD.MM.YY HH:mm'}>{article?.createdAt}</Moment>
+										<Moment format={'DD.MM.YY HH:mm'}>{blogPost?.createdAt}</Moment>
 									</TableCell>
 									<TableCell align="center">
-										{article.articleStatus === BoardArticleStatus.DELETE ? (
+										{blogPost.blogPostStatus === BlogPostStatus.DELETE ? (
 											<Button
 												variant="outlined"
 												sx={{ p: '3px', border: 'none', ':hover': { border: '1px solid #000000' } }}
-												onClick={() => removeArticleHandler(article._id)}
+												onClick={() => removeBlogPostHandler(blogPost._id)}
 											>
 												<DeleteIcon fontSize="small" />
 											</Button>
 										) : (
 											<>
 												<Button onClick={(e: any) => menuIconClickHandler(e, index)} className={'badge success'}>
-													{article.articleStatus}
+													{blogPost.blogPostStatus}
 												</Button>
 
 												<Menu
@@ -214,11 +221,11 @@ const CommunityArticleList = (props: CommunityArticleListProps) => {
 													TransitionComponent={Fade}
 													sx={{ p: 1 }}
 												>
-													{Object.values(BoardArticleStatus)
-														.filter((ele) => ele !== article.articleStatus)
+													{Object.values(BlogPostStatus)
+														.filter((ele) => ele !== blogPost.blogPostStatus)
 														.map((status: string) => (
 															<MenuItem
-																onClick={() => updateArticleHandler({ _id: article._id, articleStatus: status })}
+																onClick={() => updateBlogPostHandler({ _id: blogPost._id, blogPostStatus: status })}
 																key={status}
 															>
 																<Typography variant={'subtitle1'} component={'span'}>

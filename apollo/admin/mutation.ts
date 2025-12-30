@@ -158,42 +158,6 @@ export const REMOVE_COMMENT_BY_ADMIN = gql`
 `;
 
 /**************************
- *         NESTART        */
-
-/**************************
- *         MEMBER         *
- *************************/
-
-// export const UPDATE_MEMBER_BY_ADMIN = gql`
-// 	mutation UpdateMemberByAdmin($input: MemberUpdate!) {
-// 		updateMemberByAdmin(input: $input) {
-// 			_id
-// 			memberType
-// 			memberStatus
-// 			memberAuthType
-// 			memberPhone
-// 			memberNick
-// 			memberFullName
-// 			memberImage
-// 			memberAddress
-// 			memberDesc
-// 			memberProperties
-// 			memberRank
-// 			memberArticles
-// 			memberPoints
-// 			memberLikes
-// 			memberViews
-// 			memberWarnings
-// 			memberBlocks
-// 			deletedAt
-// 			createdAt
-// 			updatedAt
-// 			accessToken
-// 		}
-// 	}
-// `;
-
-/**************************
  *        PROPERTY        *
  *************************/
 

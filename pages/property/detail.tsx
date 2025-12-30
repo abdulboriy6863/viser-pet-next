@@ -12,7 +12,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 // import WestIcon from '@mui/icons-material/West';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { useRouter } from 'next/router';
-import { Product, Property } from '../../libs/types/property/property';
+import { Product } from '../../libs/types/property/property';
 // import moment from 'moment';
 import { formatterStr } from '../../libs/utils';
 import { REACT_APP_API_URL } from '../../libs/config';

@@ -20,11 +20,21 @@ import { CommentGroup, CommentStatus } from '../../libs/enums/comment.enum';
 import { T } from '../../libs/types/common';
 import EditIcon from '@mui/icons-material/Edit';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { BoardArticle } from '../../libs/types/board-article/board-article';
-import { CREATE_COMMENT, LIKE_TARGET_BOARD_ARTICLE, UPDATE_COMMENT } from '../../apollo/user/mutation';
-import { GET_BOARD_ARTICLE, GET_COMMENTS } from '../../apollo/user/query';
+import { BlogPost, BoardArticle } from '../../libs/types/board-article/board-article';
+import {
+	CREATE_COMMENT,
+	LIKE_TARGET_BLOG_POST,
+	LIKE_TARGET_BOARD_ARTICLE,
+	UPDATE_COMMENT,
+} from '../../apollo/user/mutation';
+import { GET_BLOG_POST, GET_BOARD_ARTICLE, GET_COMMENTS } from '../../apollo/user/query';
 import { Messages } from '../../libs/config';
-import { sweetConfirmAlert, sweetMixinErrorAlert, sweetMixinSuccessAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
+import {
+	sweetConfirmAlert,
+	sweetMixinErrorAlert,
+	sweetMixinSuccessAlert,
+	sweetTopSmallSuccessAlert,
+} from '../../libs/sweetAlert';
 import { CommentUpdate } from '../../libs/types/comment/comment.update';
 const ToastViewerComponent = dynamic(() => import('../../libs/components/community/TViewer'), { ssr: false });
 
@@ -39,8 +49,8 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 	const router = useRouter();
 	const { query } = router;
 
-	const articleId = query?.id as string;
-	const articleCategory = query?.articleCategory as string;
+	const blogPostId = query?.id as string;
+	const blogPostCategory = query?.blogPostCategory as string;
 
 	const [comment, setComment] = useState<string>('');
 	const [wordsCnt, setWordsCnt] = useState<number>(0);
@@ -59,52 +69,52 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 	const [updatedComment, setUpdatedComment] = useState<string>('');
 	const [updatedCommentId, setUpdatedCommentId] = useState<string>('');
 	const [likeLoading, setLikeLoading] = useState<boolean>(false);
-	const [boardArticle, setBoardArticle] = useState<BoardArticle>();
+	const [blogPost, setBlogPost] = useState<BlogPost>();
 
 	/** APOLLO REQUESTS **/
 
-	const [likeTargetArticle] = useMutation(LIKE_TARGET_BOARD_ARTICLE);
+	const [likeTargetBlogPost] = useMutation(LIKE_TARGET_BLOG_POST);
 	const [createComment] = useMutation(CREATE_COMMENT);
 	const [updateComment] = useMutation(UPDATE_COMMENT);
 
-		const {
-	loading: getBoardArticleLoading, 
-	data: getBoardArticleData, 
-	error: getBoardArticleError,
-	refetch: getBoardArticleRefetch,
-  } = useQuery(GET_BOARD_ARTICLE, {
-	fetchPolicy: "network-only",
-	variables: {
-	input: articleId,
-	},
-	notifyOnNetworkStatusChange: true,
-	onCompleted: (data: T) => {
-	setBoardArticle(data?.getBoardArticle);
-	if (data?.getBoardArticle?.memberData?.memberImage) {
-   setMemberImage(`${process.env.REACT_APP_API_URL}/${data?.getBoardArticle?.memberData?.memberImage}`);
-		 }
-		}
+	const {
+		loading: getBlogPostLoading,
+		data: getBlogPostData,
+		error: getBlogPostError,
+		refetch: getBlogPostRefetch,
+	} = useQuery(GET_BLOG_POST, {
+		fetchPolicy: 'network-only',
+		variables: {
+			input: blogPostId,
+		},
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setBlogPost(data?.getBlogPost);
+			if (data?.getBlogPost?.memberData?.memberImage) {
+				setMemberImage(`${process.env.REACT_APP_API_URL}/${data?.getBlogPost?.memberData?.memberImage}`);
+			}
+		},
 	});
 
-		const {
-					loading: getCommentsLoading, 
-					data: getCommentsData, 
-					error: getCommentsError,
-					refetch: getCommentsRefetch,
-					 } = useQuery(GET_COMMENTS, {
-					fetchPolicy: "network-only",
-					variables: {input: searchFilter},
-					notifyOnNetworkStatusChange: true,
-					onCompleted: (data: T) => {
-							setComments(data?.getComments?.list);
-							setTotal(data?.getComments?.metaCounter[0]?.total || 0);
-					},
-					 });
+	const {
+		loading: getCommentsLoading,
+		data: getCommentsData,
+		error: getCommentsError,
+		refetch: getCommentsRefetch,
+	} = useQuery(GET_COMMENTS, {
+		fetchPolicy: 'network-only',
+		variables: { input: searchFilter },
+		notifyOnNetworkStatusChange: true,
+		onCompleted: (data: T) => {
+			setComments(data?.getComments?.list);
+			setTotal(data?.getComments?.metaCounter[0]?.total || 0);
+		},
+	});
 
 	/** LIFECYCLES **/
 	useEffect(() => {
-		if (articleId) setSearchFilter({ ...searchFilter, search: { commentRefId: articleId } });
-	}, [articleId]);
+		if (blogPostId) setSearchFilter({ ...searchFilter, search: { commentRefId: blogPostId } });
+	}, [blogPostId]);
 
 	/** HANDLERS **/
 	const tabChangeHandler = (event: React.SyntheticEvent, value: string) => {
@@ -148,100 +158,97 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 		setSearchFilter({ ...searchFilter, page: value });
 	};
 
-		const likeBoardArticleHandler = async ( user: any, id: string) => {
-						try {
-							// e.stopPropagation();
-							if(!id) return;
-							if(!user._id) throw new Error(Messages.error2);
+	const likeBoardArticleHandler = async (user: any, id: string) => {
+		try {
+			// e.stopPropagation();
+			if (!id) return;
+			if (!user._id) throw new Error(Messages.error2);
 
-							setLikeLoading(true);
-	
-						 await likeTargetArticle({
-							variables: {
-								input: id,
-							}, 
-						});
-						 await getBoardArticleRefetch({input: articleId});
-				
-						 await sweetTopSmallSuccessAlert("success", 800);
-				
-						} catch(err: any) {
-						console.log("ERROR likePropertyHandler:", err.message);
-						sweetMixinErrorAlert(err.message).then();
-						} finally{
-							setLikeLoading(false);
-						}
-					};
+			setLikeLoading(true);
 
-						const creteCommentHandler = async () => {
-							if(!comment) return;
-						try {						
-							if(!user._id) throw new Error(Messages.error2);
-              const commentInput: CommentInput = {
-								commentGroup:CommentGroup.ARTICLE,
-								commentRefId: articleId,
-								commentContent: comment
-							}; 
-							await createComment({
-								variables: {
-									input: commentInput,
-								},
-							});
-						 await getCommentsRefetch({input: searchFilter});
-				   
-						 setComment('');
-						await sweetMixinSuccessAlert('Successfully commented');
-				
-						} catch(err: any) {
-						sweetMixinErrorAlert(err.message).then();
-						} 
-					};
+			await likeTargetBlogPost({
+				variables: {
+					input: id,
+				},
+			});
+			await getBlogPostRefetch({ input: blogPostId });
+
+			await sweetTopSmallSuccessAlert('success', 800);
+		} catch (err: any) {
+			console.log('ERROR likePropertyHandler:', err.message);
+			sweetMixinErrorAlert(err.message).then();
+		} finally {
+			setLikeLoading(false);
+		}
+	};
+
+	const creteCommentHandler = async () => {
+		if (!comment) return;
+		try {
+			if (!user._id) throw new Error(Messages.error2);
+			const commentInput: CommentInput = {
+				commentGroup: CommentGroup.BLOGPOST,
+				commentRefId: blogPostId,
+				commentContent: comment,
+			};
+			await createComment({
+				variables: {
+					input: commentInput,
+				},
+			});
+			await getCommentsRefetch({ input: searchFilter });
+
+			setComment('');
+			await sweetMixinSuccessAlert('Successfully commented');
+		} catch (err: any) {
+			sweetMixinErrorAlert(err.message).then();
+		}
+	};
 
 	const updateButtonHandler = async (commentId: string, commentStatus?: CommentStatus.DELETE) => {
-  try {
-    if (!user?._id) throw new Error(Messages.error2);
-    if (!commentId) throw new Error('Select a comment to update!');
-    if (updatedComment === comments?.find((comment) => comment?._id === commentId)?.commentContent) return;
+		try {
+			if (!user?._id) throw new Error(Messages.error2);
+			if (!commentId) throw new Error('Select a comment to update!');
+			if (updatedComment === comments?.find((comment) => comment?._id === commentId)?.commentContent) return;
 
-    const updateData: CommentUpdate = {
-      _id: commentId,
-      ...(commentStatus && { commentStatus: commentStatus }),
-      ...(updatedComment && { commentContent: updatedComment }),
-    };
+			const updateData: CommentUpdate = {
+				_id: commentId,
+				...(commentStatus && { commentStatus: commentStatus }),
+				...(updatedComment && { commentContent: updatedComment }),
+			};
 
-    if (!updateData?.commentContent && !updateData?.commentStatus)
-      throw new Error('Provide data to update your comment!');
+			if (!updateData?.commentContent && !updateData?.commentStatus)
+				throw new Error('Provide data to update your comment!');
 
-    if (commentStatus) {
-      if (await sweetConfirmAlert('Do you want to delete the comment?')) {
-        await updateComment({
-          variables: {
-            input: updateData,
-          },
-        });
-        await sweetMixinSuccessAlert('Successfully deleted!');
-      } else return;
-    } else {
-      await updateComment({
-        variables: {
-          input: updateData,
-        },
-      });
-      await sweetMixinSuccessAlert('Successfully updated!');
-    }
+			if (commentStatus) {
+				if (await sweetConfirmAlert('Do you want to delete the comment?')) {
+					await updateComment({
+						variables: {
+							input: updateData,
+						},
+					});
+					await sweetMixinSuccessAlert('Successfully deleted!');
+				} else return;
+			} else {
+				await updateComment({
+					variables: {
+						input: updateData,
+					},
+				});
+				await sweetMixinSuccessAlert('Successfully updated!');
+			}
 
-    await getCommentsRefetch({ input: searchFilter });
-    await getCommentsRefetch({ input: searchFilter });
-
-  } catch (error: any) {
-    await sweetMixinErrorAlert(error.message);
-  } finally {
-    setOpenBackdrop(false);
-    setUpdatedComment('');
-    setUpdatedCommentWordsCnt(0);
-    setUpdatedCommentId('');
-  }
-};				
+			await getCommentsRefetch({ input: searchFilter });
+			await getCommentsRefetch({ input: searchFilter });
+		} catch (error: any) {
+			await sweetMixinErrorAlert(error.message);
+		} finally {
+			setOpenBackdrop(false);
+			setUpdatedComment('');
+			setUpdatedCommentWordsCnt(0);
+			setUpdatedCommentId('');
+		}
+	};
 
 	if (device === 'mobile') {
 		return <div>COMMUNITY DETAIL PAGE MOBILE</div>;
@@ -254,7 +261,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 							<Stack className={'image-info'}>
 								<img src={'/img/logo/logoText.svg'} />
 								<Stack className={'community-name'}>
-									<Typography className={'name'}>Community Board Article</Typography>
+									<Typography className={'name'}>BLOG POST</Typography>
 								</Stack>
 							</Stack>
 							<Tabs
@@ -264,34 +271,34 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 									style: { display: 'none' },
 								}}
 								onChange={tabChangeHandler}
-								value={articleCategory}
+								value={blogPostCategory}
 							>
 								<Tab
 									value={'FREE'}
 									label={'Free Board'}
-									className={`tab-button ${articleCategory === 'FREE' ? 'active' : ''}`}
+									className={`tab-button ${blogPostCategory === 'FREE' ? 'active' : ''}`}
 								/>
 								<Tab
 									value={'RECOMMEND'}
 									label={'Recommendation'}
-									className={`tab-button ${articleCategory === 'RECOMMEND' ? 'active' : ''}`}
+									className={`tab-button ${blogPostCategory === 'RECOMMEND' ? 'active' : ''}`}
 								/>
 								<Tab
 									value={'NEWS'}
 									label={'News'}
-									className={`tab-button ${articleCategory === 'NEWS' ? 'active' : ''}`}
+									className={`tab-button ${blogPostCategory === 'NEWS' ? 'active' : ''}`}
 								/>
 								<Tab
 									value={'HUMOR'}
 									label={'Humor'}
-									className={`tab-button ${articleCategory === 'HUMOR' ? 'active' : ''}`}
+									className={`tab-button ${blogPostCategory === 'HUMOR' ? 'active' : ''}`}
 								/>
 							</Tabs>
 						</Stack>
 						<div className="community-detail-config">
 							<Stack className="title-box">
 								<Stack className="left">
-									<Typography className="title">{articleCategory} BOARD</Typography>
+									<Typography className="title">{blogPostCategory} BOARD</Typography>
 									<Typography className="sub-title">
 										Express your opinions freely here without content restrictions
 									</Typography>
@@ -314,55 +321,58 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 								<Stack className="first-box-config">
 									<Stack className="content-and-info">
 										<Stack className="content">
-											<Typography className="content-data">{boardArticle?.articleTitle}</Typography>
+											<Typography className="content-data">{blogPost?.blogPostTitle}</Typography>
 											<Stack className="member-info">
 												<img
 													src={memberImage}
 													alt=""
 													className="member-img"
-													onClick={() => goMemberPage(boardArticle?.memberData?._id)}
+													onClick={() => goMemberPage(blogPost?.memberData?._id)}
 												/>
-												<Typography className="member-nick" onClick={() => goMemberPage(boardArticle?.memberData?._id)}>
-													{boardArticle?.memberData?.memberNick}
+												<Typography className="member-nick" onClick={() => goMemberPage(blogPost?.memberData?._id)}>
+													{blogPost?.memberData?.memberNick}
 												</Typography>
 												<Stack className="divider"></Stack>
 												<Moment className={'time-added'} format={'DD.MM.YY HH:mm'}>
-													{boardArticle?.createdAt}
+													{blogPost?.createdAt}
 												</Moment>
 											</Stack>
 										</Stack>
 										<Stack className="info">
 											<Stack className="icon-info">
-												{boardArticle?.meLiked && boardArticle?.meLiked[0]?.myFavorite ? 
-												(<ThumbUpAltIcon onClick = {() => likeBoardArticleHandler( user, boardArticle?._id)} />
-											) : (<ThumbUpOffAltIcon onClick = {() => likeBoardArticleHandler(user,boardArticle?._id || '' )} />
+												{blogPost?.meLiked && blogPost?.meLiked[0]?.myFavorite ? (
+													<ThumbUpAltIcon onClick={() => likeBoardArticleHandler(user, blogPost?._id)} />
+												) : (
+													<ThumbUpOffAltIcon onClick={() => likeBoardArticleHandler(user, blogPost?._id || '')} />
 												)}
 
-												<Typography className="text">{boardArticle?.articleLikes}</Typography>
+												<Typography className="text">{blogPost?.blogPostLikes}</Typography>
 											</Stack>
 											<Stack className="divider"></Stack>
 											<Stack className="icon-info">
 												<VisibilityIcon />
-												<Typography className="text">{boardArticle?.articleViews}</Typography>
+												<Typography className="text">{blogPost?.blogPostViews}</Typography>
 											</Stack>
 											<Stack className="divider"></Stack>
 											<Stack className="icon-info">
-												{total > 0 ? <ChatIcon /> : 	<ChatBubbleOutlineRoundedIcon /> }
+												{total > 0 ? <ChatIcon /> : <ChatBubbleOutlineRoundedIcon />}
 
 												<Typography className="text">{total}</Typography>
 											</Stack>
 										</Stack>
 									</Stack>
 									<Stack>
-										<ToastViewerComponent markdown={boardArticle?.articleContent} className={'ytb_play'} />
+										<ToastViewerComponent markdown={blogPost?.blogPostContent} className={'ytb_play'} />
 									</Stack>
 									<Stack className="like-and-dislike">
 										<Stack className="top">
 											<Button>
-												{boardArticle?.meLiked && boardArticle?.meLiked[0]?.myFavorite ? (
-												<ThumbUpAltIcon onClick = {() => likeBoardArticleHandler( user, boardArticle?._id)}/>) 
-												: (<ThumbUpOffAltIcon onClick = {() => likeBoardArticleHandler( user, boardArticle?._id || "")}/>)}
-												<Typography className="text">{boardArticle?.articleLikes}</Typography>
+												{blogPost?.meLiked && blogPost?.meLiked[0]?.myFavorite ? (
+													<ThumbUpAltIcon onClick={() => likeBoardArticleHandler(user, blogPost?._id)} />
+												) : (
+													<ThumbUpOffAltIcon onClick={() => likeBoardArticleHandler(user, blogPost?._id || '')} />
+												)}
+												<Typography className="text">{blogPost?.blogPostLikes}</Typography>
 											</Button>
 										</Stack>
 									</Stack>
@@ -424,7 +434,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 																<DeleteForeverIcon sx={{ color: '#757575', cursor: 'pointer' }} />
 															</IconButton>
 															<IconButton
-																onClick={(e:any) => {
+																onClick={(e: any) => {
 																	setUpdatedComment(commentData?.commentContent);
 																	setUpdatedCommentWordsCnt(commentData?.commentContent?.length);
 																	setUpdatedCommentId(commentData?._id);

@@ -71,7 +71,7 @@ const MyMenu = () => {
 			title: 'Community',
 			items: [
 				{ id: 'myArticles', label: 'Blog Post', icon: <ArticleOutlinedIcon /> },
-				{ id: 'writeArticle blogPost', label: 'Write Blog Post', icon: <EditNoteOutlinedIcon /> },
+				{ id: 'writeArticle', label: 'Write Blog Post', icon: <EditNoteOutlinedIcon /> },
 			],
 		},
 	].filter((section) => section.items.length);
