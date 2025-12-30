@@ -13,6 +13,7 @@ import { useTranslation } from 'next-i18next';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import { DisplaySettings } from '@mui/icons-material';
 
 const withLayoutBasic = (Component: any) => {
 	return (props: any) => {
@@ -190,7 +191,6 @@ const withLayoutBasic = (Component: any) => {
 										: isMyPage
 										? {
 												backgroundColor: '#E1FFD5',
-												marginTop: '70px',
 												backgroundImage: 'url(/img/newProduct/mypageBanner.png)',
 												backgroundSize: 'contain',
 												backgroundPosition: 'right',
@@ -199,16 +199,23 @@ const withLayoutBasic = (Component: any) => {
 										: isCommunity
 										? {
 												backgroundColor: '#DED0FF',
-												backgroundImage: 'url(/img/newProduct/communityorgbanner.png)',
-												backgroundSize: 'contain',
-												backgroundPosition: 'right',
-												backgroundRepeat: 'no-repeat',
 										  }
 										: undefined
 								}
 							>
 								<Stack className={`hero-banner__inner${isAgent ? ' hero-banner__inner--agent' : ''}`}>
-									<Stack className={'hero-banner__content'}>
+									<Stack
+										className={'hero-banner__content'}
+										style={
+											isCommunity
+												? {
+														marginTop: '100px', // ✅ textni pastga tushiradi
+														paddingLeft: '100px', // ✅ dog bilan yozuv orasini ochadi (chapga suradi)
+														maxWidth: '520px', // ✅ text uzun bo‘lsa ham chiroyli turadi
+												  }
+												: undefined
+										}
+									>
 										<span className={'hero-banner__title'}>{heroTitleCopy}</span>
 
 										<span
@@ -232,20 +239,27 @@ const withLayoutBasic = (Component: any) => {
 										</Stack> */}
 									</Stack>
 
-									{!isMyPage && !isCommunity && (
-										<img
-											className={'hero-banner__image'}
-											src={isAgent ? '/img/newProduct/dog_headphones.png' : '/img/newProduct/image2.png'}
-											alt="Puppy with bow tie"
-											loading="lazy"
-											style={
-												isMyPage
-													? {
-															position: 'relative',
-													  }
-													: undefined
-											}
-										/>
+									{!isMyPage && (
+										<Stack
+											className={`hero-banner__visual${isAgent ? ' hero-banner__visual--agent' : ''}${
+												isCommunity ? ' hero-banner__visual--community' : ''
+											}`}
+										>
+											<img
+												className={`hero-banner__image${isAgent ? ' hero-banner__image--agent' : ''}${
+													isCommunity ? ' hero-banner__image--community' : ''
+												}`}
+												src={
+													isAgent
+														? '/img/newProduct/dog_headphones.png'
+														: isCommunity
+														? '/img/newProduct/communityorgbanner.png'
+														: '/img/newProduct/image2.png'
+												}
+												alt="Hero banner"
+												loading="lazy"
+											/>
+										</Stack>
 									)}
 								</Stack>
 

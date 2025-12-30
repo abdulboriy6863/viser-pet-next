@@ -448,9 +448,9 @@ body::-webkit-scrollbar {
 	}
 	.hero-banner__visual {
 		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 116%;
+		align-items: flex-end;
+		justify-content: flex-end;
+		width: 100%;
 		position: relative;
 	}
 	.hero-banner__visual--agent {
@@ -461,21 +461,31 @@ body::-webkit-scrollbar {
 		justify-content: flex-end;
 		position: relative;
 	}
+	.hero-banner__visual--community {
+		justify-content: flex-end;
+	}
 	.hero-banner__image {
 		position: relative;
 		width: 440px;
 		max-width: 100%;
 		height: auto;
-		object-fit: cover;
+		object-fit: contain;
 		display: block;
 		z-index: 2;
 	}
+	.hero-banner__image--agent {
+		max-width: 520px;
+	}
 	.hero-banner__visual--agent .hero-banner__image {
-		position: absolute;
-		right: 0;
-		bottom: 0;
+		position: relative;
+		right: auto;
+		bottom: auto;
 		width: 520px;
-		max-width: none;
+		max-width: 100%;
+	}
+	.hero-banner__image--community {
+		max-width: 520px;
+		transform: translateX(-80px);
 	}
 	.hero-banner--mypage .hero-banner__visual .hero-banner__image {
 		background-size: contain;
