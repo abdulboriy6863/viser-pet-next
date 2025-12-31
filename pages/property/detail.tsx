@@ -35,6 +35,14 @@ import dynamic from 'next/dynamic';
 
 SwiperCore.use([Autoplay, Navigation, Pagination]);
 
+type BasketItem = {
+	productId: string;
+	quantity: number;
+	product: Product;
+};
+
+const BASKET_KEY = 'basket-items';
+
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
 		...(await serverSideTranslations(locale, ['common'])),
@@ -58,6 +66,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 		commentRefId: '',
 	});
 	const [activePdTab, setActivePdTab] = useState('description');
+	const [addingToBasket, setAddingToBasket] = useState<boolean>(false);
 
 	/** APOLLO REQUESTS **/
 	// const [likeTargetProperty] = useMutation(LIKE_TARGET_PRODUCT);
@@ -197,6 +206,53 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 		}
 	};
 
+	const getBasketItems = (): BasketItem[] => {
+		if (typeof window === 'undefined') return [];
+		try {
+			const raw = localStorage.getItem(BASKET_KEY);
+			return raw ? (JSON.parse(raw) as BasketItem[]) : [];
+		} catch (err) {
+			console.log('Failed to read basket', err);
+			return [];
+		}
+	};
+
+	const saveBasketItems = (items: BasketItem[]) => {
+		if (typeof window === 'undefined') return;
+		localStorage.setItem(BASKET_KEY, JSON.stringify(items));
+	};
+
+	const handleAddToBasket = async () => {
+		try {
+			if (!product?._id) {
+				await sweetMixinErrorAlert('Product not found');
+				return;
+			}
+			setAddingToBasket(true);
+
+			const items = getBasketItems();
+			const existingIdx = items.findIndex((item) => item.productId === product._id);
+
+			if (existingIdx !== -1) {
+				items[existingIdx].quantity += 1;
+			} else {
+				items.push({
+					productId: product._id,
+					quantity: 1,
+					product,
+				});
+			}
+
+			saveBasketItems(items);
+			await sweetTopSmallSuccessAlert('Added to basket', 900);
+		} catch (err: any) {
+			console.log('ERROR add to basket', err?.message);
+			await sweetMixinErrorAlert(err?.message || 'Could not add to basket');
+		} finally {
+			setAddingToBasket(false);
+		}
+	};
+
 	if (getProductLoading) {
 		return (
 			<Stack sx={{ display: 'flex', justifyContect: 'center', alignItems: 'center', width: '100%', height: '1080px' }}>
@@ -311,23 +367,31 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 
 											<Stack className="button-box">
 												{product?.meLiked && product?.meLiked[0]?.myFavorite ? (
-													<FavoriteIcon
-														color="primary"
-														fontSize={'medium'}
-														onClick={() => likeProductHandler(product?._id)}
-													/>
-												) : (
-													<FavoriteBorderIcon fontSize={'medium'} onClick={() => likeProductHandler(product?._id)} />
-												)}
-												<Typography>{product?.productLikes}</Typography>
-											</Stack>
-										</Stack>
-
-										<Typography>${formatterStr(product?.productPrice)}</Typography>
+											<FavoriteIcon
+												color="primary"
+												fontSize={'medium'}
+												onClick={() => likeProductHandler(product?._id)}
+											/>
+										) : (
+											<FavoriteBorderIcon fontSize={'medium'} onClick={() => likeProductHandler(product?._id)} />
+										)}
+										<Typography>{product?.productLikes}</Typography>
 									</Stack>
 								</Stack>
+
+								<Typography>${formatterStr(product?.productPrice)}</Typography>
+								<Button
+									variant="contained"
+									className="add-basket"
+									onClick={handleAddToBasket}
+									disabled={addingToBasket || !product}
+								>
+									{addingToBasket ? 'Adding...' : 'Add to basket'}
+								</Button>
 							</Stack>
 						</Stack>
+					</Stack>
+				</Stack>
 
 						<Stack className={'property-desc-config'}>
 							<Stack className={'left-config'}>
