@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useRouter, withRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { getJwtToken, logOut, updateUserInfo } from '../auth';
-import { Stack, Box } from '@mui/material';
+import { Stack, Box, Typography } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import { alpha, styled } from '@mui/material/styles';
@@ -19,10 +19,22 @@ import FacebookOutlinedIcon from '@mui/icons-material/FacebookOutlined';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import PinterestIcon from '@mui/icons-material/Pinterest';
-import { useReactiveVar } from '@apollo/client';
+import { useMutation, useReactiveVar } from '@apollo/client';
 import { userVar } from '../../apollo/store';
 import { Logout } from '@mui/icons-material';
-import { REACT_APP_API_URL } from '../config';
+import { REACT_APP_API_URL, Messages } from '../config';
+import {
+	BasketItem,
+	BASKET_EVENT,
+	BASKET_KEY,
+	basketTotals,
+	clearBasket,
+	readBasket,
+	removeFromBasket,
+} from '../utils/basket';
+import { CREATE_ORDER } from '../../apollo/user/mutation';
+import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../sweetAlert';
+import { CreateOrderInput, CreateOrderResponse } from '../types/order/order';
 
 const Top = () => {
 	const device = useDeviceDetect();
@@ -38,6 +50,11 @@ const Top = () => {
 	const [bgColor, setBgColor] = useState<boolean>(false);
 	const [logoutAnchor, setLogoutAnchor] = React.useState<null | HTMLElement>(null);
 	const logoutOpen = Boolean(logoutAnchor);
+	const [cartAnchor, setCartAnchor] = useState<null | HTMLElement>(null);
+	const cartOpen = Boolean(cartAnchor);
+	const [basketItems, setBasketItems] = useState<BasketItem[]>([]);
+	const [creatingOrder, setCreatingOrder] = useState<boolean>(false);
+	const [createOrder] = useMutation<CreateOrderResponse, { input: CreateOrderInput }>(CREATE_ORDER);
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -62,6 +79,23 @@ const Top = () => {
 	useEffect(() => {
 		const jwt = getJwtToken();
 		if (jwt) updateUserInfo(jwt);
+	}, []);
+
+	useEffect(() => {
+		const syncBasket = () => setBasketItems(readBasket());
+
+		syncBasket();
+		const handleStorage = (e: StorageEvent) => {
+			if (e.key === BASKET_KEY) syncBasket();
+		};
+		const handleCustom = () => syncBasket();
+
+		window.addEventListener('storage', handleStorage);
+		window.addEventListener(BASKET_EVENT, handleCustom as EventListener);
+		return () => {
+			window.removeEventListener('storage', handleStorage);
+			window.removeEventListener(BASKET_EVENT, handleCustom as EventListener);
+		};
 	}, []);
 
 	/** HANDLERS **/
@@ -93,6 +127,66 @@ const Top = () => {
 
 	const handleClose = () => {
 		setAnchorEl(null);
+	};
+
+	const handleCartClick = (event: any) => {
+		setCartAnchor(event.currentTarget);
+	};
+
+	const handleCartClose = () => {
+		setCartAnchor(null);
+	};
+
+	const handleCreateOrder = async () => {
+		try {
+			if (!basketItems.length) {
+				await sweetMixinErrorAlert('Basket is empty');
+				return;
+			}
+			if (!user?._id) {
+				await sweetMixinErrorAlert(Messages.error2);
+				router.push('/account/join');
+				return;
+			}
+
+			setCreatingOrder(true);
+
+			const orderItems = basketItems.map((item) => ({
+				productId: item.productId,
+				memberId: user._id,
+				itemQuantity: item.quantity,
+				itemPrice: Number(item.product?.productPrice ?? 0),
+			}));
+
+			const res = await createOrder({
+				variables: {
+					input: {
+						memberId: user._id,
+						items: orderItems,
+					},
+				},
+			});
+
+			const newOrderId = (res.data as any)?.createOrder?._id;
+
+			clearBasket();
+			setBasketItems([]);
+			setCartAnchor(null);
+
+			await sweetTopSmallSuccessAlert('Order created from basket', 1200);
+
+			router.push(newOrderId ? `/order?orderId=${newOrderId}` : '/order');
+		} catch (err: any) {
+			console.log('ERROR create order from basket', err?.message);
+			await sweetMixinErrorAlert(err?.message || Messages.error1);
+		} finally {
+			setCreatingOrder(false);
+		}
+	};
+
+	const handleRemoveItem = (productId: string) => {
+		const updated = removeFromBasket(productId);
+		setBasketItems(updated);
 	};
 
 	const handleHover = (event: any) => {
@@ -321,12 +415,114 @@ const Top = () => {
 							</Box>
 							<Box component={'div'} className={'nav-actions'}>
 								<SearchOutlinedIcon className={'nav-icon'} />
-								<div className={'cart-icon'}>
+								<div className={'cart-icon'} onClick={handleCartClick}>
 									<ShoppingCartOutlinedIcon className={'nav-icon'} />
-									<span className={'badge'}>0======</span>
+									<span className={'badge'}>{basketItems.reduce((sum, item) => sum + item.quantity, 0)}</span>
 								</div>
 								<SettingsOutlinedIcon className={'nav-icon'} />
 							</Box>
+
+							<Menu
+								anchorEl={cartAnchor}
+								open={cartOpen}
+								onClose={handleCartClose}
+								anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+								transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+								PaperProps={{ sx: { minWidth: 320, borderRadius: '14px', padding: '10px' } }}
+							>
+								<Stack spacing={1.5} sx={{ p: '4px' }}>
+									<Typography sx={{ fontFamily: 'Nunito', fontWeight: 800, fontSize: '15px' }}>Basket</Typography>
+									{!basketItems.length ? (
+										<Typography sx={{ color: '#6b7280', fontSize: '13px' }}>Basket is empty</Typography>
+									) : (
+										<>
+											{basketItems.map((item) => (
+												<Stack
+													key={item.productId}
+													direction="row"
+													alignItems="center"
+													spacing={1.5}
+													sx={{
+														border: '1px solid #e5e7eb',
+														borderRadius: '12px',
+														padding: '8px 10px',
+													}}
+												>
+													<Box
+														component="div"
+														sx={{
+															width: 48,
+															height: 48,
+															borderRadius: '10px',
+															overflow: 'hidden',
+															bgcolor: '#f3f4f6',
+															border: '1px solid #eef0f3',
+														}}
+													>
+														<img
+															src={
+																item.product?.productImages?.[0]
+																	? `${REACT_APP_API_URL}/${item.product.productImages[0]}`
+																	: '/img/property/default.jpg'
+															}
+															alt={item.product?.productName}
+															style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+														/>
+													</Box>
+													<Box sx={{ minWidth: 0, flex: 1 }}>
+														<Typography
+															noWrap
+															sx={{ fontFamily: 'Nunito', fontWeight: 700, fontSize: '14px', color: '#0f172a' }}
+														>
+															{item.product?.productName}
+														</Typography>
+														<Typography sx={{ fontFamily: 'Nunito', fontSize: '12px', color: '#6b7280' }}>
+															Qty: {item.quantity}
+														</Typography>
+													</Box>
+													<Typography
+														sx={{ fontFamily: 'Nunito', fontWeight: 800, fontSize: '13px', color: '#0f172a' }}
+													>
+														${Number(item.product?.productPrice ?? 0).toFixed(2)}
+													</Typography>
+													<Button
+														variant="text"
+														size="small"
+														onClick={() => handleRemoveItem(item.productId)}
+														sx={{ minWidth: 0, color: '#b91c1c', fontSize: '12px', fontWeight: 800 }}
+													>
+														x
+													</Button>
+												</Stack>
+											))}
+
+											<Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ px: '2px' }}>
+												<Typography sx={{ fontFamily: 'Nunito', fontWeight: 800, fontSize: '13px', color: '#0f172a' }}>
+													Subtotal
+												</Typography>
+												<Typography sx={{ fontFamily: 'Nunito', fontWeight: 900, fontSize: '14px', color: '#0f172a' }}>
+													${basketTotals().subtotal.toFixed(2)}
+												</Typography>
+											</Stack>
+
+											<Button
+												variant="contained"
+												disabled={creatingOrder}
+												onClick={handleCreateOrder}
+												sx={{
+													textTransform: 'none',
+													borderRadius: '12px',
+													fontFamily: 'Nunito',
+													fontWeight: 800,
+													background: 'linear-gradient(135deg, #b3544f 0%, #8f3d3b 100%)',
+												}}
+											>
+												{creatingOrder ? 'Creating...' : 'Buy now'}
+											</Button>
+										</>
+									)}
+								</Stack>
+							</Menu>
 						</Box>
 					</Stack>
 				</Stack>

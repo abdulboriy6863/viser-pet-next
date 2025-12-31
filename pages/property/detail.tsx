@@ -32,16 +32,9 @@ import { Direction, Message } from '../../libs/enums/common.enum';
 import { CREATE_COMMENT, LIKE_TARGET_PRODUCT } from '../../apollo/user/mutation';
 import { sweetErrorHandling, sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
 import dynamic from 'next/dynamic';
+import { addToBasket } from '../../libs/utils/basket';
 
 SwiperCore.use([Autoplay, Navigation, Pagination]);
-
-type BasketItem = {
-	productId: string;
-	quantity: number;
-	product: Product;
-};
-
-const BASKET_KEY = 'basket-items';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -206,22 +199,6 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 		}
 	};
 
-	const getBasketItems = (): BasketItem[] => {
-		if (typeof window === 'undefined') return [];
-		try {
-			const raw = localStorage.getItem(BASKET_KEY);
-			return raw ? (JSON.parse(raw) as BasketItem[]) : [];
-		} catch (err) {
-			console.log('Failed to read basket', err);
-			return [];
-		}
-	};
-
-	const saveBasketItems = (items: BasketItem[]) => {
-		if (typeof window === 'undefined') return;
-		localStorage.setItem(BASKET_KEY, JSON.stringify(items));
-	};
-
 	const handleAddToBasket = async () => {
 		try {
 			if (!product?._id) {
@@ -230,20 +207,7 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 			}
 			setAddingToBasket(true);
 
-			const items = getBasketItems();
-			const existingIdx = items.findIndex((item) => item.productId === product._id);
-
-			if (existingIdx !== -1) {
-				items[existingIdx].quantity += 1;
-			} else {
-				items.push({
-					productId: product._id,
-					quantity: 1,
-					product,
-				});
-			}
-
-			saveBasketItems(items);
+			addToBasket(product, 1);
 			await sweetTopSmallSuccessAlert('Added to basket', 900);
 		} catch (err: any) {
 			console.log('ERROR add to basket', err?.message);

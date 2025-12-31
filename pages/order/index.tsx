@@ -21,6 +21,7 @@ import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/swee
 import { Messages, REACT_APP_API_URL } from '../../libs/config';
 import { userVar } from '../../apollo/store';
 import { updateStorage, updateUserInfo } from '../../libs/auth';
+import { basketTotals, readBasket, removeFromBasket } from '../../libs/utils/basket';
 
 type OrderLine = {
 	key: string;
@@ -53,17 +54,42 @@ const OrderPage: NextPage = () => {
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 
-	const [inquiry, setInquiry] = useState<{ page: number; limit: number }>({ page: 1, limit: 6 });
+	const [inquiry, setInquiry] = useState<{ page: number; limit: number; search: Record<string, any> }>({
+		page: 1,
+		limit: 6,
+		search: {},
+	});
 	const [contactInfo, setContactInfo] = useState({ fullName: '', phone: '', address: '', note: '' });
 	const [contactSaved, setContactSaved] = useState<boolean>(false);
 	const [savingContact, setSavingContact] = useState<boolean>(false);
+	const [basketPreview, setBasketPreview] = useState(() => readBasket());
+	const [filterOrderId, setFilterOrderId] = useState<string | null>(null);
 
-	const { data: getOrdersData, loading: getOrdersLoading, refetch: refetchOrders } = useQuery(GET_ORDERS, {
+	// sync orderId filter from URL
+	useEffect(() => {
+		if (!router?.query) return;
+		const orderId = router.query.orderId as string | undefined;
+		setFilterOrderId(orderId ?? null);
+	}, [router?.query?.orderId]);
+
+	const {
+		data: getOrdersData,
+		loading: getOrdersLoading,
+		refetch: refetchOrders,
+	} = useQuery(GET_ORDERS, {
 		fetchPolicy: 'network-only',
 		notifyOnNetworkStatusChange: true,
-		variables: { inquiry },
+		variables: { inquiry: { ...inquiry, search: inquiry.search ?? {} } },
 	});
 	const [updateMember] = useMutation(UPDATE_MEMBER);
+
+	useEffect(() => {
+		if (typeof window === 'undefined') return;
+		const syncBasket = () => setBasketPreview(readBasket());
+		syncBasket();
+		window.addEventListener('basket-updated', syncBasket as EventListener);
+		return () => window.removeEventListener('basket-updated', syncBasket as EventListener);
+	}, []);
 
 	useEffect(() => {
 		if (typeof window === 'undefined') return;
@@ -97,14 +123,22 @@ const OrderPage: NextPage = () => {
 		return [payload as Order];
 	}, [getOrdersData]);
 
+	const filteredOrders: Order[] = useMemo(() => {
+		if (filterOrderId) return orders.filter((o) => o._id === filterOrderId);
+		return orders;
+	}, [orders, filterOrderId]);
+
 	const orderLines: OrderLine[] = useMemo(() => {
-		if (!orders?.length) return [];
+		if (!filteredOrders?.length) return [];
 
-		return orders.flatMap((order: Order) => {
-			if (!order?.orderItems?.length) return [];
+		return filteredOrders.flatMap((order: Order) => {
+			const items: OrderItem[] = (order as any)?.orderItems ?? (order as any)?.items ?? [];
+			if (!items?.length) return [];
 
-			return order.orderItems.map((item: OrderItem, idx: number) => {
-				const product = order.productData?.find((p) => p._id === item.productId);
+			const products: Product[] = (order as any)?.productData ?? (order as any)?.products ?? [];
+
+			return items.map((item: OrderItem, idx: number) => {
+				const product = products?.find((p) => p._id === item.productId);
 				const quantity = Number(item.itemQuantity ?? 1);
 				const unitPrice = Number(item.itemPrice ?? product?.productPrice ?? 0);
 
@@ -124,27 +158,32 @@ const OrderPage: NextPage = () => {
 
 	const totals = useMemo(() => {
 		const subtotal = orderLines.reduce((sum, item) => sum + Number(item.subtotal ?? 0), 0);
-		const delivery = orders.reduce((sum, order) => sum + Number(order.orderDelivery ?? 0), 0);
-		const totalByOrder = orders.reduce((sum, order) => sum + Number(order.orderTotal ?? 0), 0);
+		const delivery = filteredOrders.reduce((sum, order) => sum + Number(order.orderDelivery ?? 0), 0);
+		const totalByOrder = filteredOrders.reduce((sum, order) => sum + Number(order.orderTotal ?? 0), 0);
+
+		if (orderLines.length === 0 && basketPreview.length > 0) {
+			const basketInfo = basketTotals();
+			return { subtotal: basketInfo.subtotal, delivery: 0, grandTotal: basketInfo.subtotal };
+		}
 
 		return {
 			subtotal,
 			delivery,
 			grandTotal: totalByOrder || subtotal + delivery,
 		};
-	}, [orderLines, orders]);
+	}, [orderLines, filteredOrders, basketPreview]);
 
-	const totalOrders = getOrdersData?.getMyOrder?.metaCounter?.[0]?.total ?? orders.length;
+	const totalOrders = getOrdersData?.getMyOrder?.metaCounter?.[0]?.total ?? filteredOrders.length;
 	const totalPages = Math.max(1, Math.ceil(totalOrders / inquiry.limit));
 
 	const statusCounters = useMemo(() => {
 		const initial: Record<string, number> = {};
-		orders.forEach((order) => {
+		filteredOrders.forEach((order) => {
 			const statusKey = order.orderStatus || OrderStatus.PROCESS;
 			initial[statusKey] = (initial[statusKey] || 0) + 1;
 		});
 		return initial;
-	}, [orders]);
+	}, [filteredOrders]);
 
 	const saveContactInfo = async (silent: boolean = false) => {
 		try {
@@ -208,13 +247,22 @@ const OrderPage: NextPage = () => {
 	};
 
 	const handlePageChange = async (_: ChangeEvent<unknown>, value: number) => {
-		const nextInquiry = { ...inquiry, page: value };
+		const orderId = typeof router.query.orderId === 'string' ? router.query.orderId : undefined;
+
+		const nextInquiry = {
+			...inquiry,
+			page: value,
+			search: orderId
+				? { ...inquiry.search, orderId } // ✅ orderId saqlanadi
+				: inquiry.search ?? {},
+		};
+
 		setInquiry(nextInquiry);
 		await refetchOrders({ inquiry: nextInquiry });
 	};
 
 	const handleRefreshOrders = async () => {
-		await refetchOrders({ inquiry });
+		await refetchOrders({ inquiry: { ...inquiry, search: inquiry.search ?? {} } });
 	};
 
 	const handleContinueShopping = () => {
@@ -258,7 +306,9 @@ const OrderPage: NextPage = () => {
 										<Chip
 											size="small"
 											label={line.status ?? OrderStatus.PROCESS}
-											className={`status-chip status-chip--${(line.status ?? OrderStatus.PROCESS).toString().toLowerCase()}`}
+											className={`status-chip status-chip--${(line.status ?? OrderStatus.PROCESS)
+												.toString()
+												.toLowerCase()}`}
 										/>
 									</Stack>
 									<Typography className="order-line__meta">
@@ -292,7 +342,12 @@ const OrderPage: NextPage = () => {
 							value={contactInfo.note}
 							onChange={(e) => setContactInfo({ ...contactInfo, note: e.target.value })}
 						/>
-						<Button variant="contained" onClick={() => saveContactInfo()} disabled={savingContact} startIcon={<EditLocationAltOutlinedIcon />}>
+						<Button
+							variant="contained"
+							onClick={() => saveContactInfo()}
+							disabled={savingContact}
+							startIcon={<EditLocationAltOutlinedIcon />}
+						>
 							{contactSaved ? 'Update info' : 'Save info once'}
 						</Button>
 						<Button variant="outlined" onClick={handleCheckout} startIcon={<ShoppingCartCheckoutOutlinedIcon />}>
@@ -314,11 +369,16 @@ const OrderPage: NextPage = () => {
 							Your cart board
 						</Typography>
 						<p className="order-description">
-							Products first go to your basket, then appear here after you create the order. Save your info once and reuse it for
-							next purchases.
+							Products first go to your basket, then appear here after you create the order. Save your info once and
+							reuse it for next purchases.
 						</p>
 						<Stack direction="row" spacing={1} className="order-hero__actions">
-							<Button variant="contained" color="primary" onClick={handleContinueShopping} startIcon={<LocalShippingOutlinedIcon />}>
+							<Button
+								variant="contained"
+								color="primary"
+								onClick={handleContinueShopping}
+								startIcon={<LocalShippingOutlinedIcon />}
+							>
 								Continue shopping
 							</Button>
 							<Button variant="text" onClick={handleRefreshOrders} startIcon={<RefreshIcon />}>
@@ -358,7 +418,7 @@ const OrderPage: NextPage = () => {
 
 						{getOrdersLoading ? (
 							<Box className="table-empty">Loading your orders...</Box>
-						) : orderLines.length === 0 ? (
+						) : orderLines.length === 0 && basketPreview.length === 0 ? (
 							<Box className="table-empty">
 								<img src="/img/icons/icoAlert.svg" alt="" />
 								<span>No orders yet. Add items to basket and create an order.</span>
@@ -388,7 +448,9 @@ const OrderPage: NextPage = () => {
 									<span className="cell strong">{formatCurrency(line.subtotal)}</span>
 									<Chip
 										label={line.status ?? OrderStatus.PROCESS}
-										className={`status-chip status-chip--${(line.status ?? OrderStatus.PROCESS).toString().toLowerCase()}`}
+										className={`status-chip status-chip--${(line.status ?? OrderStatus.PROCESS)
+											.toString()
+											.toLowerCase()}`}
 										size="small"
 										icon={
 											line.status === OrderStatus.FINISH ? (
@@ -403,6 +465,53 @@ const OrderPage: NextPage = () => {
 								</Box>
 							))
 						)}
+
+						{orderLines.length === 0 && basketPreview.length > 0 && (
+							<Box className="table-empty">
+								<span>Basket items not ordered yet:</span>
+							</Box>
+						)}
+
+						{orderLines.length === 0 &&
+							basketPreview.length > 0 &&
+							basketPreview.map((item) => (
+								<Box className="table-row" key={`basket-${item.productId}`}>
+									<Stack direction="row" spacing={2} alignItems="center" className="product-cell">
+										<Box className="thumb">
+											<img
+												src={
+													item.product?.productImages?.[0]
+														? `${REACT_APP_API_URL}/${item.product.productImages[0]}`
+														: '/img/property/default.jpg'
+												}
+												alt={item.product?.productName ?? 'product'}
+											/>
+										</Box>
+										<Box className="product-meta">
+											<Typography className="product-title">{item.product?.productName ?? 'Product'}</Typography>
+											<span className="product-id">Basket item</span>
+										</Box>
+									</Stack>
+									<span className="cell">
+										${Number(item.product?.productPrice ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+									</span>
+									<span className="cell">{item.quantity}</span>
+									<span className="cell strong">
+										{formatCurrency(Number(item.product?.productPrice ?? 0) * Number(item.quantity ?? 0))}
+									</span>
+									<Button
+										variant="text"
+										size="small"
+										onClick={() => {
+											removeFromBasket(item.productId);
+											setBasketPreview(readBasket());
+										}}
+										sx={{ color: '#b91c1c', fontSize: '12px' }}
+									>
+										Delete
+									</Button>
+								</Box>
+							))}
 
 						{orderLines.length > 0 && totalPages > 1 && (
 							<Stack className="order-pagination">

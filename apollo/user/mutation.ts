@@ -396,6 +396,7 @@ export const CREATE_ORDER = gql`
 				itemPrice
 				orderId
 				productId
+
 				createdAt
 				updatedAt
 			}
