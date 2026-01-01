@@ -11,10 +11,9 @@ import { T } from '../../libs/types/common';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { BlogPostsInquiry } from '../../libs/types/board-article/board-article.input';
 import { BlogPostCategory } from '../../libs/enums/board-article.enum';
-import { LIKE_TARGET_BLOG_POST, LIKE_TARGET_BOARD_ARTICLE } from '../../apollo/user/mutation';
+import { LIKE_TARGET_BLOG_POST } from '../../apollo/user/mutation';
 import { useMutation, useQuery } from '@apollo/client';
-import { GET_BLOG_POSTS, GET_BOARD_ARTICLE, GET_BOARD_ARTICLES } from '../../apollo/user/query';
-import { Message } from '../../libs/enums/common.enum';
+import { GET_BLOG_POSTS } from '../../apollo/user/query';
 import { Messages } from '../../libs/config';
 import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
 
@@ -28,11 +27,18 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const { query } = router;
-	const blogPostCategory = query?.blogPostCategory as string;
-	const [searchCommunity, setSearchCommunity] = useState<BlogPostsInquiry>(initialInput);
+	const articleCategory = query?.articleCategory as string;
+	const defaultCategory =
+		(articleCategory as BlogPostCategory) || initialInput.search.blogPostCategory || BlogPostCategory.FREE;
+	const [searchCommunity, setSearchCommunity] = useState<BlogPostsInquiry>({
+		...initialInput,
+		search: {
+			...initialInput.search,
+			blogPostCategory: defaultCategory,
+		},
+	});
 	const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
 	const [totalCount, setTotalCount] = useState<number>(0);
-	if (blogPostCategory) initialInput.search.articleCategory = blogPostCategory;
 
 	/** APOLLO REQUESTS **/
 	const [likeTargetBlogPost] = useMutation(LIKE_TARGET_BLOG_POST);
@@ -56,16 +62,26 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 
 	/** LIFECYCLES **/
 	useEffect(() => {
-		if (!query?.blogPostCategory)
+		if (!query?.articleCategory)
 			router.push(
 				{
 					pathname: router.pathname,
-					query: { articleCategory: 'FREE' },
+					query: { articleCategory: searchCommunity.search.blogPostCategory },
 				},
 				router.pathname,
 				{ shallow: true },
 			);
-	}, []);
+	}, [query?.articleCategory, router, searchCommunity.search.blogPostCategory]);
+
+	useEffect(() => {
+		if (articleCategory && articleCategory !== searchCommunity.search.blogPostCategory) {
+			setSearchCommunity((prev) => ({
+				...prev,
+				page: 1,
+				search: { ...prev.search, blogPostCategory: articleCategory as BlogPostCategory },
+			}));
+		}
+	}, [articleCategory]);
 
 	/** HANDLERS **/
 	const tabChangeHandler = async (e: T, value: string) => {
@@ -86,7 +102,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 		setSearchCommunity({ ...searchCommunity, page: value });
 	};
 
-	const likeArticleHandler = async (e: any, user: any, id: string) => {
+	const likeBlogPostHandler = async (e: any, user: any, id: string) => {
 		try {
 			e.stopPropagation();
 			if (!id) return;
@@ -194,7 +210,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 												<CommunityCard
 													blogPost={blogPost}
 													key={blogPost?._id}
-													likeBlogPostHandler={likeArticleHandler}
+													likeBlogPostHandler={likeBlogPostHandler}
 												/>
 											))
 										) : (
@@ -213,7 +229,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 												<CommunityCard
 													blogPost={blogPost}
 													key={blogPost?._id}
-													likeBlogPostHandler={likeArticleHandler}
+													likeBlogPostHandler={likeBlogPostHandler}
 												/>
 											))
 										) : (
@@ -232,7 +248,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 												<CommunityCard
 													blogPost={blogPost}
 													key={blogPost?._id}
-													likeBlogPostHandler={likeArticleHandler}
+													likeBlogPostHandler={likeBlogPostHandler}
 												/>
 											))
 										) : (
@@ -278,7 +294,7 @@ Community.defaultProps = {
 		sort: 'createdAt',
 		direction: 'ASC',
 		search: {
-			articleCategory: 'FREE',
+			blogPostCategory: 'FREE',
 		},
 	},
 };

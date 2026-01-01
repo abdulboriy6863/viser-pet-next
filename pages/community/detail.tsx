@@ -20,14 +20,13 @@ import { CommentGroup, CommentStatus } from '../../libs/enums/comment.enum';
 import { T } from '../../libs/types/common';
 import EditIcon from '@mui/icons-material/Edit';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { BlogPost, BoardArticle } from '../../libs/types/board-article/board-article';
+import { BlogPost } from '../../libs/types/board-article/board-article';
 import {
 	CREATE_COMMENT,
 	LIKE_TARGET_BLOG_POST,
-	LIKE_TARGET_BOARD_ARTICLE,
 	UPDATE_COMMENT,
 } from '../../apollo/user/mutation';
-import { GET_BLOG_POST, GET_BOARD_ARTICLE, GET_COMMENTS } from '../../apollo/user/query';
+import { GET_BLOG_POST, GET_COMMENTS } from '../../apollo/user/query';
 import { Messages } from '../../libs/config';
 import {
 	sweetConfirmAlert,
@@ -50,7 +49,6 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 	const { query } = router;
 
 	const blogPostId = query?.id as string;
-	const blogPostCategory = query?.blogPostCategory as string;
 
 	const [comment, setComment] = useState<string>('');
 	const [wordsCnt, setWordsCnt] = useState<number>(0);
@@ -68,8 +66,8 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 	const [openBackdrop, setOpenBackdrop] = useState<boolean>(false);
 	const [updatedComment, setUpdatedComment] = useState<string>('');
 	const [updatedCommentId, setUpdatedCommentId] = useState<string>('');
-	const [likeLoading, setLikeLoading] = useState<boolean>(false);
 	const [blogPost, setBlogPost] = useState<BlogPost>();
+	const articleCategory = (query?.articleCategory as string) || blogPost?.blogPostCategory || 'FREE';
 
 	/** APOLLO REQUESTS **/
 
@@ -158,13 +156,11 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 		setSearchFilter({ ...searchFilter, page: value });
 	};
 
-	const likeBoardArticleHandler = async (user: any, id: string) => {
+	const likeBlogPostHandler = async (user: any, id: string) => {
 		try {
 			// e.stopPropagation();
 			if (!id) return;
 			if (!user._id) throw new Error(Messages.error2);
-
-			setLikeLoading(true);
 
 			await likeTargetBlogPost({
 				variables: {
@@ -177,8 +173,6 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 		} catch (err: any) {
 			console.log('ERROR likePropertyHandler:', err.message);
 			sweetMixinErrorAlert(err.message).then();
-		} finally {
-			setLikeLoading(false);
 		}
 	};
 
@@ -271,34 +265,34 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 									style: { display: 'none' },
 								}}
 								onChange={tabChangeHandler}
-								value={blogPostCategory}
+								value={articleCategory}
 							>
 								<Tab
 									value={'FREE'}
 									label={'Free Board'}
-									className={`tab-button ${blogPostCategory === 'FREE' ? 'active' : ''}`}
+									className={`tab-button ${articleCategory === 'FREE' ? 'active' : ''}`}
 								/>
 								<Tab
 									value={'RECOMMEND'}
 									label={'Recommendation'}
-									className={`tab-button ${blogPostCategory === 'RECOMMEND' ? 'active' : ''}`}
+									className={`tab-button ${articleCategory === 'RECOMMEND' ? 'active' : ''}`}
 								/>
 								<Tab
 									value={'NEWS'}
 									label={'News'}
-									className={`tab-button ${blogPostCategory === 'NEWS' ? 'active' : ''}`}
+									className={`tab-button ${articleCategory === 'NEWS' ? 'active' : ''}`}
 								/>
 								<Tab
 									value={'HUMOR'}
 									label={'Humor'}
-									className={`tab-button ${blogPostCategory === 'HUMOR' ? 'active' : ''}`}
+									className={`tab-button ${articleCategory === 'HUMOR' ? 'active' : ''}`}
 								/>
 							</Tabs>
 						</Stack>
 						<div className="community-detail-config">
 							<Stack className="title-box">
 								<Stack className="left">
-									<Typography className="title">{blogPostCategory} BOARD</Typography>
+									<Typography className="title">{articleCategory} BOARD</Typography>
 									<Typography className="sub-title">
 										Express your opinions freely here without content restrictions
 									</Typography>
@@ -341,9 +335,9 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 										<Stack className="info">
 											<Stack className="icon-info">
 												{blogPost?.meLiked && blogPost?.meLiked[0]?.myFavorite ? (
-													<ThumbUpAltIcon onClick={() => likeBoardArticleHandler(user, blogPost?._id)} />
+													<ThumbUpAltIcon onClick={() => likeBlogPostHandler(user, blogPost?._id)} />
 												) : (
-													<ThumbUpOffAltIcon onClick={() => likeBoardArticleHandler(user, blogPost?._id || '')} />
+													<ThumbUpOffAltIcon onClick={() => likeBlogPostHandler(user, blogPost?._id || '')} />
 												)}
 
 												<Typography className="text">{blogPost?.blogPostLikes}</Typography>
@@ -368,9 +362,9 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 										<Stack className="top">
 											<Button>
 												{blogPost?.meLiked && blogPost?.meLiked[0]?.myFavorite ? (
-													<ThumbUpAltIcon onClick={() => likeBoardArticleHandler(user, blogPost?._id)} />
+													<ThumbUpAltIcon onClick={() => likeBlogPostHandler(user, blogPost?._id)} />
 												) : (
-													<ThumbUpOffAltIcon onClick={() => likeBoardArticleHandler(user, blogPost?._id || '')} />
+													<ThumbUpOffAltIcon onClick={() => likeBlogPostHandler(user, blogPost?._id || '')} />
 												)}
 												<Typography className="text">{blogPost?.blogPostLikes}</Typography>
 											</Button>

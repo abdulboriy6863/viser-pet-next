@@ -6,7 +6,7 @@ services:
     ports:
       - 4023:3000
     environment:
-      - PORT=300
+      - PORT=3000
 
     volumes:
       - ./:/usr/src/viser-pet-next
