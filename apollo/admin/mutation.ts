@@ -162,36 +162,6 @@ export const REMOVE_COMMENT_BY_ADMIN = gql`
  *        PROPERTY        *
  *************************/
 
-export const UPDATE_PROPERTY_BY_ADMIN = gql`
-	mutation UpdatePropertyByAdmin($input: PropertyUpdate!) {
-		updatePropertyByAdmin(input: $input) {
-			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			productVolume
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
-			memberId
-			soldAt
-			deletedAt
-			constructedAt
-			createdAt
-			updatedAt
-		}
-	}
-`;
-
 export const REMOVE_PROPERTY_BY_ADMIN = gql`
 	mutation RemovePropertyByAdmin($input: String!) {
 		removePropertyByAdmin(propertyId: $input) {

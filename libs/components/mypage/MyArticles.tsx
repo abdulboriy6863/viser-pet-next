@@ -6,9 +6,9 @@ import CommunityCard from '../common/CommunityCard';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import { T } from '../../types/common';
-import { BlogPost, BoardArticle } from '../../types/board-article/board-article';
-import { LIKE_TARGET_BLOG_POST, LIKE_TARGET_BOARD_ARTICLE } from '../../../apollo/user/mutation';
-import { GET_BLOG_POSTS, GET_BOARD_ARTICLES } from '../../../apollo/user/query';
+import { BlogPost } from '../../types/board-article/board-article';
+import { LIKE_TARGET_BLOG_POST } from '../../../apollo/user/mutation';
+import { GET_BLOG_POSTS } from '../../../apollo/user/query';
 import { Messages } from '../../config';
 import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../sweetAlert';
 
@@ -46,7 +46,7 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 		setSearchCommunity({ ...searchCommunity, page: value });
 	};
 
-	const likeBoardArticleHandler = async (e: any, user: any, id: string) => {
+	const likeBlogPostHandler = async (e: any, user: any, id: string) => {
 		try {
 			e.stopPropagation();
 			if (!id) return;
@@ -61,7 +61,7 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 
 			await sweetTopSmallSuccessAlert('Success', 750);
 		} catch (err: any) {
-			console.log('ERROR, likeProductHandler:', err.message);
+			console.log('ERROR, likeBlogPostHandler:', err.message);
 			sweetMixinErrorAlert(err.message).then();
 		}
 	};
@@ -84,8 +84,8 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 								<CommunityCard
 									blogPost={blogPost}
 									key={blogPost?._id}
-									size={'small'}
-									likeBlogPostHandler={likeTargetBlogPost}
+									// size={'small'}
+									likeBlogPostHandler={likeBlogPostHandler}
 								/>
 							);
 						})

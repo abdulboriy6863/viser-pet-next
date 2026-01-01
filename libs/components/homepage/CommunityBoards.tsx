@@ -35,34 +35,6 @@ const CommunityBoards = () => {
 		},
 	});
 
-	// const {
-	// 	loading: getHumorArticlesLoading,
-	// 	data: getHumorArticlesData,
-	// 	error: getHumorArticlesError,
-	// 	refetch: getHumorArticlesRefetch,
-	// } = useQuery(GET_BOARD_ARTICLES, {
-	// 	fetchPolicy: 'network-only',
-	// 	variables: { ...searchCommunity, limit: 6, search: { articleCategory: BoardArticleCategory.HUMOR } },
-	// 	notifyOnNetworkStatusChange: true,
-	// 	onCompleted: (data: T) => {
-	// 		setFreeArticles(data?.getBoardArticles?.list);
-	// 	},
-	// });
-
-	// const {
-	// 	loading: getRecommendArticlesLoading,
-	// 	data: getRecommendArticlesData,
-	// 	error: getRecommendArticlesError,
-	// 	refetch: getRecommendArticlesRefetch,
-	// } = useQuery(GET_BOARD_ARTICLES, {
-	// 	fetchPolicy: 'network-only',
-	// 	variables: { ...searchCommunity, limit: 6, search: { articleCategory: BoardArticleCategory.RECOMMEND } },
-	// 	notifyOnNetworkStatusChange: true,
-	// 	onCompleted: (data: T) => {
-	// 		setFreeArticles(data?.getBoardArticles?.list);
-	// 	},
-	// });
-
 	const latestNews = newsPosts.slice(0, 3);
 	const skeletons = Array.from({ length: Math.max(3 - latestNews.length, 0) });
 	const badgeColors = ['#DCEBC5', '#D7EEF5', '#F5E1BE'];

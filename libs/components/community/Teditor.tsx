@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { Box, Button, FormControl, MenuItem, Stack, Typography, Select, TextField } from '@mui/material';
-import { BlogPostCategory, BoardArticleCategory } from '../../enums/board-article.enum';
+import { BlogPostCategory } from '../../enums/board-article.enum';
 import { Editor } from '@toast-ui/react-editor';
 import { getJwtToken } from '../../auth';
 import { REACT_APP_API_URL } from '../../config';
@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 import { T } from '../../types/common';
 import '@toast-ui/editor/dist/toastui-editor.css';
-import { CREATE_BLOG_POST, CREATE_BOARD_ARTICLE } from '../../../apollo/user/mutation';
+import { CREATE_BLOG_POST } from '../../../apollo/user/mutation';
 import { useMutation } from '@apollo/client';
 import { sweetErrorHandling, sweetTopSuccessAlert } from '../../sweetAlert';
 import { Message } from '../../enums/common.enum';

@@ -9,8 +9,8 @@ import { T } from '../../types/common';
 import { ProductStatus, PropertyStatus } from '../../enums/property.enum';
 import { userVar } from '../../../apollo/store';
 import { useRouter } from 'next/router';
-import { UPDATE_PRODUCT, UPDATE_PROPERTY } from '../../../apollo/user/mutation';
-import { GET_AGENT_PRODUCTS, GET_AGENT_PROPERTIES } from '../../../apollo/user/query';
+import { UPDATE_PRODUCT } from '../../../apollo/user/mutation';
+import { GET_AGENT_PRODUCTS } from '../../../apollo/user/query';
 import { sweetConfirmAlert, sweetErrorHandling } from '../../sweetAlert';
 import { Product } from '../../types/property/property';
 

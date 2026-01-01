@@ -3,14 +3,14 @@ import { NextPage } from 'next';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Pagination, Stack, Typography } from '@mui/material';
 import PropertyCard from '../property/PropertyCard';
-import { Property } from '../../types/property/property';
+import { Product } from '../../types/property/property';
 import { T } from '../../types/common';
 import { GET_VISITED } from '../../../apollo/user/query';
 import { useQuery } from '@apollo/client';
 
 const RecentlyVisited: NextPage = () => {
 	const device = useDeviceDetect();
-	const [recentlyVisited, setRecentlyVisited] = useState<Property[]>([]);
+	const [recentlyVisitedProducts, setRecentlyVisitedProducts] = useState<Product[]>([]);
 	const [total, setTotal] = useState<number>(0);
 	const [searchVisited, setSearchVisited] = useState<T>({ page: 1, limit: 6 });
 
@@ -27,7 +27,7 @@ const RecentlyVisited: NextPage = () => {
 		},
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
-			setRecentlyVisited(data?.getVisited?.list);
+			setRecentlyVisitedProducts(data?.getVisited?.list ?? []);
 			setTotal(data?.getVisited?.metaCounter[0]?.total || 0);
 		},
 	});
@@ -38,7 +38,7 @@ const RecentlyVisited: NextPage = () => {
 	};
 
 	if (device === 'mobile') {
-		return <div>NESTAR MY FAVORITES MOBILE</div>;
+		return <div>RECENTLY VISITED PRODUCTS MOBILE</div>;
 	} else {
 		return (
 			<div id="my-favorites-page">
@@ -49,18 +49,18 @@ const RecentlyVisited: NextPage = () => {
 					</Stack>
 				</Stack>
 				<Stack className="favorites-list-box">
-					{recentlyVisited?.length ? (
-						recentlyVisited?.map((property: Property) => {
-							return <PropertyCard property={property} recentlyVisited={true} />;
+					{recentlyVisitedProducts?.length ? (
+						recentlyVisitedProducts?.map((product: Product) => {
+							return <PropertyCard product={product} key={product?._id} />;
 						})
 					) : (
 						<div className={'no-data'}>
 							<img src="/img/icons/icoAlert.svg" alt="" />
-							<p>No Recently Visited Properties found!</p>
+							<p>No Recently Visited Products found!</p>
 						</div>
 					)}
 				</Stack>
-				{recentlyVisited?.length ? (
+				{recentlyVisitedProducts?.length ? (
 					<Stack className="pagination-config">
 						<Stack className="pagination-box">
 							<Pagination
@@ -72,9 +72,7 @@ const RecentlyVisited: NextPage = () => {
 							/>
 						</Stack>
 						<Stack className="total-result">
-							<Typography>
-								Total {total} recently visited propert{total > 1 ? 'ies' : 'y'}
-							</Typography>
+							<Typography>Total {total} recently visited product{total === 1 ? '' : 's'}</Typography>
 						</Stack>
 					</Stack>
 				) : null}

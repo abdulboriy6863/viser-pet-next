@@ -8,7 +8,7 @@ import { ProductsInquiry } from '../../types/property/property.input';
 import { T } from '../../types/common';
 import { useRouter } from 'next/router';
 import { useQuery } from '@apollo/client';
-import { GET_PRODUCTS, GET_PROPERTIES } from '../../../apollo/user/query';
+import { GET_PRODUCTS } from '../../../apollo/user/query';
 
 const MyProperties: NextPage = ({ initialInput, ...props }: any) => {
 	const device = useDeviceDetect();

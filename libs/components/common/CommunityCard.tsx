@@ -13,7 +13,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 interface CommunityCardProps {
 	blogPost: BlogPost;
-	likeBlogPostHandler: any;
+	likeBlogPostHandler?: (e: React.MouseEvent, user: any, id: string) => void;
 }
 
 const DEFAULT_IMG = '/img/community/communityImg.png';
@@ -79,7 +79,7 @@ const CommunityCard = (props: CommunityCardProps) => {
 	const likeHandler = (e: React.MouseEvent) => {
 		e.preventDefault();
 		e.stopPropagation();
-		likeBlogPostHandler(e, user, blogPost?._id);
+		likeBlogPostHandler?.(e, user, blogPost?._id);
 	};
 
 	if (device === 'mobile') return <div>COMMUNITY CARD MOBILE</div>;

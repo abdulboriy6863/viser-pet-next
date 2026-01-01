@@ -19,7 +19,7 @@ function getHeaders() {
 	if (token) headers['Authorization'] = `Bearer ${token}`;
 	return headers;
 }
-
+// @ts-ignore
 const tokenRefreshLink = new TokenRefreshLink({
 	accessTokenField: 'accessToken',
 	isTokenValidOrUndefined: () => {
