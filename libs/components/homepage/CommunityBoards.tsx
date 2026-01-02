@@ -41,7 +41,7 @@ const CommunityBoards = () => {
 	const latestNews = newsPosts.slice(0, 3);
 	const skeletons = Array.from({ length: Math.max(3 - latestNews.length, 0) });
 	const badgeColors = ['#DCEBC5', '#D7EEF5', '#F5E1BE'];
-	const fallbackImage = '/img/NewProduct/agentbanner2.jpg';
+	const fallbackImage = '/img/NewProduct/agentbanner22.jpg';
 
 	const formatDay = (dateString?: string | Date) => {
 		if (!dateString) return '--';
@@ -102,7 +102,10 @@ const CommunityBoards = () => {
 									key={blogPost?._id}
 									className="latest-news__card"
 								>
-									<div className="latest-news__image" style={{ backgroundImage: `url(${image})` }} />
+									<div
+										className="latest-news__image"
+										style={{ backgroundImage: `url(/img/NewProduct/agentbanner2.jpg)` }}
+									/>
 									<div className="latest-news__badge" style={{ backgroundColor: badgeColor }}>
 										<span className="latest-news__day">{formatDay(blogPost?.createdAt)}</span>
 										<span className="latest-news__month">{formatMonth(blogPost?.createdAt)}</span>
