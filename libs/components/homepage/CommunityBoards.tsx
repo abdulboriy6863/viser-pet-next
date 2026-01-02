@@ -41,7 +41,7 @@ const CommunityBoards = () => {
 	const latestNews = newsPosts.slice(0, 3);
 	const skeletons = Array.from({ length: Math.max(3 - latestNews.length, 0) });
 	const badgeColors = ['#DCEBC5', '#D7EEF5', '#F5E1BE'];
-	const fallbackImage = '/img/event.svg';
+	const fallbackImage = '/img/NewProduct/agentbanner2.webp';
 
 	const formatDay = (dateString?: string | Date) => {
 		if (!dateString) return '--';

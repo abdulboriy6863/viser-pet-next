@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { Stack, Box, Typography } from '@mui/material';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { Product } from '../../types/property/property';
 import { REACT_APP_API_URL } from '../../config';
 
@@ -43,6 +44,17 @@ const PopularPropertyCard = (props: PopularPropertyCardProps) => {
 	const formatPrice = (value: number) =>
 		`$${value.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 
+	const normalizeCount = (value: any, fallback: number = 0) => {
+		if (Array.isArray(value)) return value.length;
+		const n = Number(value);
+		if (!Number.isFinite(n)) return fallback;
+		return Math.max(0, Math.round(n));
+	};
+
+	const viewsCount = normalizeCount(product?.productViews);
+	const commentsCount = normalizeCount(product?.productComments);
+	const likesCount = normalizeCount(product?.productLikes ?? product?.meLiked);
+
 	return (
 		<Stack className="popular-card-box">
 			<Box component={'div'} className={'popular-card-box__image'}>
@@ -65,14 +77,6 @@ const PopularPropertyCard = (props: PopularPropertyCardProps) => {
 			</Typography>
 
 			<Box className={'popular-card-box__meta'}>
-				<div className="popular-card-box__meta-item">
-					<img src="/img/icons/review.svg" alt="Views" />
-					<span>{product.productViews ?? 0}</span>
-				</div>
-				<div className="popular-card-box__meta-item">
-					<img src="/img/icons/chat.svg" alt="Comments" />
-					<span>{product.productComments ?? 0}</span>
-				</div>
 				<button
 					type="button"
 					className={`popular-card-box__meta-item popular-card-box__meta-item--like ${isLiked ? 'is-active' : ''}`}
@@ -83,8 +87,17 @@ const PopularPropertyCard = (props: PopularPropertyCardProps) => {
 					aria-label="Toggle like"
 				>
 					<img src="/img/icons/like.svg" alt="Likes" />
-					<span>{product.productLikes ?? 0}</span>
+					<span>{likesCount}</span>
 				</button>
+
+				<div className="popular-card-box__meta-item">
+					<img src="/img/icons/chat.svg" alt="Comments" />
+					<span>{commentsCount}</span>
+				</div>
+				<div className="popular-card-box__meta-item">
+					<RemoveRedEyeIcon />
+					<span>{viewsCount}</span>
+				</div>
 			</Box>
 		</Stack>
 	);

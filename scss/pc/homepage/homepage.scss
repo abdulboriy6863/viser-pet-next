@@ -1165,7 +1165,7 @@
 					align-self: flex-start;
 					padding: 10px 16px;
 					border-radius: 12px;
-					background: rgba(255, 36, 105, 0.9);
+					background: linear-gradient(135deg, #16c1b4 0%, #06a79a 100%);
 					color: #fff;
 					font-family: $font;
 					font-weight: 800;
@@ -1195,7 +1195,7 @@
 					padding: 10px 18px;
 					border-radius: 999px;
 					border: none;
-					background: rgba(255, 36, 105, 0.92);
+					background: linear-gradient(135deg, #16c1b4 0%, #06a79a 100%);
 					color: #fff;
 					font-family: $font;
 					font-size: 13px;
@@ -1245,7 +1245,7 @@
 					padding: 9px 14px;
 					border-radius: 10px;
 					border: 1px solid rgba(255, 255, 255, 0.6);
-					background: rgba(255, 36, 105, 0.9);
+					background: linear-gradient(135deg, #16c1b4 0%, #06a79a 100%);
 					color: #fff;
 					font-family: $font;
 					font-size: 12px;
@@ -1332,7 +1332,7 @@
 		.top-card__discount {
 			padding: 8px 12px;
 			border-radius: 10px;
-			background: linear-gradient(135deg, #ffb347 0%, #ff7b6a 100%);
+			background: linear-gradient(135deg, #16c1b4 0%, #06a79a 100%);
 			color: #fff;
 			font-family: $font;
 			font-size: 13px;
@@ -1341,15 +1341,9 @@
 		}
 
 		.top-card__like {
-			width: 42px;
-			height: 42px;
-			border-radius: 12px;
 			border: none;
-			display: grid;
 			place-items: center;
-			background: rgba(255, 255, 255, 0.88);
-			box-shadow: 0 12px 22px rgba(0, 0, 0, 0.08);
-			color: #d34d4d;
+			color: #6a6a6a;
 			cursor: pointer;
 			transition: transform 0.18s ease, box-shadow 0.18s ease;
 			&:hover {
@@ -1357,7 +1351,7 @@
 				box-shadow: 0 14px 26px rgba(0, 0, 0, 0.12);
 			}
 			&.is-active svg {
-				color: #ff4d6d;
+				color: #afafaf;
 			}
 			svg {
 				width: 22px;
@@ -1429,7 +1423,6 @@
 			font-family: $font;
 			font-size: 14px;
 			svg {
-				width: 18px;
 				height: 18px;
 			}
 		}
@@ -1856,7 +1849,6 @@
 		}
 		.community-board {
 			position: relative;
-			padding: 120px 0 80px;
 			width: 100%;
 			background: #ffffff;
 			display: flex;
