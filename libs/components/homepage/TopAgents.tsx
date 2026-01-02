@@ -48,7 +48,7 @@ const TopAgents = (props: TopAgentsProps) => {
 	const handleSeeAll = () => {
 		router.push('/agent');
 	};
-
+	console.log('RUN ON SERVER');
 	const renderedSlides = topAgents.map((agent: Member) => {
 		return (
 			<SwiperSlide className={'top-agents-slide'} key={agent?._id}>
