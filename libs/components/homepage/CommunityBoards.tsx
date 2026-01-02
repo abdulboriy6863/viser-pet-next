@@ -7,26 +7,29 @@ import { useQuery } from '@apollo/client';
 import { GET_BLOG_POSTS } from '../../../apollo/user/query';
 import { BlogPostCategory } from '../../enums/board-article.enum';
 import { T } from '../../types/common';
+import { REACT_APP_API_URL } from '../../config'; // ✅ shuni ishlat
 
 const CommunityBoards = () => {
 	const device = useDeviceDetect();
+
 	const [searchCommunity, setSearchCommunity] = useState({
 		page: 1,
-		sort: 'blogPostViews',
+		sort: 'createdAt',
 		direction: 'DESC',
 	});
+
 	const [newsPosts, setNewsPosts] = useState<BlogPost[]>([]);
 	const [totalPages, setTotalPages] = useState(1);
 
-	/** APOLLO REQUESTS **/
-	const {
-		loading: getNewPostsLoading,
-		data: getNewPostsData,
-		error: getNewPostsError,
-		refetch: getNewPostsRefetch,
-	} = useQuery(GET_BLOG_POSTS, {
+	const { refetch: getNewPostsRefetch } = useQuery(GET_BLOG_POSTS, {
 		fetchPolicy: 'network-only',
-		variables: { input: { ...searchCommunity, limit: 3, search: { blogPostCategory: BlogPostCategory.NEWS } } },
+		variables: {
+			input: {
+				...searchCommunity,
+				limit: 3,
+				search: {},
+			},
+		},
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
 			setNewsPosts(data?.getBlogPosts?.list || []);
@@ -52,23 +55,23 @@ const CommunityBoards = () => {
 		return Number.isNaN(date.getTime()) ? '--' : date.toLocaleString('en-US', { month: 'short' });
 	};
 
-	if (device === 'mobile') {
-		return <div>COMMUNITY BOARDS (MOBILE)</div>;
-	}
+	if (device === 'mobile') return <div>COMMUNITY BOARDS (MOBILE)</div>;
 
 	const goToPage = (page: number) => {
 		const nextPage = Math.min(Math.max(page, 1), totalPages);
-		setSearchCommunity((prev) => ({ ...prev, page: nextPage }));
-		getNewPostsRefetch({
-			input: { ...searchCommunity, page: nextPage, limit: 3, search: { blogPostCategory: BlogPostCategory.NEWS } },
-		});
+		setSearchCommunity((prev) => ({ ...prev, page: nextPage })); // ✅ faqat state
 	};
 
 	useEffect(() => {
-		// keep query in sync when page changes via state updates
+		// ✅ refetch faqat shu yerda
 		getNewPostsRefetch({
-			input: { ...searchCommunity, limit: 3, search: { blogPostCategory: BlogPostCategory.NEWS } },
+			input: {
+				...searchCommunity,
+				limit: 3,
+				search: {},
+			},
 		});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [searchCommunity.page]);
 
 	return (
@@ -78,9 +81,9 @@ const CommunityBoards = () => {
 					<div className="latest-news__bone">
 						<img src="/img/featuresProduct/Icon.png" alt="New arrivals" />
 					</div>
+
 					<div className="latest-news__heading">
 						<span className="latest-news__line" />
-
 						<div className="latest-news__title">Latest News Post</div>
 						<span className="latest-news__line" />
 					</div>
@@ -88,9 +91,11 @@ const CommunityBoards = () => {
 					<div className="latest-news__grid">
 						{latestNews.map((blogPost, idx) => {
 							const image = blogPost?.blogPostImage
-								? `${process.env.REACT_APP_API_URL}/${blogPost.blogPostImage}`
+								? `${REACT_APP_API_URL}/${blogPost.blogPostImage}` // ✅ env bug fix
 								: fallbackImage;
+
 							const badgeColor = badgeColors[idx % badgeColors.length];
+
 							return (
 								<Link
 									href={`/community/detail?articleCategory=${blogPost?.blogPostCategory}&id=${blogPost?._id}`}
@@ -129,10 +134,12 @@ const CommunityBoards = () => {
 						>
 							←
 						</button>
+
 						<div className="latest-news__page-info">
 							<span className="latest-news__page-current">{searchCommunity.page}</span>
 							<span className="latest-news__page-total">/ {totalPages}</span>
 						</div>
+
 						<button
 							type="button"
 							className="latest-news__page-btn"
