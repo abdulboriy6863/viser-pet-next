@@ -3,7 +3,7 @@ import { Stack, Box } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Navigation, Pagination } from 'swiper';
+import { Navigation, Pagination } from 'swiper';
 import TopPropertyCard from './TopPropertyCard';
 import { ProductsInquiry, PropertiesInquiry } from '../../types/property/property.input';
 import { Product } from '../../types/property/property';
@@ -73,11 +73,7 @@ const TopProperties = (props: TopPropertiesProps) => {
 							slidesPerView={'auto'}
 							centeredSlides={true}
 							spaceBetween={18}
-							modules={[Autoplay]}
-							autoplay={{
-								delay: 3200,
-								disableOnInteraction: false,
-							}}
+							modules={[]}
 						>
 							{topProducts.map((product: Product) => {
 								return (
@@ -115,14 +111,10 @@ const TopProperties = (props: TopPropertiesProps) => {
 								className={'top-agents-swiper'}
 								slidesPerView={'auto'}
 								spaceBetween={24}
-								modules={[Autoplay, Navigation, Pagination]}
+								modules={[Navigation, Pagination]}
 								navigation={{
 									nextEl: '.swiper-agents-next',
 									prevEl: '.swiper-agents-prev',
-								}}
-								autoplay={{
-									delay: 3600,
-									disableOnInteraction: false,
 								}}
 							>
 								{topProducts.map((product: Product) => {

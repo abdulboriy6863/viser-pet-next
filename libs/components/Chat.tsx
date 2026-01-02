@@ -13,6 +13,7 @@ import { Member } from '../types/member/member';
 import member from '../../pages/member';
 import { Messages, REACT_APP_API_URL } from '../config';
 import { sweetErrorAlert } from '../sweetAlert';
+import PetsIcon from '@mui/icons-material/Pets';
 
 const NewMessage = (type: any) => {
 	if (type === 'right') {
@@ -53,6 +54,8 @@ interface InfoPayload {
 
 const Chat = () => {
 	const chatContentRef = useRef<HTMLDivElement>(null);
+	const chatFrameRef = useRef<HTMLDivElement>(null);
+	const chatButtonRef = useRef<HTMLButtonElement>(null);
 	const [messagesList, setMessagesList] = useState<MessagePayload[]>([]);
 	const [onlineUsers, setOnlineUsers] = useState<number>(0);
 	const textInput = useRef(null);
@@ -99,6 +102,23 @@ const Chat = () => {
 		setOpenButton(false);
 	}, [router.pathname]);
 
+	useEffect(() => {
+		if (!open) return;
+		const handleClickOutside = (e: MouseEvent | TouchEvent) => {
+			const frame = chatFrameRef.current;
+			const button = chatButtonRef.current;
+			const target = e.target as Node;
+			if (frame?.contains(target) || button?.contains(target)) return;
+			setOpen(false);
+		};
+		document.addEventListener('mousedown', handleClickOutside);
+		document.addEventListener('touchstart', handleClickOutside);
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+			document.removeEventListener('touchstart', handleClickOutside);
+		};
+	}, [open]);
+
 	/** HANDLERS **/
 	const handleOpenChat = () => {
 		setOpen((prevState) => !prevState);
@@ -133,11 +153,11 @@ const Chat = () => {
 	return (
 		<Stack className="chatting">
 			{openButton ? (
-				<button className="chat-button" onClick={handleOpenChat}>
-					{open ? <CloseFullscreenIcon /> : <MarkChatUnreadIcon />}
+				<button className="chat-button" onClick={handleOpenChat} ref={chatButtonRef}>
+					{open ? <CloseFullscreenIcon /> : <PetsIcon />}
 				</button>
 			) : null}
-			<Stack className={`chat-frame ${open ? 'open' : ''}`}>
+			<Stack className={`chat-frame ${open ? 'open' : ''}`} ref={chatFrameRef}>
 				<Box className={'chat-top'} component={'div'}>
 					<div style={{ fontFamily: 'Nunito' }}>Online Chat</div>
 

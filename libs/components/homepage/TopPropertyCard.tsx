@@ -1,13 +1,14 @@
 import React from 'react';
 import { Stack, Box, Typography, IconButton } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+// import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Product } from '../../types/property/property';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { REACT_APP_API_URL } from '../../config';
 import { useRouter } from 'next/router';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 
 interface TrendPropertyCardProps {
 	product: Product;
@@ -43,17 +44,6 @@ const TrendPropertyCard = (props: TrendPropertyCardProps) => {
 				role="button"
 			>
 				{hasDiscount && <span className="top-card__discount">-{discountValue}%</span>}
-				<button
-					type="button"
-					className={`top-card__like ${liked ? 'is-active' : ''}`}
-					onClick={(e) => {
-						e.stopPropagation();
-						likeProductHandler(user, product?._id);
-					}}
-					aria-label="Favorite product"
-				>
-					<FavoriteIcon />
-				</button>
 			</div>
 
 			<div className="top-card__body">
@@ -75,7 +65,20 @@ const TrendPropertyCard = (props: TrendPropertyCardProps) => {
 					<div className="top-card__views">
 						<RemoveRedEyeIcon />
 						<span>{product?.productViews ?? 0}</span>
+
+						<button
+							type="button"
+							className={`top-card__like ${liked ? 'is-active' : ''}`}
+							onClick={(e) => {
+								e.stopPropagation();
+								likeProductHandler(user, product?._id);
+							}}
+							aria-label="Favorite product"
+						>
+							<ThumbUpIcon />
+						</button>
 					</div>
+
 					<button
 						type="button"
 						className="top-card__cta"

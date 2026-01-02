@@ -4,13 +4,17 @@ import { Stack, Box } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Navigation, Pagination } from 'swiper';
+import { Navigation, Pagination } from 'swiper';
 import TopAgentCard from './TopAgentCard';
 import { Member } from '../../types/member/member';
 import { AgentsInquiry } from '../../types/member/member.input';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { GET_AGENTS } from '../../../apollo/user/query';
 import { T } from '../../types/common';
+import { LIKE_TARGET_MEMBER } from '../../../apollo/user/mutation';
+import { userVar } from '../../../apollo/store';
+import { sweetMixinErrorAlert } from '../../sweetAlert';
+import { Messages } from '../../config';
 
 interface TopAgentsProps {
 	initialInput: AgentsInquiry;
@@ -21,8 +25,10 @@ const TopAgents = (props: TopAgentsProps) => {
 	const device = useDeviceDetect();
 	const isMobile = device === 'mobile';
 	const router = useRouter();
+	const user = useReactiveVar(userVar);
 	const [topAgents, setTopAgents] = useState<Member[]>([]);
 	const highlightedAgentsCount = topAgents?.length || 0;
+	const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
 
 	/** APOLLO REQUESTS **/
 	const {
@@ -46,7 +52,20 @@ const TopAgents = (props: TopAgentsProps) => {
 	const renderedSlides = topAgents.map((agent: Member) => {
 		return (
 			<SwiperSlide className={'top-agents-slide'} key={agent?._id}>
-				<TopAgentCard agent={agent} key={agent?.memberNick} />
+				<TopAgentCard
+					agent={agent}
+					key={agent?.memberNick}
+					likeMemberHandler={async (agentId: string) => {
+						try {
+							if (!agentId) return;
+							if (!user?._id) throw new Error(Messages.error2);
+							await likeTargetMember({ variables: { input: agentId } });
+							await getAgentsRefetch({ input: initialInput });
+						} catch (err: any) {
+							sweetMixinErrorAlert(err?.message || 'Unable to like agent');
+						}
+					}}
+				/>
 			</SwiperSlide>
 		);
 	});
@@ -83,11 +102,7 @@ const TopAgents = (props: TopAgentsProps) => {
 							slidesPerView={'auto'}
 							centeredSlides={true}
 							spaceBetween={18}
-							modules={[Autoplay]}
-							autoplay={{
-								delay: 3200,
-								disableOnInteraction: false,
-							}}
+							modules={[]}
 						>
 							{renderedSlides}
 						</Swiper>
@@ -142,14 +157,10 @@ const TopAgents = (props: TopAgentsProps) => {
 								className={'top-agents-swiper'}
 								slidesPerView={'auto'}
 								spaceBetween={24}
-								modules={[Autoplay, Navigation, Pagination]}
+								modules={[Navigation, Pagination]}
 								navigation={{
 									nextEl: '.swiper-agents-next',
 									prevEl: '.swiper-agents-prev',
-								}}
-								autoplay={{
-									delay: 3600,
-									disableOnInteraction: false,
 								}}
 							>
 								{renderedSlides}

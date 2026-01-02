@@ -205,7 +205,6 @@ export const GET_AGENT_PRODUCTS = gql`
 				productName
 				productDetail
 				productPrice
-				productVolume
 				productDiscount
 				productLeftCount
 				productSoldCount
@@ -247,6 +246,15 @@ export const GET_AGENT_PRODUCTS = gql`
 					updatedAt
 					accessToken
 				}
+				productVolume
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
+				}
+			}
+			metaCounter {
+				total
 			}
 		}
 	}

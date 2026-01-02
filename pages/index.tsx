@@ -8,7 +8,6 @@ import Events from '../libs/components/homepage/Events';
 import TrendProperties from '../libs/components/homepage/TrendProperties';
 import TopProperties from '../libs/components/homepage/TopProperties';
 import { Stack } from '@mui/material';
-import Advertisement from '../libs/components/homepage/Advertisement';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Category from '../libs/components/mypage/Category';
 import NewProduct from '../libs/components/homepage/NewProduct';
@@ -28,7 +27,6 @@ const Home: NextPage = () => {
 				<TrendProperties />
 				<PopularProperties />
 				<NewProduct />
-				<Advertisement />
 				<TopProperties />
 				<TopAgents />
 			</Stack>
@@ -40,7 +38,6 @@ const Home: NextPage = () => {
 				<TrendProperties />
 				<PopularProperties />
 				<NewProduct />
-				<Advertisement />
 				<CommunityBoards />
 				<TopProperties />
 				<TopAgents />
