@@ -4,7 +4,7 @@ import { Stack, Box } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Navigation, Pagination } from 'swiper';
+import { Navigation, Pagination } from 'swiper';
 import TopAgentCard from './TopAgentCard';
 import { Member } from '../../types/member/member';
 import { AgentsInquiry } from '../../types/member/member.input';
@@ -102,11 +102,7 @@ const TopAgents = (props: TopAgentsProps) => {
 							slidesPerView={'auto'}
 							centeredSlides={true}
 							spaceBetween={18}
-							modules={[Autoplay]}
-							autoplay={{
-								delay: 3200,
-								disableOnInteraction: false,
-							}}
+							modules={[]}
 						>
 							{renderedSlides}
 						</Swiper>
@@ -161,14 +157,10 @@ const TopAgents = (props: TopAgentsProps) => {
 								className={'top-agents-swiper'}
 								slidesPerView={'auto'}
 								spaceBetween={24}
-								modules={[Autoplay, Navigation, Pagination]}
+								modules={[Navigation, Pagination]}
 								navigation={{
 									nextEl: '.swiper-agents-next',
 									prevEl: '.swiper-agents-prev',
-								}}
-								autoplay={{
-									delay: 3600,
-									disableOnInteraction: false,
 								}}
 							>
 								{renderedSlides}
