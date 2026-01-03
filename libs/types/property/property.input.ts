@@ -1,4 +1,4 @@
-import { ProductCollection, ProductStatus, ProductVolume, PropertyStatus } from '../../enums/property.enum';
+import { ProductCollection, ProductStatus, ProductVolume } from '../../enums/property.enum';
 import { Direction } from '../../enums/common.enum';
 
 export interface PropertiesInquiry {
@@ -7,10 +7,6 @@ export interface PropertiesInquiry {
 	sort?: string;
 	direction?: Direction;
 	search: PISearch;
-}
-
-interface APISearch {
-	propertyStatus?: PropertyStatus;
 }
 
 // export interface AgentPropertiesInquiry {

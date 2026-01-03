@@ -34,10 +34,12 @@ const Filter = (props: FilterType) => {
 		searchFilter?.search?.pricesRange?.end !== undefined ? String(searchFilter.search.pricesRange.end) : '',
 	);
 
-	const allVolumes = useMemo(() => Object.values(ProductVolume ?? {}), []);
+	const volumeOptions = useMemo(() => Object.values(ProductVolume ?? {}) as ProductVolume[], []);
 	// typeList / volumeList hozirgi holat
 	const selectedTypes = searchFilter?.search?.typeList ?? [];
-	const selectedVolumes = searchFilter?.search?.volumeList ?? [];
+	const selectedVolumes =
+		((searchFilter?.search as any)?.productVolumeList ?? searchFilter?.search?.volumeList ??
+			[]) as (ProductVolume | string)[];
 	const discounted = Boolean(searchFilter?.search?.discounted);
 
 	// --- LABELS (clientga chiroyli ko‘rinish uchun) ---
@@ -90,6 +92,8 @@ const Filter = (props: FilterType) => {
 		// masalan: VOLUME_SMALL => 'Small', ...
 		return String(v).replaceAll('_', ' ').toLowerCase();
 	}, []);
+
+	const normalizeVolume = useCallback((v: ProductVolume | string) => String(v).toUpperCase(), []);
 
 	// --- GROUPS (hover bo‘lganda ichidagi list ko‘rinadi) ---
 	const COLLECTION_GROUPS = useMemo(() => {
@@ -150,17 +154,25 @@ const Filter = (props: FilterType) => {
 	// --- router/update helper ---
 	const pushFilter = useCallback(
 		async (nextSearch: any) => {
+			const mergedSearch: any = {
+				...searchFilter.search,
+				...nextSearch,
+			};
+
+			// move volumeList -> productVolumeList (backend expects this), drop the old key
+			if (mergedSearch.volumeList) {
+				mergedSearch.productVolumeList = mergedSearch.volumeList;
+			}
+			delete mergedSearch.volumeList;
+
 			const next = {
 				...searchFilter,
-				search: {
-					...searchFilter.search,
-					...nextSearch,
-				},
+				search: mergedSearch,
 			};
 
 			// clean empty arrays
 			if (!next.search?.typeList?.length) delete next.search.typeList;
-			if (!next.search?.volumeList?.length) delete next.search.volumeList;
+			if (!next.search?.productVolumeList?.length) delete next.search.productVolumeList;
 
 			// clean empty price range
 			if (
@@ -202,11 +214,13 @@ const Filter = (props: FilterType) => {
 
 	const toggleVolume = useCallback(
 		async (value: any) => {
-			const exists = selectedVolumes.includes(value);
-			const next = exists ? selectedVolumes.filter((x: any) => x !== value) : [...selectedVolumes, value];
+			const exists = selectedVolumes.map(normalizeVolume).includes(normalizeVolume(value));
+			const next = exists
+				? selectedVolumes.filter((x: any) => normalizeVolume(x) !== normalizeVolume(value))
+				: [...selectedVolumes, value];
 			await pushFilter({ volumeList: next });
 		},
-		[selectedVolumes, pushFilter],
+		[selectedVolumes, normalizeVolume, pushFilter],
 	);
 
 	const toggleDiscount = useCallback(async () => {
@@ -341,23 +355,23 @@ const Filter = (props: FilterType) => {
 			</Stack>
 
 			{/* PRODUCT VOLUME */}
-			<Stack className="filter-section">
-				<Typography className="filter-title">Product volume</Typography>
+	<Stack className="filter-section">
+		<Typography className="filter-title">Product volume</Typography>
 
 				<Stack className="filter-list">
-					{allVolumes.map((v: any) => (
+					{volumeOptions.map((v: any) => (
 						<label key={String(v)} className="filter-checkRow">
 							<Checkbox
 								className="filter-checkbox"
 								color="default"
 								size="small"
-								checked={selectedVolumes.includes(v)}
+								checked={selectedVolumes.map(normalizeVolume).includes(normalizeVolume(v))}
 								onChange={() => toggleVolume(v)}
 							/>
-							<span className="filter-checkLabel">{volumeLabel(v)}</span>
-						</label>
-					))}
-				</Stack>
+					<span className="filter-checkLabel">{volumeLabel(v)}</span>
+				</label>
+			))}
+		</Stack>
 			</Stack>
 
 			{/* PRICE RANGE */}
