@@ -37,7 +37,7 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 	const [sortingOpen, setSortingOpen] = useState(false);
 	const [filterSortName, setFilterSortName] = useState('New');
 
-	/** APOLLO REQUESTS **/
+	/** APOLLO REQUESTS /**/
 	const [likeTargetProperty] = useMutation(LIKE_TARGET_PRODUCT);
 
 	const {
@@ -88,15 +88,15 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 	};
 
 	const handlePaginationChange = async (event: ChangeEvent<unknown>, value: number) => {
-		searchFilter.page = value;
-		await router.push(
-			`/property?input=${JSON.stringify(searchFilter)}`,
-			`/property?input=${JSON.stringify(searchFilter)}`,
-			{
-				scroll: false,
-			},
-		);
+		const nextFilter = { ...searchFilter, page: value };
+		setSearchFilter(nextFilter);
 		setCurrentPage(value);
+		await router.replace(
+			`/property?input=${JSON.stringify(nextFilter)}`,
+			`/property?input=${JSON.stringify(nextFilter)}`,
+			{ scroll: false, shallow: true },
+		);
+		await getProductsRefetch({ input: nextFilter });
 	};
 
 	const sortingClickHandler = (e: MouseEvent<HTMLElement>) => {
@@ -194,7 +194,7 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 									<Stack className="pagination-box">
 										<Pagination
 											page={currentPage}
-											count={Math.ceil(total / searchFilter.limit)}
+											count={Math.max(1, Math.ceil(total / (searchFilter.limit || 1)))}
 											onChange={handlePaginationChange}
 											shape="circular"
 										/>
@@ -219,15 +219,11 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 
 PropertyList.defaultProps = {
 	initialInput: {
-		page: 1,
+		page: 2,
 		limit: 8,
 		sort: 'createdAt',
 		direction: 'DESC',
 		search: {
-			// squaresRange: {
-			// 	start: 0,
-			// 	end: 500,
-			// },
 			pricesRange: {
 				start: 0,
 				end: 2000000,
