@@ -21,7 +21,7 @@ import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/swee
 import { Messages, REACT_APP_API_URL } from '../../libs/config';
 import { userVar } from '../../apollo/store';
 import { updateStorage, updateUserInfo } from '../../libs/auth';
-import { basketTotals, readBasket, removeFromBasket } from '../../libs/utils/basket';
+import { basketTotals, calcDiscountedPrice, readBasket, removeFromBasket } from '../../libs/utils/basket';
 
 type OrderLine = {
 	key: string;
@@ -140,7 +140,7 @@ const OrderPage: NextPage = () => {
 			return items.map((item: OrderItem, idx: number) => {
 				const product = products?.find((p) => p._id === item.productId);
 				const quantity = Number(item.itemQuantity ?? 1);
-				const unitPrice = Number(item.itemPrice ?? product?.productPrice ?? 0);
+				const unitPrice = Number(item.itemPrice ?? calcDiscountedPrice(product) ?? 0);
 
 				return {
 					key: `${order._id}-${item._id ?? idx}`,

@@ -29,6 +29,7 @@ import {
 	BASKET_KEY,
 	basketTotals,
 	clearBasket,
+	calcDiscountedPrice,
 	readBasket,
 	removeFromBasket,
 } from '../utils/basket';
@@ -480,11 +481,11 @@ const Top = () => {
 															Qty: {item.quantity}
 														</Typography>
 													</Box>
-													<Typography
-														sx={{ fontFamily: 'Nunito', fontWeight: 800, fontSize: '13px', color: '#0f172a' }}
-													>
-														${Number(item.product?.productPrice ?? 0).toFixed(2)}
-													</Typography>
+														<Typography
+															sx={{ fontFamily: 'Nunito', fontWeight: 800, fontSize: '13px', color: '#0f172a' }}
+														>
+															${calcDiscountedPrice(item.product).toFixed(2)}
+														</Typography>
 													<Button
 														variant="text"
 														size="small"

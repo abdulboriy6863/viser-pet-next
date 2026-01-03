@@ -218,9 +218,11 @@
 						border-radius: 12px;
 						text-transform: none;
 						font-family: $font;
-						font-weight: 800;
-						background: linear-gradient(135deg, #b3544f 0%, #8f3d3b 100%);
-						box-shadow: 0 12px 28px rgba(143, 61, 59, 0.3);
+						color: #fff;
+						font-weight: 600;
+						font-size: 14px;
+						background: linear-gradient(135deg, #16c1b4 0%, #06a79a 100%);
+						// box-shadow: 0 12px 28px rgba(143, 61, 59, 0.3);
 					}
 				}
 			}
@@ -271,8 +273,8 @@
 							}
 
 							&.active {
-								background: #6b4a47;
-								border-color: #6b4a47;
+								background: linear-gradient(135deg, #16c1b4 0%, #06a79a 100%);
+								border-color: linear-gradient(135deg, #16c1b4 0%, #06a79a 100%);
 								color: #fff;
 							}
 						}
@@ -760,6 +762,11 @@
 								height: auto;
 								display: flex;
 								justify-content: center;
+
+								.MuiPaginationItem-root.Mui-selected {
+									background: #17c3b2 !important;
+									color: #ffffff !important;
+								}
 							}
 						}
 					}
@@ -836,14 +843,13 @@
 								cursor: pointer;
 
 								/* ✅ bu page uchun maxsus rang */
-								background: #eb6753 !important;
-
+								background: linear-gradient(135deg, #16c1b4 0%, #06a79a 100%);
 								.title {
 									color: #ffffff;
 									font-family: $font;
 									font-size: 14px;
 									font-style: normal;
-									font-weight: 900;
+									font-weight: 600;
 									line-height: normal;
 								}
 
@@ -992,7 +998,7 @@
 							align-items: center;
 							gap: 10px;
 							border-radius: 12px;
-							background: #eb6753;
+							background: linear-gradient(135deg, #16c1b4 0%, #06a79a 100%);
 							.title {
 								color: #fff;
 								font-family: $font;

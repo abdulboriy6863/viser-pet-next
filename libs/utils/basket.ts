@@ -26,6 +26,15 @@ export const persistBasket = (items: BasketItem[]) => {
 	window.dispatchEvent(new CustomEvent(BASKET_EVENT, { detail: { items } }));
 };
 
+// productDiscount could be percent (<=100) or absolute value
+export const calcDiscountedPrice = (product: Product | undefined | null): number => {
+	const base = Number(product?.productPrice ?? 0);
+	const discount = Number(product?.productDiscount ?? 0);
+	if (discount <= 0) return base;
+	const discountAmount = discount <= 100 ? (base * discount) / 100 : discount;
+	return Math.max(0, base - discountAmount);
+};
+
 export const addToBasket = (product: Product, quantity: number = 1) => {
 	if (!product?._id) return;
 	const items = readBasket();
@@ -51,6 +60,9 @@ export const removeFromBasket = (productId: string) => {
 
 export const basketTotals = () => {
 	const items = readBasket();
-	const subtotal = items.reduce((sum, item) => sum + Number(item.product?.productPrice ?? 0) * Number(item.quantity ?? 0), 0);
+	const subtotal = items.reduce(
+		(sum, item) => sum + calcDiscountedPrice(item.product) * Number(item.quantity ?? 0),
+		0,
+	);
 	return { subtotal, items };
 };

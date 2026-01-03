@@ -229,16 +229,10 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 	const discountValue = Number(product?.productDiscount) || 0;
 	const hasDiscount = discountValue > 0;
 	const isPercentDiscount = hasDiscount && discountValue <= 100;
-	const discountPrice =
-		hasDiscount && basePrice
-			? isPercentDiscount
-				? basePrice * (1 - discountValue / 100)
-				: Math.max(0, discountValue)
-			: basePrice;
-	const priceLabel =
-		hasDiscount && discountPrice > 0 && discountPrice !== basePrice
-			? `$${formatterStr(Math.min(basePrice, discountPrice))} - $${formatterStr(Math.max(basePrice, discountPrice))}`
-			: `$${formatterStr(basePrice)}`;
+	const discountAmount = hasDiscount ? (isPercentDiscount ? (basePrice * discountValue) / 100 : discountValue) : 0;
+	const finalPrice = Math.max(0, basePrice - discountAmount);
+	const priceLabel = `$${formatterStr(finalPrice)}`;
+	const originalPriceLabel = hasDiscount && finalPrice !== basePrice ? `$${formatterStr(basePrice)}` : null;
 
 	if (device === 'mobile') {
 		return <div>PRODUCT DETAIL PAGE</div>;
@@ -277,12 +271,9 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 
 									{/* price row */}
 									<Stack className={'pd-priceRow'}>
-										<Typography className={'pd-price'}>${priceLabel}</Typography>
-										{/* productDiscount = old price yoki discount value bo‘lishi mumkin.
-            Agar sening backend oldPrice bo‘lsa — shu joy ideal. */}
-										{product?.productDiscount && (
-											<Typography className={'pd-discount'}>${formatterStr(product?.productDiscount)}</Typography>
-										)}
+										<Typography className={'pd-price'}>{priceLabel}</Typography>
+
+										{originalPriceLabel && <Typography className={'pd-discount'}>{originalPriceLabel}</Typography>}
 									</Stack>
 
 									{/* productDetail */}
@@ -331,31 +322,30 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 
 											<Stack className="button-box">
 												{product?.meLiked && product?.meLiked[0]?.myFavorite ? (
-											<FavoriteIcon
-												color="primary"
-												fontSize={'medium'}
-												onClick={() => likeProductHandler(product?._id)}
-											/>
-										) : (
-											<FavoriteBorderIcon fontSize={'medium'} onClick={() => likeProductHandler(product?._id)} />
-										)}
-										<Typography>{product?.productLikes}</Typography>
+													<FavoriteIcon
+														color="primary"
+														fontSize={'medium'}
+														onClick={() => likeProductHandler(product?._id)}
+													/>
+												) : (
+													<FavoriteBorderIcon fontSize={'medium'} onClick={() => likeProductHandler(product?._id)} />
+												)}
+												<Typography>{product?.productLikes}</Typography>
+											</Stack>
+										</Stack>
+
+										<Button
+											variant="contained"
+											className="add-basket"
+											onClick={handleAddToBasket}
+											disabled={addingToBasket || !product}
+										>
+											{addingToBasket ? 'Adding...' : 'Add to basket'}
+										</Button>
 									</Stack>
 								</Stack>
-
-								<Typography>${formatterStr(product?.productPrice)}</Typography>
-								<Button
-									variant="contained"
-									className="add-basket"
-									onClick={handleAddToBasket}
-									disabled={addingToBasket || !product}
-								>
-									{addingToBasket ? 'Adding...' : 'Add to basket'}
-								</Button>
 							</Stack>
 						</Stack>
-					</Stack>
-				</Stack>
 
 						<Stack className={'property-desc-config'}>
 							<Stack className={'left-config'}>
