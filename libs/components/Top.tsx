@@ -158,6 +158,10 @@ const Top = () => {
 
 			setCartAnchor(null);
 
+			clearBasket();
+			if (user?._id) clearBasket(user._id);
+			setBasketItems([]);
+
 			await router.push('/order?prefetchOrders=1');
 		} catch (err: any) {
 			console.log('ERROR create order from basket', err?.message);
