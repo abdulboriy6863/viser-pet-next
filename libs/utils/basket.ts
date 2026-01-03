@@ -9,10 +9,12 @@ export type BasketItem = {
 export const BASKET_KEY = 'basket-items';
 export const BASKET_EVENT = 'basket-updated';
 
-export const readBasket = (): BasketItem[] => {
+const getBasketKey = (userId?: string) => (userId ? `${BASKET_KEY}:${userId}` : BASKET_KEY);
+
+export const readBasket = (userId?: string): BasketItem[] => {
 	if (typeof window === 'undefined') return [];
 	try {
-		const raw = localStorage.getItem(BASKET_KEY);
+		const raw = localStorage.getItem(getBasketKey(userId));
 		return raw ? (JSON.parse(raw) as BasketItem[]) : [];
 	} catch (err) {
 		console.log('Failed to parse basket', err);
@@ -20,10 +22,10 @@ export const readBasket = (): BasketItem[] => {
 	}
 };
 
-export const persistBasket = (items: BasketItem[]) => {
+export const persistBasket = (items: BasketItem[], userId?: string, fireEvent: boolean = true) => {
 	if (typeof window === 'undefined') return;
-	localStorage.setItem(BASKET_KEY, JSON.stringify(items));
-	window.dispatchEvent(new CustomEvent(BASKET_EVENT, { detail: { items } }));
+	localStorage.setItem(getBasketKey(userId), JSON.stringify(items));
+	if (fireEvent) window.dispatchEvent(new CustomEvent(BASKET_EVENT, { detail: { items } }));
 };
 
 // productDiscount could be percent (<=100) or absolute value
@@ -35,7 +37,7 @@ export const calcDiscountedPrice = (product: Product | undefined | null): number
 	return Math.max(0, base - discountAmount);
 };
 
-export const addToBasket = (product: Product, quantity: number = 1) => {
+export const addToBasket = (product: Product, quantity: number = 1, userId?: string) => {
 	if (!product?._id) return;
 	const items = readBasket();
 	const existingIdx = items.findIndex((i) => i.productId === product._id);
@@ -47,14 +49,19 @@ export const addToBasket = (product: Product, quantity: number = 1) => {
 	}
 
 	persistBasket(items);
+	if (userId) persistBasket(items, userId, false);
 	return items;
 };
 
-export const clearBasket = () => persistBasket([]);
+export const clearBasket = (userId?: string) => {
+	persistBasket([], userId, !userId);
+	return [];
+};
 
-export const removeFromBasket = (productId: string) => {
+export const removeFromBasket = (productId: string, userId?: string) => {
 	const items = readBasket().filter((item) => item.productId !== productId);
 	persistBasket(items);
+	if (userId) persistBasket(items, userId, false);
 	return items;
 };
 
@@ -65,4 +72,18 @@ export const basketTotals = () => {
 		0,
 	);
 	return { subtotal, items };
+};
+
+export const stashBasketForUser = (userId?: string) => {
+	if (!userId) return [];
+	const items = readBasket();
+	persistBasket(items, userId, false);
+	return items;
+};
+
+export const restoreBasketForUser = (userId?: string) => {
+	if (!userId) return [];
+	const items = readBasket(userId);
+	persistBasket(items);
+	return items;
 };

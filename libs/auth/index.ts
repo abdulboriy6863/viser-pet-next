@@ -4,6 +4,7 @@ import { userVar } from '../../apollo/store';
 import { CustomJwtPayload } from '../types/customJwtPayload';
 import { sweetMixinErrorAlert } from '../sweetAlert';
 import { LOGIN, SIGN_UP } from '../../apollo/user/mutation';
+import { clearBasket, restoreBasketForUser, stashBasketForUser } from '../utils/basket';
 
 export function getJwtToken(): any {
 	if (typeof window !== 'undefined') {
@@ -151,9 +152,18 @@ export const updateUserInfo = (jwtToken: any) => {
 		memberWarnings: claims.memberWarnings,
 		memberBlocks: claims.memberBlocks,
 	});
+
+	if (typeof window !== 'undefined') {
+		restoreBasketForUser(claims._id ?? '');
+	}
 };
 
 export const logOut = () => {
+	const currentUser = userVar();
+	if (typeof window !== 'undefined' && currentUser?._id) {
+		stashBasketForUser(currentUser._id);
+	}
+	clearBasket();
 	deleteStorage();
 	deleteUserInfo();
 	window.location.reload();

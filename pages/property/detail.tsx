@@ -201,13 +201,18 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 
 	const handleAddToBasket = async () => {
 		try {
+			if (!user?._id) {
+				await sweetMixinErrorAlert('Please log in to add this item to your basket.');
+				router.push('/account/join');
+				return;
+			}
 			if (!product?._id) {
 				await sweetMixinErrorAlert('Product not found');
 				return;
 			}
 			setAddingToBasket(true);
 
-			addToBasket(product, 1);
+			addToBasket(product, 1, user._id);
 			await sweetTopSmallSuccessAlert('Added to basket', 900);
 		} catch (err: any) {
 			console.log('ERROR add to basket', err?.message);

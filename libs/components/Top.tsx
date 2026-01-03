@@ -19,7 +19,7 @@ import FacebookOutlinedIcon from '@mui/icons-material/FacebookOutlined';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import PinterestIcon from '@mui/icons-material/Pinterest';
-import { useMutation, useReactiveVar } from '@apollo/client';
+import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../apollo/store';
 import { Logout } from '@mui/icons-material';
 import { REACT_APP_API_URL, Messages } from '../config';
@@ -33,9 +33,7 @@ import {
 	readBasket,
 	removeFromBasket,
 } from '../utils/basket';
-import { CREATE_ORDER } from '../../apollo/user/mutation';
-import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../sweetAlert';
-import { CreateOrderInput, CreateOrderResponse } from '../types/order/order';
+import { sweetMixinErrorAlert } from '../sweetAlert';
 
 const Top = () => {
 	const device = useDeviceDetect();
@@ -55,7 +53,6 @@ const Top = () => {
 	const cartOpen = Boolean(cartAnchor);
 	const [basketItems, setBasketItems] = useState<BasketItem[]>([]);
 	const [creatingOrder, setCreatingOrder] = useState<boolean>(false);
-	const [createOrder] = useMutation<CreateOrderResponse, { input: CreateOrderInput }>(CREATE_ORDER);
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -83,11 +80,18 @@ const Top = () => {
 	}, []);
 
 	useEffect(() => {
-		const syncBasket = () => setBasketItems(readBasket());
+		const syncBasket = () => {
+			if (!user?._id) {
+				clearBasket();
+				setBasketItems([]);
+				return;
+			}
+			setBasketItems(readBasket());
+		};
 
 		syncBasket();
 		const handleStorage = (e: StorageEvent) => {
-			if (e.key === BASKET_KEY) syncBasket();
+			if (!e.key || e.key.startsWith(BASKET_KEY)) syncBasket();
 		};
 		const handleCustom = () => syncBasket();
 
@@ -97,7 +101,7 @@ const Top = () => {
 			window.removeEventListener('storage', handleStorage);
 			window.removeEventListener(BASKET_EVENT, handleCustom as EventListener);
 		};
-	}, []);
+	}, [user?._id]);
 
 	/** HANDLERS **/
 	const langClick = (e: any) => {
@@ -152,31 +156,9 @@ const Top = () => {
 
 			setCreatingOrder(true);
 
-			const orderItems = basketItems.map((item) => ({
-				productId: item.productId,
-				memberId: user._id,
-				itemQuantity: item.quantity,
-				itemPrice: Number(item.product?.productPrice ?? 0),
-			}));
-
-			const res = await createOrder({
-				variables: {
-					input: {
-						memberId: user._id,
-						items: orderItems,
-					},
-				},
-			});
-
-			const newOrderId = (res.data as any)?.createOrder?._id;
-
-			clearBasket();
-			setBasketItems([]);
 			setCartAnchor(null);
 
-			await sweetTopSmallSuccessAlert('Order created from basket', 1200);
-
-			router.push(newOrderId ? `/order?orderId=${newOrderId}` : '/order');
+			await router.push('/order?prefetchOrders=1');
 		} catch (err: any) {
 			console.log('ERROR create order from basket', err?.message);
 			await sweetMixinErrorAlert(err?.message || Messages.error1);
@@ -481,11 +463,11 @@ const Top = () => {
 															Qty: {item.quantity}
 														</Typography>
 													</Box>
-														<Typography
-															sx={{ fontFamily: 'Nunito', fontWeight: 800, fontSize: '13px', color: '#0f172a' }}
-														>
-															${calcDiscountedPrice(item.product).toFixed(2)}
-														</Typography>
+													<Typography
+														sx={{ fontFamily: 'Nunito', fontWeight: 800, fontSize: '13px', color: '#0f172a' }}
+													>
+														${calcDiscountedPrice(item.product).toFixed(2)}
+													</Typography>
 													<Button
 														variant="text"
 														size="small"
