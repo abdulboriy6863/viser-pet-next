@@ -72,6 +72,8 @@ const Top = () => {
 
 	const [cartAnchor, setCartAnchor] = useState<null | HTMLElement>(null);
 	const cartOpen = Boolean(cartAnchor);
+	const [settingsAnchor, setSettingsAnchor] = useState<null | HTMLElement>(null);
+	const settingsOpen = Boolean(settingsAnchor);
 
 	// ✅ Basket state
 	const [basketCount, setBasketCount] = useState(0);
@@ -142,6 +144,12 @@ const Top = () => {
 
 	const handleCartClick = (event: any) => setCartAnchor(event.currentTarget);
 	const handleCartClose = () => setCartAnchor(null);
+
+	const handleSettingsClick = (event: React.MouseEvent<HTMLElement>) => {
+		setSettingsAnchor(event.currentTarget);
+	};
+
+	const handleSettingsClose = () => setSettingsAnchor(null);
 
 	const handleGoOrder = async () => {
 		setCartAnchor(null);
@@ -323,7 +331,25 @@ const Top = () => {
 								<span className={'badge'}>{user?._id ? basketCount : 0}</span>
 							</div>
 
-							<SettingsOutlinedIcon className={'nav-icon'} />
+							<Box component={'div'}>
+								<SettingsOutlinedIcon className={'nav-icon'} onClick={handleSettingsClick} />
+								<Menu
+									anchorEl={settingsAnchor}
+									open={settingsOpen}
+									onClose={handleSettingsClose}
+									anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+									transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+								>
+									<MenuItem
+										onClick={() => {
+											handleSettingsClose();
+											router.push('/mypage');
+										}}
+									>
+										My Page
+									</MenuItem>
+								</Menu>
+							</Box>
 						</Box>
 
 						<Menu
