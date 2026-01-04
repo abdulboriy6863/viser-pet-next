@@ -32,7 +32,6 @@ import { Direction, Message } from '../../libs/enums/common.enum';
 import { CREATE_COMMENT, LIKE_TARGET_PRODUCT } from '../../apollo/user/mutation';
 import { sweetErrorHandling, sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
 import dynamic from 'next/dynamic';
-import { addToBasket } from '../../libs/utils/basket';
 
 SwiperCore.use([Autoplay, Navigation, Pagination]);
 
@@ -200,26 +199,8 @@ const PropertyDetail: NextPage = ({ initialComment, ...props }: any) => {
 	};
 
 	const handleAddToBasket = async () => {
-		try {
-			if (!user?._id) {
-				await sweetMixinErrorAlert('Please log in to add this item to your basket.');
-				router.push('/account/join');
-				return;
-			}
-			if (!product?._id) {
-				await sweetMixinErrorAlert('Product not found');
-				return;
-			}
-			setAddingToBasket(true);
-
-			addToBasket(product, 1, user._id);
-			await sweetTopSmallSuccessAlert('Added to basket', 900);
-		} catch (err: any) {
-			console.log('ERROR add to basket', err?.message);
-			await sweetMixinErrorAlert(err?.message || 'Could not add to basket');
-		} finally {
-			setAddingToBasket(false);
-		}
+		// Basket functionality disabled
+		await sweetMixinErrorAlert('Basket is currently disabled.');
 	};
 
 	if (getProductLoading) {

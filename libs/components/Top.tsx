@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
-import { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter, withRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { getJwtToken, logOut, updateUserInfo } from '../auth';
@@ -22,18 +21,7 @@ import PinterestIcon from '@mui/icons-material/Pinterest';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../apollo/store';
 import { Logout } from '@mui/icons-material';
-import { REACT_APP_API_URL, Messages } from '../config';
-import {
-	BasketItem,
-	BASKET_EVENT,
-	BASKET_KEY,
-	basketTotals,
-	clearBasket,
-	calcDiscountedPrice,
-	readBasket,
-	removeFromBasket,
-} from '../utils/basket';
-import { sweetMixinErrorAlert } from '../sweetAlert';
+import { REACT_APP_API_URL } from '../config';
 
 const Top = () => {
 	const device = useDeviceDetect();
@@ -51,8 +39,6 @@ const Top = () => {
 	const logoutOpen = Boolean(logoutAnchor);
 	const [cartAnchor, setCartAnchor] = useState<null | HTMLElement>(null);
 	const cartOpen = Boolean(cartAnchor);
-	const [basketItems, setBasketItems] = useState<BasketItem[]>([]);
-	const [creatingOrder, setCreatingOrder] = useState<boolean>(false);
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -78,30 +64,6 @@ const Top = () => {
 		const jwt = getJwtToken();
 		if (jwt) updateUserInfo(jwt);
 	}, []);
-
-	useEffect(() => {
-		const syncBasket = () => {
-			if (!user?._id) {
-				clearBasket();
-				setBasketItems([]);
-				return;
-			}
-			setBasketItems(readBasket());
-		};
-
-		syncBasket();
-		const handleStorage = (e: StorageEvent) => {
-			if (!e.key || e.key.startsWith(BASKET_KEY)) syncBasket();
-		};
-		const handleCustom = () => syncBasket();
-
-		window.addEventListener('storage', handleStorage);
-		window.addEventListener(BASKET_EVENT, handleCustom as EventListener);
-		return () => {
-			window.removeEventListener('storage', handleStorage);
-			window.removeEventListener(BASKET_EVENT, handleCustom as EventListener);
-		};
-	}, [user?._id]);
 
 	/** HANDLERS **/
 	const langClick = (e: any) => {
@@ -143,37 +105,8 @@ const Top = () => {
 	};
 
 	const handleCreateOrder = async () => {
-		try {
-			if (!basketItems.length) {
-				await sweetMixinErrorAlert('Basket is empty');
-				return;
-			}
-			if (!user?._id) {
-				await sweetMixinErrorAlert(Messages.error2);
-				router.push('/account/join');
-				return;
-			}
-
-			setCreatingOrder(true);
-
-			setCartAnchor(null);
-
-			clearBasket();
-			if (user?._id) clearBasket(user._id);
-			setBasketItems([]);
-
-			await router.push('/order?prefetchOrders=1');
-		} catch (err: any) {
-			console.log('ERROR create order from basket', err?.message);
-			await sweetMixinErrorAlert(err?.message || Messages.error1);
-		} finally {
-			setCreatingOrder(false);
-		}
-	};
-
-	const handleRemoveItem = (productId: string) => {
-		const updated = removeFromBasket(productId);
-		setBasketItems(updated);
+		setCartAnchor(null);
+		await router.push('/order');
 	};
 
 	const handleHover = (event: any) => {
@@ -404,7 +337,7 @@ const Top = () => {
 								<SearchOutlinedIcon className={'nav-icon'} />
 								<div className={'cart-icon'} onClick={handleCartClick}>
 									<ShoppingCartOutlinedIcon className={'nav-icon'} />
-									<span className={'badge'}>{basketItems.reduce((sum, item) => sum + item.quantity, 0)}</span>
+									<span className={'badge'}>0</span>
 								</div>
 								<SettingsOutlinedIcon className={'nav-icon'} />
 							</Box>
@@ -417,97 +350,16 @@ const Top = () => {
 								transformOrigin={{ vertical: 'top', horizontal: 'right' }}
 								PaperProps={{ sx: { minWidth: 320, borderRadius: '14px', padding: '10px' } }}
 							>
-								<Stack spacing={1.5} sx={{ p: '4px' }}>
-									<Typography sx={{ fontFamily: 'Nunito', fontWeight: 800, fontSize: '15px' }}>Basket</Typography>
-									{!basketItems.length ? (
-										<Typography sx={{ color: '#6b7280', fontSize: '13px' }}>Basket is empty</Typography>
-									) : (
-										<>
-											{basketItems.map((item) => (
-												<Stack
-													key={item.productId}
-													direction="row"
-													alignItems="center"
-													spacing={1.5}
-													sx={{
-														border: '1px solid #e5e7eb',
-														borderRadius: '12px',
-														padding: '8px 10px',
-													}}
-												>
-													<Box
-														component="div"
-														sx={{
-															width: 48,
-															height: 48,
-															borderRadius: '10px',
-															overflow: 'hidden',
-															bgcolor: '#f3f4f6',
-															border: '1px solid #eef0f3',
-														}}
-													>
-														<img
-															src={
-																item.product?.productImages?.[0]
-																	? `${REACT_APP_API_URL}/${item.product.productImages[0]}`
-																	: '/img/property/default.jpg'
-															}
-															alt={item.product?.productName}
-															style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-														/>
-													</Box>
-													<Box sx={{ minWidth: 0, flex: 1 }}>
-														<Typography
-															noWrap
-															sx={{ fontFamily: 'Nunito', fontWeight: 700, fontSize: '14px', color: '#0f172a' }}
-														>
-															{item.product?.productName}
-														</Typography>
-														<Typography sx={{ fontFamily: 'Nunito', fontSize: '12px', color: '#6b7280' }}>
-															Qty: {item.quantity}
-														</Typography>
-													</Box>
-													<Typography
-														sx={{ fontFamily: 'Nunito', fontWeight: 800, fontSize: '13px', color: '#0f172a' }}
-													>
-														${calcDiscountedPrice(item.product).toFixed(2)}
-													</Typography>
-													<Button
-														variant="text"
-														size="small"
-														onClick={() => handleRemoveItem(item.productId)}
-														sx={{ minWidth: 0, color: '#b91c1c', fontSize: '12px', fontWeight: 800 }}
-													>
-														x
-													</Button>
-												</Stack>
-											))}
-
-											<Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ px: '2px' }}>
-												<Typography sx={{ fontFamily: 'Nunito', fontWeight: 800, fontSize: '13px', color: '#0f172a' }}>
-													Subtotal
-												</Typography>
-												<Typography sx={{ fontFamily: 'Nunito', fontWeight: 900, fontSize: '14px', color: '#0f172a' }}>
-													${basketTotals().subtotal.toFixed(2)}
-												</Typography>
-											</Stack>
-
-											<Button
-												variant="contained"
-												disabled={creatingOrder}
-												onClick={handleCreateOrder}
-												sx={{
-													textTransform: 'none',
-													borderRadius: '12px',
-													fontFamily: 'Nunito',
-													fontWeight: 800,
-													background: 'linear-gradient(135deg, #b3544f 0%, #8f3d3b 100%)',
-												}}
-											>
-												{creatingOrder ? 'Creating...' : 'Buy now'}
-											</Button>
-										</>
-									)}
+								<Stack spacing={1.5} sx={{ p: '12px' }}>
+									<Typography sx={{ fontFamily: 'Nunito', fontWeight: 800, fontSize: '15px' }}>
+										Basket (disabled)
+									</Typography>
+									<Typography sx={{ color: '#6b7280', fontSize: '13px' }}>
+										Basket functionality is currently disabled.
+									</Typography>
+									<Button variant="contained" onClick={handleCreateOrder}>
+										Go to orders
+									</Button>
 								</Stack>
 							</Menu>
 						</Box>
