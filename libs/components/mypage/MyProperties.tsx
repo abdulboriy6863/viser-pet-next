@@ -6,7 +6,7 @@ import { PropertyCard } from './PropertyCard';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { AgentProductInquiry } from '../../types/product/property.input';
 import { T } from '../../types/common';
-import { ProductStatus, PropertyStatus } from '../../enums/property.enum';
+import { ProductStatus } from '../../enums/property.enum';
 import { userVar } from '../../../apollo/store';
 import { useRouter } from 'next/router';
 import { UPDATE_PRODUCT } from '../../../apollo/user/mutation';
@@ -171,7 +171,7 @@ MyProperties.defaultProps = {
 		limit: 5,
 		sort: 'createdAt',
 		search: {
-			propertyStatus: 'ACTIVE',
+			productStatus: 'ACTIVE',
 		},
 	},
 };
