@@ -1,13 +1,13 @@
 import React, { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import { Box, Button, Menu, MenuItem, Pagination, Stack, Typography } from '@mui/material';
-import PropertyCard from '../../libs/components/property/PropertyCard';
+import PropertyCard from '../../libs/components/product/PropertyCard';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
-import Filter from '../../libs/components/property/Filter';
+import Filter from '../../libs/components/product/Filter';
 import { useRouter } from 'next/router';
-import { ProductInquiry, PropertiesInquiry } from '../../libs/types/property/property.input';
-import { Product } from '../../libs/types/property/property';
+import { ProductInquiry, PropertiesInquiry } from '../../libs/types/product/property.input';
+import { Product } from '../../libs/types/product/property';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import { Direction, Message } from '../../libs/enums/common.enum';
@@ -16,7 +16,7 @@ import { GET_PRODUCTS } from '../../apollo/user/query';
 import { T } from '../../libs/types/common';
 import { LIKE_TARGET_PRODUCT } from '../../apollo/user/mutation';
 import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
-import FilterTop from '../../libs/components/property/FilterTop';
+import FilterTop from '../../libs/components/product/FilterTop';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -92,8 +92,8 @@ const PropertyList: NextPage = ({ initialInput, ...props }: any) => {
 		setSearchFilter(nextFilter);
 		setCurrentPage(value);
 		await router.replace(
-			`/property?input=${JSON.stringify(nextFilter)}`,
-			`/property?input=${JSON.stringify(nextFilter)}`,
+			`/product?input=${JSON.stringify(nextFilter)}`,
+			`/product?input=${JSON.stringify(nextFilter)}`,
 			{ scroll: false, shallow: true },
 		);
 		await getProductsRefetch({ input: nextFilter });

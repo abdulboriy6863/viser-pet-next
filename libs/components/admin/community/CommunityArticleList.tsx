@@ -163,7 +163,7 @@ const CommunityArticleList = (props: CommunityArticleList) => {
 											{blogPost.blogPostTitle}
 											{blogPost.blogPostStatus === BlogPostStatus.ACTIVE && (
 												<Link
-													href={`/community/detail?articleCategory=${blogPost.blogPostCategory}&id=${blogPost._id}`}
+													href={`/community/detail?blogPostCategory=${blogPost.blogPostCategory}&id=${blogPost._id}`}
 													className={'img_box'}
 												>
 													<IconButton className="btn_window">

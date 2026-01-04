@@ -70,7 +70,7 @@ const withLayoutMain = (Component: any) => {
 									</span>
 
 									<Stack className={'hero-banner__actions'}>
-										<a className={'hero-banner__cta'} href={'/property'}>
+										<a className={'hero-banner__cta'} href={'/product'}>
 											Shop now
 										</a>
 									</Stack>

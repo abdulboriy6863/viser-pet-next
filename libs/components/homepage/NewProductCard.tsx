@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Box, Stack, Typography } from '@mui/material';
-import { Product } from '../../types/property/property';
+import { Product } from '../../types/product/property';
 import { REACT_APP_API_URL } from '../../config';
 
 interface NewProductCardProps {

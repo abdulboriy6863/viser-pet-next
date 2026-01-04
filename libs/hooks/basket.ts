@@ -1,5 +1,5 @@
 // libs/hooks/basket.ts
-import { Product } from '../types/property/property';
+import { Product } from '../types/product/property';
 
 export type BasketStoredItem = {
 	memberId: string; // userId

@@ -3,8 +3,8 @@ import { Box, Stack } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { useQuery } from '@apollo/client';
 import { GET_PRODUCTS } from '../../../apollo/user/query';
-import { Product } from '../../types/property/property';
-import { ProductInquiry } from '../../types/property/property.input';
+import { Product } from '../../types/product/property';
+import { ProductInquiry } from '../../types/product/property.input';
 import NewProductCard from './NewProductCard';
 
 interface NewProductProps {
@@ -78,7 +78,7 @@ const NewProduct = (props: NewProductProps) => {
 							<div className="new-products__promo-tag">Up to 90% OFF</div>
 							<div className="new-products__promo-title">Clearance Sale</div>
 							<p>Stock up before you miss out!</p>
-							<a href={'/property'}>
+							<a href={'/product'}>
 								<button>Shop Now</button>
 							</a>
 						</div>
@@ -96,7 +96,7 @@ const NewProduct = (props: NewProductProps) => {
 							<div className="new-products__promo-overlay" style={{ height: '240px' }}>
 								<div className="new-products__promo-label">Black Friday</div>
 								<div className="new-products__promo-sub">Get 10% OFF</div>
-								<a href={'/property'}>
+								<a href={'/product'}>
 									<button>Shop Now</button>
 								</a>
 							</div>
@@ -113,7 +113,7 @@ const NewProduct = (props: NewProductProps) => {
 							<div className="new-products__promo-overlay" style={{ height: '240px' }}>
 								<div className="new-products__promo-label">Get 10% OFF</div>
 								<div className="new-products__promo-sub">To brighten a loved one&apos;s day.</div>
-								<a href={'/property'}>
+								<a href={'/product'}>
 									<button>Shop Now</button>
 								</a>
 							</div>

@@ -244,7 +244,7 @@ const OrderPage: NextPage = () => {
 								<Button
 									variant="text"
 									startIcon={<LocalShippingOutlinedIcon />}
-									onClick={() => router.push('/property')}
+									onClick={() => router.push('/product')}
 								>
 									Continue shopping
 								</Button>
@@ -286,7 +286,7 @@ const OrderPage: NextPage = () => {
 
 						<Divider sx={{ my: 2 }} />
 
-						<Button variant="contained" onClick={() => router.push('/property')}>
+						<Button variant="contained" onClick={() => router.push('/product')}>
 							Continue shopping
 						</Button>
 					</Box>
@@ -327,7 +327,7 @@ const OrderPage: NextPage = () => {
 							<Button
 								variant="text"
 								startIcon={<LocalShippingOutlinedIcon />}
-								onClick={() => router.push('/property')}
+								onClick={() => router.push('/product')}
 								disabled={busy}
 							>
 								Continue shopping
@@ -459,7 +459,7 @@ const OrderPage: NextPage = () => {
 								{busy ? 'Processing...' : 'Pay & Create order'}
 							</Button>
 
-							<Button fullWidth variant="text" onClick={() => router.push('/property')} disabled={busy}>
+							<Button fullWidth variant="text" onClick={() => router.push('/product')} disabled={busy}>
 								Continue shopping
 							</Button>
 

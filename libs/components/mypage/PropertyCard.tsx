@@ -4,7 +4,7 @@ import useDeviceDetect from '../../hooks/useDeviceDetect';
 import IconButton from '@mui/material/IconButton';
 import ModeIcon from '@mui/icons-material/Mode';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Product } from '../../types/property/property';
+import { Product } from '../../types/product/property';
 import { formatterStr } from '../../utils';
 import Moment from 'react-moment';
 import { useRouter } from 'next/router';
@@ -36,7 +36,7 @@ export const PropertyCard = (props: PropertyCardProps) => {
 	const pushProductDetail = async (id: string) => {
 		if (memberPage)
 			await router.push({
-				pathname: '/property/detail',
+				pathname: '/product/detail',
 				query: { id: id },
 			});
 		else return;

@@ -98,7 +98,7 @@ const CommunityBoards = () => {
 
 							return (
 								<Link
-									href={`/community/detail?articleCategory=${blogPost?.blogPostCategory}&id=${blogPost?._id}`}
+									href={`/community/detail?blogPostCategory=${blogPost?.blogPostCategory}&id=${blogPost?._id}`}
 									key={blogPost?._id}
 									className="latest-news__card"
 								>

@@ -3,7 +3,7 @@ import { Stack, Typography, Box } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { Product } from '../../types/property/property';
+import { Product } from '../../types/product/property';
 import Link from 'next/link';
 import { formatterStr } from '../../utils';
 import { REACT_APP_API_URL } from '../../config';
@@ -49,7 +49,7 @@ const PropertyCard = (props: PropertyCardType) => {
 				<Stack className="top">
 					<Link
 						href={{
-							pathname: '/property/detail',
+							pathname: '/product/detail',
 							query: { id: product?._id },
 						}}
 					>
@@ -68,7 +68,7 @@ const PropertyCard = (props: PropertyCardType) => {
 						<Stack className="name">
 							<Link
 								href={{
-									pathname: '/property/detail',
+									pathname: '/product/detail',
 									query: { id: product?._id },
 								}}
 							>

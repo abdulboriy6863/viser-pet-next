@@ -23,7 +23,7 @@ const CommunityCard = (props: CommunityCardProps) => {
 	} else {
 		if (vertical) {
 			return (
-				<Link href={`/community/detail?articleCategory=${blogPost?.blogPostCategory}&id=${blogPost?._id}`}>
+				<Link href={`/community/detail?blogPostCategory=${blogPost?.blogPostCategory}&id=${blogPost?._id}`}>
 					<Box component={'div'} className={'vertical-card'}>
 						<div className={'community-img'} style={{ backgroundImage: `url(${articleImage})` }}>
 							<div>{index + 1}</div>
@@ -36,7 +36,7 @@ const CommunityCard = (props: CommunityCardProps) => {
 		} else {
 			return (
 				<>
-					<Link href={`/community/detail?articleCategory=${blogPost?.blogPostCategory}&id=${blogPost?._id}`}>
+					<Link href={`/community/detail?blogPostCategory=${blogPost?.blogPostCategory}&id=${blogPost?._id}`}>
 						<Box component={'div'} className="horizontal-card">
 							<img src={articleImage} alt="" />
 							<div>

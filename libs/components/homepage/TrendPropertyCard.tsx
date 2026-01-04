@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Box, Typography } from '@mui/material';
-import { Product } from '../../types/property/property';
+import { Product } from '../../types/product/property';
 import { REACT_APP_API_URL } from '../../config';
 import { useRouter } from 'next/router';
 import { useReactiveVar } from '@apollo/client';
@@ -48,7 +48,7 @@ const TrendProductCard = (props: TrendProductCardProps) => {
 
 	/** HANDLERS **/
 	const pushDetailHandler = async (productId: string) => {
-		await router.push({ pathname: '/property/detail', query: { id: productId } });
+		await router.push({ pathname: '/product/detail', query: { id: productId } });
 	};
 
 	return (

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Stack, Typography } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { ProductCollection } from '../../enums/property.enum';
-import { ProductsInquiry } from '../../types/property/property.input';
+import { ProductsInquiry } from '../../types/product/property.input';
 import { useRouter } from 'next/router';
 
 interface FilterTopProps {
@@ -37,8 +37,8 @@ const FilterTop = ({ searchFilter, setSearchFilter }: FilterTopProps) => {
 		};
 		setSearchFilter(nextFilter);
 		await router.push(
-			`/property?input=${JSON.stringify(nextFilter)}`,
-			`/property?input=${JSON.stringify(nextFilter)}`,
+			`/product?input=${JSON.stringify(nextFilter)}`,
+			`/product?input=${JSON.stringify(nextFilter)}`,
 			{ scroll: false },
 		);
 	};

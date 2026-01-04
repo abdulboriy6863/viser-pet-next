@@ -18,7 +18,7 @@ import { REACT_APP_API_URL } from '../../../config';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Typography from '@mui/material/Typography';
 import { ProductStatus } from '../../../enums/property.enum';
-import { Product } from '../../../types/property/property';
+import { Product } from '../../../types/product/property';
 
 interface Data {
 	id: string;
@@ -151,12 +151,12 @@ export const ProductPanelList = (props: ProductPanelListType) => {
 										<TableCell align="left" className={'name'}>
 											{product.productStatus === ProductStatus.ACTIVE ? (
 												<Stack direction={'row'}>
-													<Link href={`/property/detail?id=${product?._id}`}>
+													<Link href={`/product/detail?id=${product?._id}`}>
 														<div>
 															<Avatar alt="Remy Sharp" src={productImage} sx={{ ml: '2px', mr: '10px' }} />
 														</div>
 													</Link>
-													<Link href={`/property/detail?id=${product?._id}`}>
+													<Link href={`/product/detail?id=${product?._id}`}>
 														<div>{product.productName}</div>
 													</Link>
 												</Stack>

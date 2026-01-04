@@ -29,12 +29,12 @@ const withLayoutBasic = (Component: any) => {
 				bgImage = '';
 
 			switch (router.pathname) {
-				case '/property':
+				case '/product':
 					title = 'Shop products made to bring comfort, style, and joy';
 					desc = 'We are glad to see you again!';
 					bgImage = '/img/banner/properties.png';
 					break;
-				case '/product':
+				case '/product/detail':
 					title = 'Products';
 					desc = 'We are glad to see you again!';
 					bgImage = '/img/banner/properties.png';
@@ -98,7 +98,6 @@ const withLayoutBasic = (Component: any) => {
 		const isMyPage = router.pathname.startsWith('/mypage');
 		const isProductLike =
 			router.pathname.startsWith('/product') ||
-			router.pathname.startsWith('/property') ||
 			isAgent ||
 			isMyPage ||
 			isCommunity ||
@@ -247,7 +246,7 @@ const withLayoutBasic = (Component: any) => {
 										</span>
 
 										{/* <Stack className={'hero-banner__actions'}>
-											<a className={'hero-banner__cta'} href={'/property'}>
+											<a className={'hero-banner__cta'} href={'/product'}>
 												Shop now
 											</a>
 										</Stack> */}

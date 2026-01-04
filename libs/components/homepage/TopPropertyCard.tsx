@@ -2,7 +2,7 @@ import React from 'react';
 import { Stack, Box, Typography, IconButton } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 // import FavoriteIcon from '@mui/icons-material/Favorite';
-import { Product } from '../../types/property/property';
+import { Product } from '../../types/product/property';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { REACT_APP_API_URL } from '../../config';
 import { useRouter } from 'next/router';
@@ -32,7 +32,7 @@ const TrendPropertyCard = (props: TrendPropertyCardProps) => {
 
 	/** HANDLERS **/
 	const pushDetailHandler = async (productId: string) => {
-		await router.push({ pathname: '/property/detail', query: { id: productId } });
+		await router.push({ pathname: '/product/detail', query: { id: productId } });
 	};
 
 	return (

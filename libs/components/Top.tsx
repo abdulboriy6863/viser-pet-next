@@ -92,7 +92,7 @@ const Top = () => {
 
 	// bg
 	useEffect(() => {
-		setBgColor(router.pathname === '/property/detail');
+		setBgColor(router.pathname === '/product/detail');
 	}, [router.pathname]);
 
 	// jwt -> userVar sync
@@ -174,7 +174,7 @@ const Top = () => {
 				<Link href={'/'}>
 					<div>{t('Home')}</div>
 				</Link>
-				<Link href={'/property'}>
+				<Link href={'/product'}>
 					<div>{t('Products')}</div>
 				</Link>
 				<Link href={'/order'}>
@@ -183,7 +183,7 @@ const Top = () => {
 				<Link href={'/agent'}>
 					<div>{t('Agents')}</div>
 				</Link>
-				<Link href={'/community?articleCategory=FREE'}>
+				<Link href={'/community?blogPostCategory=FREE'}>
 					<div>{t('Community')}</div>
 				</Link>
 				<Link href={'/cs'}>
@@ -264,7 +264,7 @@ const Top = () => {
 						<Link href={'/'}>
 							<div>{t('Home')}</div>
 						</Link>
-						<Link href={'/property'}>
+						<Link href={'/product'}>
 							<div>{t('Products')}</div>
 						</Link>
 						<Link href={'/order'}>
@@ -273,7 +273,7 @@ const Top = () => {
 						<Link href={'/agent'}>
 							<div>{t('Agents')}</div>
 						</Link>
-						<Link href={'/community?articleCategory=FREE'}>
+						<Link href={'/community?blogPostCategory=FREE'}>
 							<div>{t('Community')}</div>
 						</Link>
 						{user?._id && (
@@ -375,7 +375,7 @@ const Top = () => {
 								) : basketItems.length === 0 ? (
 									<>
 										<Typography sx={{ color: '#6b7280', fontSize: '13px' }}>Your basket is empty.</Typography>
-										<Button variant="contained" onClick={() => router.push('/property')}>
+										<Button variant="contained" onClick={() => router.push('/product')}>
 											Go shopping
 										</Button>
 									</>

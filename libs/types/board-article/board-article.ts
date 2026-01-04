@@ -1,6 +1,6 @@
 import { BlogPostCategory, BlogPostStatus } from '../../enums/board-article.enum';
 import { Member } from '../member/member';
-import { MeLiked, TotalCounter } from '../property/property';
+import { MeLiked, TotalCounter } from '../product/property';
 
 export interface BlogPost {
 	_id: string;

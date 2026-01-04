@@ -27,9 +27,9 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const { query } = router;
-	const articleCategory = query?.articleCategory as string;
+	const blogPostCategoryParam = query?.blogPostCategory as string;
 	const defaultCategory =
-		(articleCategory as BlogPostCategory) || initialInput.search.blogPostCategory || BlogPostCategory.FREE;
+		(blogPostCategoryParam as BlogPostCategory) || initialInput.search.blogPostCategory || BlogPostCategory.FREE;
 	const [searchCommunity, setSearchCommunity] = useState<BlogPostsInquiry>({
 		...initialInput,
 		search: {
@@ -62,26 +62,26 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 
 	/** LIFECYCLES **/
 	useEffect(() => {
-		if (!query?.articleCategory)
+		if (!query?.blogPostCategory)
 			router.push(
 				{
 					pathname: router.pathname,
-					query: { articleCategory: searchCommunity.search.blogPostCategory },
+					query: { blogPostCategory: searchCommunity.search.blogPostCategory },
 				},
 				router.pathname,
 				{ shallow: true },
 			);
-	}, [query?.articleCategory, router, searchCommunity.search.blogPostCategory]);
+	}, [query?.blogPostCategory, router, searchCommunity.search.blogPostCategory]);
 
 	useEffect(() => {
-		if (articleCategory && articleCategory !== searchCommunity.search.blogPostCategory) {
+		if (blogPostCategoryParam && blogPostCategoryParam !== searchCommunity.search.blogPostCategory) {
 			setSearchCommunity((prev) => ({
 				...prev,
 				page: 1,
-				search: { ...prev.search, blogPostCategory: articleCategory as BlogPostCategory },
+				search: { ...prev.search, blogPostCategory: blogPostCategoryParam as BlogPostCategory },
 			}));
 		}
-	}, [articleCategory]);
+	}, [blogPostCategoryParam]);
 
 	/** HANDLERS **/
 	const tabChangeHandler = async (e: T, value: string) => {
@@ -91,7 +91,7 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 		await router.push(
 			{
 				pathname: '/community',
-				query: { articleCategory: value },
+				query: { blogPostCategory: value },
 			},
 			router.pathname,
 			{ shallow: true },

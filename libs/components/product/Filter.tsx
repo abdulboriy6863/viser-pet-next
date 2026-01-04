@@ -6,7 +6,7 @@ import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
 import { ProductCollection, ProductVolume } from '../../enums/property.enum'; // ProductVolume shu yerda bo‘lsa
-import { ProductInquiry } from '../../types/property/property.input';
+import { ProductInquiry } from '../../types/product/property.input';
 
 interface FilterType {
 	searchFilter: ProductInquiry;
@@ -184,7 +184,7 @@ const Filter = (props: FilterType) => {
 
 			setSearchFilter(next);
 
-			await router.push(`/property?input=${JSON.stringify(next)}`, `/property?input=${JSON.stringify(next)}`, {
+			await router.push(`/product?input=${JSON.stringify(next)}`, `/product?input=${JSON.stringify(next)}`, {
 				scroll: false,
 			});
 		},
@@ -254,8 +254,8 @@ const Filter = (props: FilterType) => {
 		setActiveGroup(null);
 
 		await router.push(
-			`/property?input=${JSON.stringify(initialInput)}`,
-			`/property?input=${JSON.stringify(initialInput)}`,
+			`/product?input=${JSON.stringify(initialInput)}`,
+			`/product?input=${JSON.stringify(initialInput)}`,
 			{ scroll: false },
 		);
 		setSearchFilter(initialInput);

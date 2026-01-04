@@ -15,14 +15,14 @@ import 'swiper/css/pagination';
 
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutFull from '../../libs/components/layout/LayoutFull';
-import Review from '../../libs/components/property/Review';
+import Review from '../../libs/components/product/Review';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 import { GET_COMMENTS, GET_PRODUCT, GET_PRODUCTS } from '../../apollo/user/query';
 import { CREATE_COMMENT, LIKE_TARGET_PRODUCT } from '../../apollo/user/mutation';
 import { userVar } from '../../apollo/store';
 
-import { Product } from '../../libs/types/property/property';
+import { Product } from '../../libs/types/product/property';
 import { CommentInput, CommentsInquiry } from '../../libs/types/comment/comment.input';
 import { Comment } from '../../libs/types/comment/comment';
 import { CommentGroup } from '../../libs/enums/comment.enum';

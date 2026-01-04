@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Stack, Box, Typography } from '@mui/material';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import { Product } from '../../types/property/property';
+import { Product } from '../../types/product/property';
 import { REACT_APP_API_URL } from '../../config';
 
 interface PopularPropertyCardProps {

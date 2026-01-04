@@ -67,7 +67,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 	const [updatedComment, setUpdatedComment] = useState<string>('');
 	const [updatedCommentId, setUpdatedCommentId] = useState<string>('');
 	const [blogPost, setBlogPost] = useState<BlogPost>();
-	const articleCategory = (query?.articleCategory as string) || blogPost?.blogPostCategory || 'FREE';
+	const blogPostCategoryParam = (query?.blogPostCategory as string) || blogPost?.blogPostCategory || 'FREE';
 
 	/** APOLLO REQUESTS **/
 
@@ -119,7 +119,7 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 		router.replace(
 			{
 				pathname: '/community',
-				query: { articleCategory: value },
+				query: { blogPostCategory: value },
 			},
 			'/community',
 			{ shallow: true },
@@ -265,34 +265,34 @@ const CommunityDetail: NextPage = ({ initialInput, ...props }: T) => {
 									style: { display: 'none' },
 								}}
 								onChange={tabChangeHandler}
-								value={articleCategory}
+								value={blogPostCategoryParam}
 							>
 								<Tab
 									value={'FREE'}
 									label={'Free Board'}
-									className={`tab-button ${articleCategory === 'FREE' ? 'active' : ''}`}
+									className={`tab-button ${blogPostCategoryParam === 'FREE' ? 'active' : ''}`}
 								/>
 								<Tab
 									value={'RECOMMEND'}
 									label={'Recommendation'}
-									className={`tab-button ${articleCategory === 'RECOMMEND' ? 'active' : ''}`}
+									className={`tab-button ${blogPostCategoryParam === 'RECOMMEND' ? 'active' : ''}`}
 								/>
 								<Tab
 									value={'NEWS'}
 									label={'News'}
-									className={`tab-button ${articleCategory === 'NEWS' ? 'active' : ''}`}
+									className={`tab-button ${blogPostCategoryParam === 'NEWS' ? 'active' : ''}`}
 								/>
 								<Tab
 									value={'HUMOR'}
 									label={'Humor'}
-									className={`tab-button ${articleCategory === 'HUMOR' ? 'active' : ''}`}
+									className={`tab-button ${blogPostCategoryParam === 'HUMOR' ? 'active' : ''}`}
 								/>
 							</Tabs>
 						</Stack>
 						<div className="community-detail-config">
 							<Stack className="title-box">
 								<Stack className="left">
-									<Typography className="title">{articleCategory} BOARD</Typography>
+									<Typography className="title">{blogPostCategoryParam} BOARD</Typography>
 									<Typography className="sub-title">
 										Express your opinions freely here without content restrictions
 									</Typography>

@@ -21,7 +21,7 @@ const Category = () => {
 	const router = useRouter();
 
 	const handleClick = (slug: string) => {
-		router.push(`/property?category=${slug}`);
+		router.push(`/product?category=${slug}`);
 	};
 
 	return (

@@ -8,15 +8,15 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { TabContext } from '@mui/lab';
 import TablePagination from '@mui/material/TablePagination';
-import { AllProductsInquiry } from '../../../libs/types/property/property.input';
-import { Product } from '../../../libs/types/property/property';
+import { AllProductsInquiry } from '../../../libs/types/product/property.input';
+import { Product } from '../../../libs/types/product/property';
 import { ProductCollection, ProductStatus } from '../../../libs/enums/property.enum';
 import { sweetConfirmAlert, sweetErrorHandling } from '../../../libs/sweetAlert';
 import { REMOVE_PRODUCT_BY_ADMIN, UPDATE_PRODUCT_BY_ADMIN } from '../../../apollo/admin/mutation';
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_ALL_PRODUCTS_BY_ADMIN } from '../../../apollo/admin/query';
 import { T } from '../../../libs/types/common';
-import { ProductUpdate } from '../../../libs/types/property/property.update';
+import { ProductUpdate } from '../../../libs/types/product/property.update';
 import { ProductPanelList } from '../../../libs/components/admin/properties/PropertyList';
 
 const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {

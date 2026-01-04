@@ -1,4 +1,4 @@
-import { Product } from '../types/property/property';
+import { Product } from '../types/product/property';
 
 export type BasketItem = {
 	productId: string;

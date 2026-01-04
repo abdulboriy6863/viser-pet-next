@@ -7,7 +7,7 @@ import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { ProductCollection, ProductVolume } from '../../enums/property.enum';
 import { REACT_APP_API_URL } from '../../config';
-import { ProductInput } from '../../types/property/property.input';
+import { ProductInput } from '../../types/product/property.input';
 import { getJwtToken } from '../../auth';
 import { sweetErrorHandling, sweetMixinErrorAlert, sweetMixinSuccessAlert } from '../../sweetAlert';
 import { userVar } from '../../../apollo/store';

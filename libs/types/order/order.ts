@@ -1,6 +1,6 @@
 import { OrderStatus } from '../../enums/order.enum';
 import { Member } from '../member/member';
-import { MeLiked, Product, TotalCounter } from '../property/property';
+import { MeLiked, Product, TotalCounter } from '../product/property';
 import { CreateOrderInput, CreateOrderItemInput, OrderInquiry } from './order.input';
 
 export interface Order {

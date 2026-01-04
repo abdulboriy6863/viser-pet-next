@@ -4,7 +4,7 @@ import useDeviceDetect from '../../hooks/useDeviceDetect';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import { Product } from '../../types/property/property';
+import { Product } from '../../types/product/property';
 import { REACT_APP_API_URL } from '../../config';
 import { formatterStr } from '../../utils';
 import { useRouter } from 'next/router';
@@ -20,7 +20,7 @@ const PropertyBigCard = ({ product, likeProductHandler }: PropertyBigCardProps) 
 
 	if (device === 'mobile') return <div>PRODUCT CARD</div>;
 
-	const goDetail = () => router.push(`/property/detail?id=${product?._id}`);
+	const goDetail = () => router.push(`/product/detail?id=${product?._id}`);
 
 	// Image
 	const imgUrl = product?.productImages?.[0]
