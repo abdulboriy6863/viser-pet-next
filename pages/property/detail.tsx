@@ -36,8 +36,6 @@ import { sweetErrorHandling, sweetMixinErrorAlert, sweetTopSmallSuccessAlert } f
 // ✅ MUHIM: to‘g‘ri import
 import { addToBasket } from '../../libs/hooks/basket';
 
-SwiperCore.use([Autoplay, Navigation, Pagination]);
-
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
 		...(await serverSideTranslations(locale, ['common'])),
