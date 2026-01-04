@@ -39,6 +39,11 @@ const withLayoutBasic = (Component: any) => {
 					desc = 'We are glad to see you again!';
 					bgImage = '/img/banner/properties.png';
 					break;
+				case '/order':
+					title = 'Review your order, confirm delivery, and complete checkout';
+					desc = 'You’re almost done, Just one step left';
+					bgImage = '/img/banner/header2.svg';
+					break;
 				case '/agent':
 					title = 'Agents';
 					desc = 'Home / For Rent';
@@ -88,7 +93,7 @@ const withLayoutBasic = (Component: any) => {
 		}, [router.pathname]);
 
 		const isAgent = router.pathname.startsWith('/agent');
-		const isCommunity = router.pathname.startsWith('/community');
+		const isCommunity = router.pathname.startsWith('/community') || router.pathname.startsWith('/order');
 		const isCs = router.pathname.startsWith('/cs');
 		const isMyPage = router.pathname.startsWith('/mypage');
 		const isProductLike =
