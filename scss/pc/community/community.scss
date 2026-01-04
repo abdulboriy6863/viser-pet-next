@@ -66,8 +66,8 @@
 				min-width: 150px;
 				padding: 12px 14px;
 				border-radius: 14px;
-				background: rgba(235, 103, 83, 0.08);
-				border: 1px solid rgba(235, 103, 83, 0.24);
+				background: linear-gradient(135deg, rgba(235, 103, 83, 0.95), rgba(235, 103, 83, 0.75));
+				border: 1px solid linear-gradient(135deg, rgba(235, 103, 83, 0.95), rgba(235, 103, 83, 0.75));
 				box-shadow: 0 12px 24px rgba(235, 103, 83, 0.16);
 				display: flex;
 				flex-direction: column;

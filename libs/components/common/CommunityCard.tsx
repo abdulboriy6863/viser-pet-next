@@ -16,7 +16,7 @@ interface CommunityCardProps {
 	likeBlogPostHandler?: (e: React.MouseEvent, user: any, id: string) => void;
 }
 
-const DEFAULT_IMG = '/img/community/communityImg.png';
+const DEFAULT_IMG = '/img/newProduct/agentImage5.jpeg';
 
 const normalizeImage = (raw: any): string | null => {
 	if (!raw) return null;
