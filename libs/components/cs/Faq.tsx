@@ -18,6 +18,7 @@ const Accordion = styled((props: AccordionProps) => <MuiAccordion disableGutters
 		},
 	}),
 );
+
 const AccordionSummary = styled((props: AccordionSummaryProps) => (
 	<MuiAccordionSummary expandIcon={<KeyboardArrowDownRoundedIcon sx={{ fontSize: '1.4rem' }} />} {...props} />
 ))(({ theme }) => ({
@@ -38,7 +39,7 @@ const Faq = () => {
 
 	/** APOLLO REQUESTS **/
 	/** LIFECYCLES **/
-	
+
 	/** HANDLERS **/
 	const changeCategoryHandler = (category: string) => {
 		setCategory(category);
@@ -48,387 +49,376 @@ const Faq = () => {
 		setExpanded(newExpanded ? panel : false);
 	};
 
+	// ✅ TEXTLAR PETS GA MOSLAB ALMASHTIRILDI (LOGIC O'ZGARMAGAN)
 	const data: any = {
 		property: [
 			{
 				id: '00f5a45ed8897f8090116a01',
-				subject: 'Are the properties displayed on the site reliable?',
-				content: 'of course we only have verified properties',
+				subject: 'Are the pet products on the site authentic and safe?',
+				content: 'Yes. We list only trusted, pet-safe products from verified suppliers.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a22',
-				subject: 'What types of properties do you offer?',
-				content: 'We offer single-family homes, condos, townhouses, apartments, and penthouses',
+				subject: 'What types of pet products do you offer?',
+				content: 'Food, treats, toys, grooming items, hygiene products, carriers, and accessories.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a21',
-				subject: 'How can I search for properties on your website?',
-				content: 'Simply use our search bar to enter location, price range, bedrooms/bathrooms, and property type.',
+				subject: 'How can I search for pet products on your website?',
+				content: 'Use the search bar and filters like pet type, brand, price range, and product category.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a23',
-				subject: 'Do you provide assistance for first-time homebuyers?',
-				content: 'Yes, we guide you through the process and help find suitable financing.',
+				subject: 'Do you help new pet owners choose the right items?',
+				content: 'Yes. We can recommend starter essentials based on your pet’s age, size, and needs.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a24',
-				subject: 'What should I consider when buying a property?',
-				content: 'Location, condition, size, amenities, and future development plans.',
+				subject: 'What should I consider when buying pet food?',
+				content: 'Check age/size, ingredients, allergies, health conditions, and feeding guidelines.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a25',
-				subject: 'How long does the home-buying process typically take?',
-				content: 'Usually 3 to 6 days, depending on various factors.',
+				subject: 'How long does delivery typically take?',
+				content: 'Usually 1 to 3 days depending on your location and the delivery option.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a29',
-				subject: 'What happens if I encounter issues with the property after purchase?',
-				content: 'We offer post-purchase support to address any concerns promptly.',
+				subject: 'What if I receive a damaged or wrong pet item?',
+				content: 'Contact support immediately. We will help with exchange or return based on our policy.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a28',
-				subject: 'Do you offer properties in specific neighborhoods?',
-				content: 'Yes, we have listings in various neighborhoods based on your preferences.',
+				subject: 'Do you sell products for specific breeds or sizes?',
+				content: 'Yes. Many items have size/breed options—check the product details and size chart.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a27',
-				subject: 'Can I sell my property through your website?',
-				content: 'Absolutely, we provide services for selling properties as well.',
+				subject: 'Can I sell pet products on your platform?',
+				content: 'Yes, sellers can apply. Please contact the admin to start the onboarding process.',
 			},
 			{
 				id: '00f5a45ed8897f8090116b99',
-				subject: 'What if I need help understanding legal aspects of property purchase?',
-				content: 'Our team can provide basic guidance and recommend legal professionals if needed.',
+				subject: 'What if I need help choosing the correct size (collar/harness/clothes)?',
+				content: 'Use our size guide and measurements. If unsure, contact support for recommendations.',
 			},
 		],
+
 		payment: [
 			{
 				id: '00f5a45ed8897f8090116a02',
-				subject: 'How can I make the payment?',
-				content: 'you make the payment through an agent!',
+				subject: 'How can I pay for my pet order?',
+				content: 'You can pay securely using the available checkout payment methods.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a91',
-				subject: 'Are there any additional fees for using your services?',
-				content: 'No, our services are free for buyers. Sellers pay a commission upon successful sale.',
+				subject: 'Are there any extra fees when ordering?',
+				content: 'No hidden fees. Delivery fees (if any) will be shown clearly before you place the order.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a92',
-				subject: 'Is there an option for installment payments?',
-				content: 'Yes, we offer installment payment plans for certain properties. Please inquire for more details.',
+				subject: 'Do you offer installment payments?',
+				content: 'If supported by your payment provider, installments may be available at checkout.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a93',
-				subject: 'Is my payment information secure on your website?',
-				content:
-					'Yes, we use industry-standard encryption technology to ensure the security of your payment information.',
+				subject: 'Is my payment information secure?',
+				content: 'Yes. We use secure payment processing and protect your data with encryption.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a94',
-				subject: 'Can I make payments online through your website?',
-				content: "Yes, you can securely make payments online through our website's payment portal.",
+				subject: 'Can I pay online?',
+				content: 'Yes, you can complete payment online through our secure checkout.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a95',
-				subject: "What happens if there's an issue with my payment?",
-				content: 'If you encounter any issues with your payment, please contact our support team for assistance.',
+				subject: 'What if my payment fails?',
+				content: 'Try again or use another method. If the issue continues, contact support for help.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a96',
-				subject: 'Do you offer refunds for payments made?',
-				content:
-					'Refund policies vary depending on the circumstances. Please refer to our refund policy or contact us for more information.',
+				subject: 'Do you offer refunds?',
+				content: 'Refund eligibility depends on the item type and condition. Check our return/refund policy.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a97',
-				subject: 'Are there any discounts or incentives for early payments?',
-				content:
-					'We occasionally offer discounts or incentives for early payments. Check our promotions or contact us for current offers.',
+				subject: 'Are there discounts or promo codes?',
+				content: 'Yes, we run promotions sometimes. Apply promo codes at checkout if available.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a99',
-				subject: 'How long does it take for payments to be processed?',
-				content:
-					'Payment processing times vary depending on the payment method used. Typically, credit/debit card payments are processed instantly',
+				subject: 'How long does payment processing take?',
+				content: 'Most card payments are instant. Bank transfers can take longer depending on the provider.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a98',
-				subject: 'Are there penalties for late payments?',
-				content:
-					'Late payment penalties may apply depending on the terms of your agreement. Please refer to your contract or contact us for details.',
+				subject: 'Are there penalties for late payment?',
+				content: 'Late payment rules depend on your payment provider or installment plan terms.',
 			},
 		],
+
 		buyers: [
 			{
 				id: '00f5a45ed8897f8090116a03',
-				subject: 'What should buyers pay attention to?',
-				content: 'Buyers should check and decide whether the property they want to buy or rent is actually suitable!',
+				subject: 'What should pet owners pay attention to when ordering?',
+				content: 'Confirm pet size/age, ingredients, and product compatibility before buying.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a85',
-				subject: 'How can I determine if a property is within my budget?',
-				content:
-					'Calculate your budget by considering your income, down payment, and potential mortgage payments. Our agents can assist you within your budget.',
+				subject: 'How do I choose products within my budget?',
+				content: 'Use price filters and bundles. Our support can suggest cost-effective essentials.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a84',
-				subject: 'What documents do I need to provide when purchasing a property?',
-				content:
-					"You'll typically need identification, proof of income, bank statements, and any necessary loan documentation. Our team will guide you through.",
+				subject: 'What details should I provide when ordering?',
+				content: 'Delivery address, contact info, and any notes (e.g., pet allergies) if needed.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a83',
-				subject: 'What factors should I consider when choosing a neighborhood?',
-				content:
-					'Consider factors such as location, safety, schools, amenities, transportation, and future development plans.',
+				subject: 'What should I consider when choosing pet grooming items?',
+				content: 'Coat type, skin sensitivity, pet behavior, and recommended usage instructions.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a82',
-				subject: 'Can I negotiate the price of a property?',
-				content:
-					'Yes, you can negotiate the price of a property. Our agents will assist you in making competitive offers and negotiating terms with the seller.',
+				subject: 'Can I change or cancel my order?',
+				content: 'If the order is not shipped yet, we may be able to modify/cancel it. Contact support quickly.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a81',
-				subject: 'What are some red flags to watch out for when viewing properties?',
-				content:
-					'Watch out for signs of structural damage, water damage, mold, outdated systems, and undesirable neighborhood conditions.',
+				subject: 'What are red flags when buying pet food or treats?',
+				content: 'Unknown brands, unclear ingredients, no expiry date, or missing nutrition information.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a80',
-				subject: 'Do you provide assistance with property inspections?',
-				content:
-					'Yes, we can recommend reputable inspectors and accompany you during property inspections to identify any potential issues.',
+				subject: 'Do you provide product recommendations?',
+				content: 'Yes. Tell us your pet’s breed/age/weight and we’ll suggest suitable options.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a79',
-				subject: 'How long does it typically take to find the right property?',
-				content:
-					'The timeframe varies depending on your preferences and market conditions. Our agents will work diligently to find the right property as quickly as possible.',
+				subject: 'How fast can I get my pet supplies?',
+				content: 'Delivery time depends on stock and location. Express options may be available.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a78',
-				subject: 'What are the advantages of using a real estate agent when buying a property?',
-				content:
-					'Real estate agents provide expertise, negotiation skills, and guidance throughout the buying process, ultimately saving you time and hassle.',
+				subject: 'Why buy from a specialized pet platform?',
+				content: 'You get curated pet-safe products, guidance, and better category/size filtering.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a77',
-				subject: 'What happens if I change my mind about a property after making an offer?',
-				content:
-					'Depending on the terms of the offer and the stage of the transaction, you may have options to withdraw your offer.',
+				subject: 'What if I change my mind after ordering?',
+				content: 'You can request a return if the item meets our return conditions and is unopened/unused.',
 			},
 		],
 
 		agents: [
 			{
 				id: '00f5a45ed8897f8090116a04',
-				subject: 'What do I need to do if I want to become an agent?',
-				content:
-					'If you really decide to become an agent, you should read our terms and conditions and contact the admin!',
+				subject: 'How can I become a seller/partner on this pet platform?',
+				content: 'Read our terms and contact the admin to start the partner registration process.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a62',
-				subject: 'What qualifications do I need to become a real estate agent?',
-				content: 'Complete pre-licensing course, pass licensing exam, meet state requirements.',
+				subject: 'What do I need to start selling pet products here?',
+				content: 'Provide business info, product catalog, and pass basic verification.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a63',
-				subject: 'How do I find clients as a new real estate agent?',
-				content: 'Build network, use online/offline marketing, join reputable brokerage.',
+				subject: 'How do I attract more customers?',
+				content: 'Use clear product photos, detailed descriptions, and competitive pricing.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a64',
-				subject: 'What are some effective marketing strategies for selling properties?',
-				content: 'Use social media, online platforms, networking events, and direct mail.',
+				subject: 'What marketing strategies work well for pet products?',
+				content: 'Social media content, bundles, seasonal promos, and influencer collaborations.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a65',
-				subject: 'How do I handle negotiations with buyers and sellers?',
-				content: 'Develop strong negotiation skills, understand market trends, represent client interests.',
+				subject: 'How do I handle customer questions and complaints?',
+				content: 'Respond fast, be kind, and provide exchange/return options when applicable.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a66',
-				subject: 'What should I do to stay updated with market trends and changes?',
-				content: 'Attend industry events, follow real estate news, participate in training.',
+				subject: 'How do I stay updated with pet market trends?',
+				content: 'Follow pet industry news, review customer feedback, and monitor best sellers.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a67',
-				subject: 'How do I handle difficult clients or situations?',
-				content:
-					'Approach with professionalism, empathy, and patience. Listen actively, address issues collaboratively.',
+				subject: 'How do I handle difficult customers?',
+				content: 'Stay professional, offer solutions, and escalate complex cases to admin if needed.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a68',
-				subject: 'What tools and technologies should I utilize as a real estate agent?',
-				content: 'Use CRM software, virtual tours, digital marketing tools, and mobile apps.',
+				subject: 'What tools should I use as a seller?',
+				content: 'Inventory tracking, order management tools, and analytics to optimize listings.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a69',
-				subject: 'How do I ensure compliance with real estate laws and regulations?',
-				content: 'Stay updated with laws, attend education courses, consult legal professionals.',
+				subject: 'How do I ensure compliance for pet products?',
+				content: 'Sell safe products, show expiry dates, and follow local consumer regulations.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a70',
-				subject: 'What strategies can I use to grow my real estate business?',
-				content: 'Build relationships, provide exceptional service, seek referrals, and continuously improve skills.',
+				subject: 'How can I grow my pet business on this platform?',
+				content: 'Improve listings, maintain fast shipping, and earn trust through good reviews.',
 			},
 		],
+
 		membership: [
 			{
 				id: '00f5a45ed8897f8090116a05',
-				subject: 'Do you have a membership service on your site?',
-				content: 'membership service is not available on our site yet!',
+				subject: 'Do you have a membership program?',
+				content: 'Not yet. We’re working on a membership program for pet lovers.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a60',
-				subject: 'What are the benefits of becoming a member on your website?',
-				content: 'We currently do not offer membership benefits, but stay tuned for updates on any future offerings.',
+				subject: 'What benefits will members get in the future?',
+				content: 'Potentially points, exclusive deals, early access, and member-only bundles.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a59',
-				subject: 'Is there a fee associated with becoming a member?',
-				content: 'As membership services are not available, there are no associated fees at this time.',
+				subject: 'Is there a membership fee?',
+				content: 'No fee for now because membership features are not launched yet.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a58',
-				subject: 'Will membership provide access to exclusive content or features?',
-				content: "We don't currently have membership-exclusive content or features.",
+				subject: 'Will membership unlock exclusive pet content or features?',
+				content: 'Not currently, but we plan to add member-only content and discounts later.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a57',
-				subject: 'How can I sign up for a membership on your site?',
-				content: 'As of now, we do not have a sign-up process for memberships.',
+				subject: 'How can I sign up for membership?',
+				content: 'Membership sign-up will be available when the program launches.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a56',
-				subject: 'Do members receive discounts on property listings or services?',
-				content: 'Membership discounts are not part of our current offerings.',
+				subject: 'Will members receive discounts on pet products?',
+				content: 'Not right now. Discounts may be introduced when membership is launched.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a55',
-				subject: 'Are there plans to introduce a membership program in the future?',
-				content:
-					"While we can't confirm any plans at this time, we're always exploring ways to enhance our services for users.",
+				subject: 'Are you planning to introduce membership soon?',
+				content: 'We’re exploring options and will announce updates inside the app/site.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a54',
-				subject: 'What kind of content or benefits can members expect if a membership program is introduced?',
-				content: "We're evaluating potential benefits and features, but specifics are not available yet.",
+				subject: 'What kind of perks are you considering?',
+				content: 'Points, free delivery events, exclusive discounts, and special pet-care guides.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a33',
-				subject: 'Do you offer a premium membership option on your platform?',
-				content: 'Currently, we do not provide a premium membership option.',
+				subject: 'Do you offer premium membership?',
+				content: 'Not yet. Premium membership is not available at the moment.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a32',
-				subject: 'Will membership grant access to exclusive deals or discounts?',
-				content: 'Membership perks, including deals or discounts, are not available at this time.',
+				subject: 'Will membership offer special deals?',
+				content: 'Not currently, but we plan to add deals and perks in the future.',
 			},
 		],
+
 		community: [
 			{
 				id: '00f5a45ed8897f8090116a06',
-				subject: 'What should I do if there is abusive or criminal behavior in the community section?',
-				content: 'If you encounter this situation, please report it immediately or contact the admin!',
+				subject: 'What if someone is abusive in the pet community?',
+				content: 'Please report immediately or contact the admin so we can take action.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a44',
-				subject: 'How can I participate in the community section of your website?',
-				content: 'Create an account and engage in discussions.',
+				subject: 'How can I participate in the pet community?',
+				content: 'Create an account and share questions, tips, and pet stories.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a45',
-				subject: 'Are there guidelines for posting?',
-				content: 'Yes, follow our community guidelines.',
+				subject: 'Are there rules for posting?',
+				content: 'Yes. Follow our community guidelines to keep it friendly and safe.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a46',
-				subject: 'What should I do if I encounter spam or irrelevant posts?',
-				content: 'Report them to the admin.',
+				subject: 'What should I do about spam posts?',
+				content: 'Report them. Our team will review and remove spam quickly.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a47',
-				subject: 'Can I connect with other members outside of the community section?',
-				content: 'Currently, no.',
+				subject: 'Can I message other members privately?',
+				content: 'Currently, private messaging is not supported.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a48',
-				subject: 'Can I share personal experiences or recommendations?',
-				content: 'Yes, if relevant you can share personal experiences and recommendations.',
+				subject: 'Can I share vet tips or product recommendations?',
+				content: 'Yes, as long as it’s helpful, respectful, and not misleading.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a49',
-				subject: 'How can I ensure privacy?',
-				content: 'Avoid sharing sensitive information.',
+				subject: 'How do I protect my privacy?',
+				content: 'Avoid posting personal phone numbers, addresses, or sensitive information.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a50',
 				subject: 'How can I contribute positively?',
-				content: 'Respect others and engage constructively.',
+				content: 'Be kind, give constructive advice, and support new pet owners.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a51',
-				subject: 'What if I notice misinformation?',
-				content: 'Provide correct information or report to the admin.',
+				subject: 'What if I see misinformation about pet care?',
+				content: 'Share correct info politely or report the post so admins can review it.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a52',
 				subject: 'Are there moderators?',
-				content: 'Yes, we have moderators.',
+				content: 'Yes, moderators help keep the pet community safe and respectful.',
 			},
 		],
+
 		other: [
 			{
 				id: '00f5a45ed8897f8090116a40',
-				subject: 'Who should I contact if I want to buy your site?',
-				content: 'We have no plans to sell the site at this time!',
+				subject: 'Who can I contact for business collaboration?',
+				content: 'Contact the admin to discuss partnerships or collaboration opportunities.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a39',
-				subject: 'Can I advertise my services on your website?',
-				content: 'We currently do not offer advertising opportunities on our site.',
+				subject: 'Can I advertise my pet services on your platform?',
+				content: 'Advertising is not available right now, but we may add it in the future.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a38',
-				subject: 'Are there sponsorship opportunities available on your platform?',
-				content: 'At this time, we do not have sponsorship opportunities.',
+				subject: 'Are sponsorship opportunities available?',
+				content: 'Not at the moment. We will announce sponsorship programs if launched.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a36',
-				subject: 'Can I contribute guest posts or articles to your website?',
-				content: "We're not accepting guest posts or articles at the moment.",
+				subject: 'Can I write guest posts about pet care?',
+				content: "We're not accepting guest posts currently, but we may open it later.",
 			},
 			{
 				id: '00f5a45ed8897f8090116a35',
-				subject: 'Is there a referral program for recommending your website to others?',
-				content: "We don't have a referral program in place currently.",
+				subject: 'Do you have a referral program?',
+				content: "Not yet. We're considering referral rewards for pet lovers.",
 			},
 			{
 				id: '00f5a45ed8897f8090116a34',
-				subject: 'Do you offer affiliate partnerships for promoting your services?',
-				content: 'Affiliate partnerships are not available at this time.',
+				subject: 'Do you offer affiliate partnerships?',
+				content: 'Affiliate partnerships are not available right now.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a33',
-				subject: 'Can I purchase merchandise related to your website?',
-				content: "We don't have merchandise available for purchase.",
+				subject: 'Do you sell pet merchandise?',
+				content: "We don't offer merch yet, but it may come later.",
 			},
 			{
 				id: '00f5a45ed8897f8090116a32',
-				subject: 'Are there any job openings or opportunities to work with your team?',
-				content: 'Currently, we do not have any job openings or opportunities available.',
+				subject: 'Are you hiring right now?',
+				content: 'Currently, we do not have open positions. Check later for updates.',
 			},
 			{
 				id: '00f5a45ed8897f8090116a31',
-				subject: 'Do you host events or webinars related to real estate?',
-				content: "We're not hosting events or webinars at this time.",
+				subject: 'Do you host pet events or webinars?',
+				content: "We're not hosting events right now, but we may in the future.",
 			},
 			{
 				id: '00f5a45ed8897f8090116a30',
-				subject: 'Can I request custom features or functionalities for your website?',
-				content: "We're not accepting requests for custom features or functionalities.",
+				subject: 'Can I request a new feature?',
+				content: "Yes. Share your idea with us, and we'll review it for future updates.",
 			},
 		],
 	};
@@ -445,7 +435,7 @@ const Faq = () => {
 							changeCategoryHandler('property');
 						}}
 					>
-						Property
+						Pet Products
 					</div>
 					<div
 						className={category === 'payment' ? 'active' : ''}
@@ -453,7 +443,7 @@ const Faq = () => {
 							changeCategoryHandler('payment');
 						}}
 					>
-						Payment
+						Payments
 					</div>
 					<div
 						className={category === 'buyers' ? 'active' : ''}
@@ -461,7 +451,7 @@ const Faq = () => {
 							changeCategoryHandler('buyers');
 						}}
 					>
-						Foy Buyers
+						For Pet Owners
 					</div>
 					<div
 						className={category === 'agents' ? 'active' : ''}
@@ -469,7 +459,7 @@ const Faq = () => {
 							changeCategoryHandler('agents');
 						}}
 					>
-						For Agents
+						For Sellers
 					</div>
 					<div
 						className={category === 'membership' ? 'active' : ''}
@@ -496,6 +486,7 @@ const Faq = () => {
 						Other
 					</div>
 				</Box>
+
 				<Box className={'wrap'} component={'div'}>
 					{data[category] &&
 						data[category].map((ele: any) => (
