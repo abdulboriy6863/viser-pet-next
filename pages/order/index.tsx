@@ -1,95 +1,202 @@
-import React from 'react';
-import { NextPage } from 'next';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { Stack, Box, Typography, Button, Divider } from '@mui/material';
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
 import ShoppingCartCheckoutOutlinedIcon from '@mui/icons-material/ShoppingCartCheckoutOutlined';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
+import { useReactiveVar } from '@apollo/client';
+import { userVar } from '../../apollo/store';
+
+import { REACT_APP_API_URL } from '../../libs/config';
+import { formatterStr } from '../../libs/utils';
+import {
+	basketTotals,
+	clearBasket,
+	readBasket,
+	removeItem,
+	subscribeBasket,
+	BasketStoredItem,
+} from '../../libs/hooks/basket';
 
 type OrderStatus = 'processing' | 'shipped' | 'delivered' | 'on-hold';
 
-type OrderItem = {
+type OrderRow = {
 	id: string;
 	product: string;
 	sku: string;
 	placedOn: string;
+
 	unitPrice: number;
 	quantity: number;
+
 	status: OrderStatus;
 	eta: string;
-	thumbnail: string;
+
+	thumbnail: string; // absolute url
+	productId: string; // basket remove uchun
 };
 
-const statusConfig: Record<OrderStatus, { label: string; className: 'process' | 'finish' | 'pause'; description: string }> = {
+const statusConfig: Record<
+	OrderStatus,
+	{ label: string; className: 'process' | 'finish' | 'pause'; description: string }
+> = {
 	processing: { label: 'Processing', className: 'process', description: 'Payment confirmed • Packing now' },
 	shipped: { label: 'Shipped', className: 'process', description: 'Handed to carrier • Tracking live' },
 	delivered: { label: 'Delivered', className: 'finish', description: 'Signed by customer • Completed' },
 	'on-hold': { label: 'On hold', className: 'pause', description: 'Awaiting restock • Customer notified' },
 };
 
-const orderItems: OrderItem[] = [
-	{
-		id: 'ORD-20914',
-		product: 'Smart Feeder Pro (Wi‑Fi)',
-		sku: 'SKU-FDR-552',
-		placedOn: 'Feb 8, 2024, 09:24',
-		unitPrice: 189,
-		quantity: 1,
-		status: 'processing',
-		eta: 'Preparing shipment • ETA Feb 12',
-		thumbnail: '/img/property/dog2.jpg',
-	},
-	{
-		id: 'ORD-20906',
-		product: 'GPS Tracker Collar v3',
-		sku: 'SKU-GPS-318',
-		placedOn: 'Feb 6, 2024, 14:10',
-		unitPrice: 129,
-		quantity: 2,
-		status: 'shipped',
-		eta: 'Out for delivery • Carrier: UPS',
-		thumbnail: '/img/property/dog3.webp',
-	},
-	{
-		id: 'ORD-20892',
-		product: 'AutoClean Litter Box',
-		sku: 'SKU-CAT-210',
-		placedOn: 'Feb 4, 2024, 11:35',
-		unitPrice: 249,
-		quantity: 1,
-		status: 'delivered',
-		eta: 'Delivered Feb 10 • Left at reception',
-		thumbnail: '/img/property/cat2.jpg',
-	},
-	{
-		id: 'ORD-20871',
-		product: 'Cooling Pet Bed (M)',
-		sku: 'SKU-BED-404',
-		placedOn: 'Feb 1, 2024, 16:45',
-		unitPrice: 96,
-		quantity: 1,
-		status: 'on-hold',
-		eta: 'Awaiting restock • Ships Feb 15',
-		thumbnail: '/img/property/alvan-nee-brFsZ7qszSY-unsplash.jpg',
-	},
-];
+const formatCurrency = (value: number) => `$${formatterStr(Math.max(0, Number(value) || 0))}`;
 
-const formatCurrency = (value: number) =>
-	value.toLocaleString('en-US', {
-		style: 'currency',
-		currency: 'USD',
-	});
+const makeOrderId = () => {
+	// front snapshot uchun “unique” order id (backend bo‘lmaganda)
+	const rand = Math.random().toString(36).slice(2, 7).toUpperCase();
+	return `ORD-${Date.now().toString().slice(-5)}-${rand}`;
+};
+
+const makeSku = (productId: string) => `SKU-${productId.slice(-5).toUpperCase()}`;
 
 const OrderPage: NextPage = () => {
 	const router = useRouter();
-	const subtotal = orderItems.reduce((acc, item) => acc + item.unitPrice * item.quantity, 0);
+	const user = useReactiveVar(userVar);
+
+	const [rows, setRows] = useState<OrderRow[]>([]);
+	const [creating, setCreating] = useState(false);
+
 	const deliveryFee = 24;
-	const grandTotal = subtotal + deliveryFee;
-	const totalOrders = orderItems.length;
-	const activeOrders = orderItems.filter((item) => ['processing', 'shipped', 'on-hold'].includes(item.status)).length;
-	const deliveredOrders = orderItems.filter((item) => item.status === 'delivered').length;
-	const nextEta = orderItems.find((item) => item.status === 'processing' || item.status === 'shipped')?.eta ?? 'All caught up';
+
+	const refreshFromBasket = useCallback(() => {
+		if (!user?._id) {
+			setRows([]);
+			return;
+		}
+
+		const items: BasketStoredItem[] = readBasket(user._id);
+
+		const next: OrderRow[] = items.map((it) => {
+			const now = new Date();
+			const placedOn = now.toLocaleString('en-US', {
+				month: 'short',
+				day: 'numeric',
+				year: 'numeric',
+				hour: '2-digit',
+				minute: '2-digit',
+			});
+
+			const status: OrderStatus = 'processing';
+			const eta = 'Preparing shipment • ETA 1–3 days';
+
+			const thumb = it.productImage ? `${REACT_APP_API_URL}/${it.productImage}` : '/img/property/bigImage.png';
+
+			return {
+				id: makeOrderId(),
+				product: it.productName,
+				sku: makeSku(it.productId),
+				placedOn,
+				unitPrice: Number(it.unitPrice) || 0,
+				quantity: Number(it.quantity) || 1,
+				status,
+				eta,
+				thumbnail: thumb,
+				productId: it.productId,
+			};
+		});
+
+		setRows(next);
+	}, [user?._id]);
+
+	useEffect(() => {
+		refreshFromBasket();
+	}, [refreshFromBasket]);
+
+	useEffect(() => {
+		const unsub = subscribeBasket(user?._id, refreshFromBasket);
+		return () => unsub();
+	}, [user?._id, refreshFromBasket]);
+
+	const subtotal = useMemo(() => rows.reduce((acc, r) => acc + r.unitPrice * r.quantity, 0), [rows]);
+	const grandTotal = subtotal + (rows.length ? deliveryFee : 0);
+
+	const totalOrders = rows.length;
+	const activeOrders = rows.filter((x) => ['processing', 'shipped', 'on-hold'].includes(x.status)).length;
+	const deliveredOrders = rows.filter((x) => x.status === 'delivered').length;
+
+	const nextEta = rows.find((x) => x.status === 'processing' || x.status === 'shipped')?.eta ?? 'All caught up';
+
+	const handleRemoveLine = (productId: string) => {
+		if (!user?._id) return;
+		removeItem(productId, user._id);
+		// event orqali ham refresh bo‘ladi, lekin tezkor:
+		refreshFromBasket();
+	};
+
+	/**
+	 * ✅ Buy now / Create order:
+	 * - backend yo‘q bo‘lsa ham, “order created” snapshot qilish
+	 * - va basketni darrov tozalash (qayta paydo bo‘lmasin)
+	 */
+	const handleCreateOrder = async () => {
+		try {
+			if (!user?._id) {
+				await router.push('/account/join');
+				return;
+			}
+			if (!rows.length) {
+				await router.push('/property');
+				return;
+			}
+
+			setCreating(true);
+
+			// ⬇️ Agar keyin GraphQL CREATE_ORDER qo‘shsang, shu yerga qo‘yasan
+			// await createOrderMutation({ variables: ... })
+
+			// ✅ muvaffaqiyatli bo‘ldi deb qabul qilamiz:
+			clearBasket(user._id);
+
+			// UI snapshot uchun: “delivered” emas, “processing” ko‘rinishda turadi
+			setRows([]); // basket bo‘sh, order “tugadi” snapshot
+			// xohlasang “Thank you” pagega yo‘naltir:
+			// await router.push('/order/success');
+		} finally {
+			setCreating(false);
+		}
+	};
+
+	const handleRefresh = () => refreshFromBasket();
+
+	// user login bo‘lmasa (talabing bo‘yicha) order/basket ko‘rsatmaymiz
+	if (!user?._id) {
+		return (
+			<Stack className="order-page">
+				<Stack className="container">
+					<Stack className="order-hero">
+						<Box className="order-hero__copy">
+							<p className="eyebrow">ORDER</p>
+							<Typography variant="h4" component="h1" className="order-heading">
+								Checkout
+							</Typography>
+							<p className="order-description">Please login to view your basket and create an order.</p>
+							<Stack direction="row" spacing={1} className="order-hero__actions">
+								<Button variant="contained" onClick={() => router.push('/account/join')}>
+									Login / Register
+								</Button>
+								<Button
+									variant="text"
+									startIcon={<LocalShippingOutlinedIcon />}
+									onClick={() => router.push('/property')}
+								>
+									Continue shopping
+								</Button>
+							</Stack>
+						</Box>
+					</Stack>
+				</Stack>
+			</Stack>
+		);
+	}
 
 	return (
 		<Stack className="order-page">
@@ -98,22 +205,26 @@ const OrderPage: NextPage = () => {
 					<Box className="order-hero__copy">
 						<p className="eyebrow">ORDER</p>
 						<Typography variant="h4" component="h1" className="order-heading">
-							Latest orders
+							Checkout
 						</Typography>
 						<p className="order-description">
-							Live storefront snapshot with verified customer orders, carrier status, and running totals.
+							This page is connected to your basket. Create order will clear basket items immediately after success.
 						</p>
+
 						<Stack direction="row" spacing={1} className="order-hero__actions">
 							<Button
 								variant="contained"
 								startIcon={<ShoppingCartCheckoutOutlinedIcon />}
-								onClick={() => router.push('/property')}
+								onClick={handleCreateOrder}
+								disabled={creating || rows.length === 0}
 							>
-								Buy now
+								{creating ? 'Creating...' : 'Create order'}
 							</Button>
-							<Button variant="text" startIcon={<RefreshIcon />} onClick={() => router.reload()}>
+
+							<Button variant="text" startIcon={<RefreshIcon />} onClick={handleRefresh}>
 								Refresh
 							</Button>
+
 							<Button variant="text" startIcon={<LocalShippingOutlinedIcon />} onClick={() => router.push('/property')}>
 								Continue shopping
 							</Button>
@@ -122,7 +233,7 @@ const OrderPage: NextPage = () => {
 
 					<Stack className="order-hero__stats">
 						<Stack className="stat-card">
-							<span className="stat-label">Total</span>
+							<span className="stat-label">Items</span>
 							<span className="stat-value">{totalOrders}</span>
 							<span className="stat-hint">{formatCurrency(grandTotal)} value</span>
 						</Stack>
@@ -150,10 +261,11 @@ const OrderPage: NextPage = () => {
 						</Box>
 						<Divider />
 
-						{orderItems.length ? (
-							orderItems.map((item) => {
+						{rows.length ? (
+							rows.map((item) => {
 								const status = statusConfig[item.status];
 								const lineTotal = item.unitPrice * item.quantity;
+
 								return (
 									<Box key={item.id} className="table-row">
 										<Stack direction="row" spacing={1.5} alignItems="center" className="product-cell">
@@ -166,16 +278,34 @@ const OrderPage: NextPage = () => {
 													{item.id} • {item.sku}
 												</span>
 												<span className="product-date">Placed {item.placedOn}</span>
+
+												{/* ✅ remove from basket */}
+												<Button
+													variant="text"
+													size="small"
+													sx={{ mt: 0.5, p: 0, minWidth: 'auto', fontWeight: 800 }}
+													onClick={() => handleRemoveLine(item.productId)}
+												>
+													Remove
+												</Button>
 											</Box>
 										</Stack>
+
 										<span className="cell strong">{formatCurrency(item.unitPrice)}</span>
 										<span className="cell">{item.quantity}</span>
 										<span className="cell strong">{formatCurrency(lineTotal)}</span>
+
 										<Stack className="cell" spacing={0.4}>
-											<Button size="small" variant="contained" className={`status-chip status-chip--${status.className}`}>
+											<Button
+												size="small"
+												variant="contained"
+												className={`status-chip status-chip--${status.className}`}
+											>
 												{status.label}
 											</Button>
-											<Typography sx={{ fontSize: 12, color: 'rgba(100,116,139,0.95)' }}>{status.description}</Typography>
+											<Typography sx={{ fontSize: 12, color: 'rgba(100,116,139,0.95)' }}>
+												{status.description}
+											</Typography>
 											<Typography sx={{ fontSize: 12, color: 'rgba(100,116,139,0.95)' }}>{item.eta}</Typography>
 										</Stack>
 									</Box>
@@ -184,7 +314,7 @@ const OrderPage: NextPage = () => {
 						) : (
 							<Box className="table-empty">
 								<img src="/img/icons/icoAlert.svg" alt="" />
-								<span>Orders are not available right now.</span>
+								<span>Your basket is empty.</span>
 							</Box>
 						)}
 					</Box>
@@ -192,56 +322,67 @@ const OrderPage: NextPage = () => {
 					<Stack className="order-sidebar">
 						<Box className="summary-card">
 							<Typography className="summary-title">Summary</Typography>
+
 							<Stack className="summary-row">
 								<span>Subtotal</span>
 								<strong>{formatCurrency(subtotal)}</strong>
 							</Stack>
+
 							<Stack className="summary-row">
 								<span>Delivery</span>
-								<strong>{formatCurrency(deliveryFee)}</strong>
+								<strong>{formatCurrency(rows.length ? deliveryFee : 0)}</strong>
 							</Stack>
+
 							<Divider />
+
 							<Stack className="summary-row total">
 								<span>Grand total</span>
 								<strong>{formatCurrency(grandTotal)}</strong>
 							</Stack>
+
 							<Button
 								fullWidth
 								variant="contained"
 								color="primary"
 								startIcon={<ShoppingCartCheckoutOutlinedIcon />}
-								onClick={() => router.push('/property')}
+								onClick={handleCreateOrder}
+								disabled={creating || rows.length === 0}
 							>
-								Create order
+								{creating ? 'Creating...' : 'Create order'}
 							</Button>
+
 							<Button fullWidth variant="text" onClick={() => router.push('/property')}>
 								Continue shopping
 							</Button>
 						</Box>
 
+						{/* Checkout info UI qoldirdim, faqat defaultlarni user data bilan boyitdim */}
 						<Box className="contact-card">
 							<Typography className="contact-title">Checkout information</Typography>
 							<p className="contact-desc">
-								Default shipping profile we use for marketplace test orders. Adjust before confirming checkout.
+								Saved profile will auto-fill once enabled. For now we use a placeholder snapshot.
 							</p>
 
 							<label>Full name</label>
-							<input type="text" placeholder="Full name" defaultValue="Amelia Chen" />
+							<input type="text" placeholder="Full name" defaultValue={user?.memberNick || ''} />
 
 							<label>Phone</label>
-							<input type="text" placeholder="Phone number" defaultValue="+1 (312) 555-0192" />
+							<input type="text" placeholder="Phone number" defaultValue={user?.memberPhone || ''} />
 
 							<label>Address</label>
-							<input type="text" placeholder="Delivery address" defaultValue="228 Berry St, Brooklyn, NY 11249" />
+							<input type="text" placeholder="Delivery address" defaultValue="(Add address in profile)" />
 
 							<label>Notes</label>
-							<textarea placeholder="Leave delivery notes (optional)" defaultValue="Leave with the doorman if we are out." />
+							<textarea
+								placeholder="Leave delivery notes (optional)"
+								defaultValue="Leave at reception if not available."
+							/>
 
 							<Button variant="outlined" fullWidth disabled startIcon={<ShoppingCartCheckoutOutlinedIcon />}>
 								Save info
 							</Button>
 
-							<span className="contact-hint">Personalized delivery preferences sync automatically once enabled.</span>
+							<span className="contact-hint">Profile syncing is disabled in this snapshot mode.</span>
 						</Box>
 					</Stack>
 				</Stack>
