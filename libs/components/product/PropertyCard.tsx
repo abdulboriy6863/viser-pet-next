@@ -9,8 +9,6 @@ import { formatterStr } from '../../utils';
 import { REACT_APP_API_URL } from '../../config';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
-import IconButton from '@mui/material/IconButton';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
 interface PropertyCardType {
 	product: Product;
@@ -38,8 +36,8 @@ const PropertyCard = (props: PropertyCardType) => {
 			: basePrice;
 	const priceLabel =
 		hasDiscount && discountPrice > 0 && discountPrice !== basePrice
-			? `$${formatterStr(Math.min(basePrice, discountPrice))} - $${formatterStr(Math.max(basePrice, discountPrice))}`
-			: `$${formatterStr(basePrice)}`;
+			? `₩${formatterStr(Math.min(basePrice, discountPrice))} - ₩${formatterStr(Math.max(basePrice, discountPrice))}`
+			: `₩${formatterStr(basePrice)}`;
 
 	if (device === 'mobile') {
 		return <div>PODUCT CARD</div>;

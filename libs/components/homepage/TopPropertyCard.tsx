@@ -52,8 +52,8 @@ const TrendPropertyCard = (props: TrendPropertyCardProps) => {
 				</div>
 
 				<div className="top-card__price">
-					{hasDiscount && <span className="top-card__price-old">${price.toFixed(2)}</span>}
-					<span className="top-card__price-new">${discountedPrice.toFixed(2)}</span>
+					{hasDiscount && <span className="top-card__price-old">₩{price.toFixed(2)}</span>}
+					<span className="top-card__price-new">₩{discountedPrice.toFixed(2)}</span>
 				</div>
 
 				<div className="top-card__meta">

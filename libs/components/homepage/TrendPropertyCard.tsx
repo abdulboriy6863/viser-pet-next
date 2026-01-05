@@ -44,7 +44,7 @@ const TrendProductCard = (props: TrendProductCardProps) => {
 	const badgeLabel = hasDiscount ? `-${derivedPercent}%` : null;
 
 	const formatPrice = (value: number) =>
-		`$${value.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+		`₩${value.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 
 	/** HANDLERS **/
 	const pushDetailHandler = async (productId: string) => {

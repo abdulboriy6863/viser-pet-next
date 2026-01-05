@@ -42,7 +42,7 @@ const PopularPropertyCard = (props: PopularPropertyCardProps) => {
 	const badgeLabel = hasDiscount ? `-${derivedPercent}%` : null;
 
 	const formatPrice = (value: number) =>
-		`$${value.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+		`₩${value.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 
 	const normalizeCount = (value: any, fallback: number = 0) => {
 		if (Array.isArray(value)) return value.length;

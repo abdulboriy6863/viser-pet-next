@@ -104,7 +104,7 @@ const CommunityBoards = () => {
 								>
 									<div
 										className="latest-news__image"
-										style={{ backgroundImage: `url(/img/NewProduct/agentbanner2.jpg)` }}
+										style={{ backgroundImage: `url(${image})` }}
 									/>
 									<div className="latest-news__badge" style={{ backgroundColor: badgeColor }}>
 										<span className="latest-news__day">{formatDay(blogPost?.createdAt)}</span>

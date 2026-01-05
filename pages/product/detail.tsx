@@ -163,8 +163,8 @@ const PropertyDetail: NextPage = ({ initialComment }: any) => {
 			basePrice,
 			finalPrice,
 			hasDiscount,
-			priceLabel: `$${formatterStr(finalPrice)}`,
-			originalPriceLabel: hasDiscount && finalPrice !== basePrice ? `$${formatterStr(basePrice)}` : null,
+			priceLabel: `₩${formatterStr(finalPrice)}`,
+			originalPriceLabel: hasDiscount && finalPrice !== basePrice ? `₩${formatterStr(basePrice)}` : null,
 		};
 	}, [product]);
 

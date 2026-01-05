@@ -38,13 +38,17 @@ const NewProductCard = (props: NewProductCardProps) => {
 	const badgeLabel = hasDiscount ? `-${derivedPercent}%` : null;
 
 	const formatPrice = (value: number) =>
-		`$${value.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+		`₩${value.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 
 	return (
 		<Stack className="new-product-card">
 			<Box className="new-product-card__image">
 				{badgeLabel && <span className="new-product-card__badge">{badgeLabel}</span>}
-				{productImage ? <img src={productImage} alt={product.productName} /> : <span className="new-product-card__placeholder" />}
+				{productImage ? (
+					<img src={productImage} alt={product.productName} />
+				) : (
+					<span className="new-product-card__placeholder" />
+				)}
 			</Box>
 			<Box className="new-product-card__price">
 				{hasDiscount && <span className="new-product-card__price--old">{formatPrice(basePrice)}</span>}
