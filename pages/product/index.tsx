@@ -6,7 +6,7 @@ import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import Filter from '../../libs/components/product/Filter';
 import { useRouter } from 'next/router';
-import { ProductInquiry, PropertiesInquiry } from '../../libs/types/product/property.input';
+import { ProductInquiry } from '../../libs/types/product/property.input';
 import { Product } from '../../libs/types/product/property';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';

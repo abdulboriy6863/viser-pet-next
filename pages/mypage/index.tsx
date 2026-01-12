@@ -143,7 +143,7 @@ const MyPage: NextPage = () => {
 												variant="outlined"
 												onClick={() => router.push('/mypage?category=addProperty')}
 											>
-												Add property
+												Add products
 											</Button>
 										)}
 									</div>

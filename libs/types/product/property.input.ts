@@ -1,13 +1,13 @@
 import { ProductCollection, ProductStatus, ProductVolume } from '../../enums/property.enum';
 import { Direction } from '../../enums/common.enum';
 
-export interface PropertiesInquiry {
-	page: number;
-	limit: number;
-	sort?: string;
-	direction?: Direction;
-	search: PISearch;
-}
+// export interface PropertiesInquiry {
+// 	page: number;
+// 	limit: number;
+// 	sort?: string;
+// 	direction?: Direction;
+// 	search: PISearch;
+// }
 
 // export interface AgentPropertiesInquiry {
 // 	page: number;
