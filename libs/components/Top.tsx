@@ -257,7 +257,7 @@ const Top = () => {
 
 					<Box className={'brand-name'}>
 						<Box className={'brand-title'}>ViserPet</Box>
-						<Box className={'brand-subtitle'}>YOUR BEST CHOICE</Box>
+						<Box className={'brand-subtitle'}>{t('YOUR BEST CHOICE')}</Box>
 					</Box>
 
 					<Box component={'div'} className={'router-box'}>
@@ -268,7 +268,7 @@ const Top = () => {
 							<div>{t('Products')}</div>
 						</Link>
 						<Link href={'/order'}>
-							<div>Orders</div>
+							<div>{t('Orders')}</div>
 						</Link>
 						<Link href={'/agent'}>
 							<div>{t('Agents')}</div>
@@ -404,10 +404,10 @@ const Top = () => {
 																{it.productName}
 															</Typography>
 															<Typography sx={{ fontSize: '12px', color: '#6b7280' }}>
-																Qty: {it.quantity} · ${formatterStr(it.unitPrice)}
+																Qty: {it.quantity} · ₩{formatterStr(it.unitPrice)}
 															</Typography>
 															<Typography sx={{ fontSize: '12px', fontWeight: 800 }}>
-																${formatterStr(lineTotal)}
+																₩{formatterStr(lineTotal)}
 															</Typography>
 														</Stack>
 
@@ -427,7 +427,7 @@ const Top = () => {
 
 										<Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
 											<Typography sx={{ fontWeight: 800 }}>Subtotal</Typography>
-											<Typography sx={{ fontWeight: 900 }}>${formatterStr(basketSubtotal)}</Typography>
+											<Typography sx={{ fontWeight: 900 }}>₩{formatterStr(basketSubtotal)}</Typography>
 										</Stack>
 
 										<Button variant="contained" onClick={handleGoOrder}>
